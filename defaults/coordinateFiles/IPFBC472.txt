@@ -1,0 +1,708 @@
+%<X-coord>,<Y-coord>,<Polarization>,<wavelength>,<type>,<deviceID>,<comment>
+1200.0,6130.0,TE,1550,alignTE,AlignMiddle_284,no commment
+1280.0,6130.0,TE,1550,alignTE,AlignRight_285,no commment
+1120.0,6003.0,TE,1550,alignTE,AlignLeft_286,no commment
+200.0,6130.0,TE,1550,alignTE,AlignMiddle_287,no commment
+280.0,6130.0,TE,1550,alignTE,AlignRight_288,no commment
+120.0,6003.0,TE,1550,alignTE,AlignLeft_289,no commment
+100.0,5300.0,TM,1310,Align,AlignFarm_296,no commment
+180.0,5300.0,TM,1310,Align,AlignFarm_297,no commment
+1200.0,5730.0,TM,1550,alignTE,AlignMiddle_300,no commment
+1280.0,5730.0,TM,1550,alignTE,AlignRight_301,no commment
+1120.0,5603.0,TM,1550,alignTE,AlignLeft_302,no commment
+200.0,5730.0,TM,1550,alignTE,AlignMiddle_303,no commment
+280.0,5730.0,TM,1550,alignTE,AlignRight_304,no commment
+120.0,5603.0,TM,1550,alignTE,AlignLeft_305,no commment
+530.0,2960.0,TM,1310,Align,AlignFarm_385,no commment
+610.0,2960.0,TM,1310,Align,AlignFarm_386,no commment
+1200.0,600.0,TM,1550,alignTE,AlignMiddle_416,no commment
+1280.0,600.0,TM,1550,alignTE,AlignRight_417,no commment
+1120.0,473.0,TM,1550,alignTE,AlignLeft_418,no commment
+200.0,835.0,TM,1550,alignTE,AlignMiddle_423,no commment
+280.0,835.0,TM,1550,alignTE,AlignRight_424,no commment
+120.0,708.0,TM,1550,alignTE,AlignLeft_425,no commment
+1200.0,200.0,TE,1550,alignTE,AlignMiddle_426,no commment
+1280.0,200.0,TE,1550,alignTE,AlignRight_427,no commment
+1120.0,73.0,TE,1550,alignTE,AlignLeft_428,no commment
+180.0,450.0,TM,1310,Align,AlignFarm_429,no commment
+100.0,450.0,TM,1310,Align,AlignFarm_430,no commment
+200.0,200.0,TE,1550,alignTE,AlignMiddle_435,no commment
+280.0,200.0,TE,1550,alignTE,AlignRight_436,no commment
+120.0,73.0,TE,1550,alignTE,AlignLeft_437,no commment
+304.0,5047.0,TM,1550,TMBraggBio,TMBraggBio_19_280,L-360um-width-416nm-corr-80nm
+50.0,4867.0,TM,1550,TMBraggBio,TMBraggBio_17_281,L-360um-width-436nm-corr-80nm
+177.0,4957.0,TM,1550,TMBraggBio,TMBraggBio_18_282,L-360um-width-436nm-corr-140nm
+431.0,5137.0,TM,1550,TMBraggBio,TMBraggBio_20_283,L-360um-width-416nm-corr-140nm
+50.0,4297.0,TM,1550,TMBraggBio,TMBraggBio_13_315,L-270um-width-436nm-corr-80nm
+177.0,3367.0,TM,1550,TMBraggBio,TMBraggBio_10_316,L-180um-width-436nm-corr-140nm
+431.0,3547.0,TM,1550,TMBraggBio,TMBraggBio_12_317,L-180um-width-416nm-corr-140nm
+304.0,3457.0,TM,1550,TMBraggBio,TMBraggBio_11_319,L-180um-width-416nm-corr-80nm
+50.0,3277.0,TM,1550,TMBraggBio,TMBraggBio_9_323,L-180um-width-436nm-corr-80nm
+431.0,4567.0,TM,1550,TMBraggBio,TMBraggBio_16_325,L-270um-width-416nm-corr-140nm
+304.0,4477.0,TM,1550,TMBraggBio,TMBraggBio_15_326,L-270um-width-416nm-corr-80nm
+177.0,4387.0,TM,1550,TMBraggBio,TMBraggBio_14_332,L-270um-width-436nm-corr-140nm
+177.0,1677.0,TM,1550,TMBraggBio,TMBraggBio_2_370,L-90um-width-436nm-corr-140nm
+304.0,2897.0,TM,1550,TMBraggBio,TMBraggBio_7_371,L-135um-width-416nm-corr-80nm
+50.0,2717.0,TM,1550,TMBraggBio,TMBraggBio_5_373,L-135um-width-436nm-corr-80nm
+431.0,2987.0,TM,1550,TMBraggBio,TMBraggBio_8_375,L-135um-width-416nm-corr-140nm
+431.0,1857.0,TM,1550,TMBraggBio,TMBraggBio_4_377,L-90um-width-416nm-corr-140nm
+177.0,2807.0,TM,1550,TMBraggBio,TMBraggBio_6_378,L-135um-width-436nm-corr-140nm
+304.0,1767.0,TM,1550,TMBraggBio,TMBraggBio_3_381,L-90um-width-416nm-corr-80nm
+50.0,1587.0,TM,1550,TMBraggBio,TMBraggBio_1_403,L-90um-width-436nm-corr-80nm
+321.85,3928.1,TE,1550,slotBragg,BraggN150p440nmCorr40nm_318,no commment
+244.8,3963.15,TE,1550,slotBragg,BraggN100p440nmCorr40nm_322,no commment
+409.6,3881.5,TE,1550,slotBragg,BraggN200p440nmCorr40nm_324,no commment
+508.6,3834.05,TE,1550,slotBragg,BraggN250p440nmCorr40nm_331,no commment
+463.55,2413.9,TE,1550,TEBraggBio,TEBraggBio_4_372,L-126.4um-width-436nm-corr-60nm
+336.55,2323.9,TE,1550,TEBraggBio,TEBraggBio_3_374,L-94.8um-width-436nm-corr-60nm
+209.55,2233.9,TE,1550,TEBraggBio,TEBraggBio_2_376,L-63.2um-width-436nm-corr-60nm
+82.55,2143.9,TE,1550,TEBraggBio,TEBraggBio_1_379,L-50.56um-width-436nm-corr-60nm
+87.35,3627.55,TE,1550,TETMRing,TERingR40g200L7_24_320,no commment
+87.35,4008.55,TM,1550,TETMRing,TMRingR40g200L3wg750_321,no commment
+3226.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_22_145,L-200um-width-345nm-corr-80nm
+3301.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_23_146,L-200um-width-345nm-corr-110nm
+3376.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_24_147,L-200um-width-345nm-corr-149nm
+3451.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_25_148,L-200um-width-325nm-corr-0nm
+3526.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_26_149,L-200um-width-325nm-corr-30nm
+3601.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_27_150,L-200um-width-325nm-corr-50nm
+3676.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_28_151,L-200um-width-325nm-corr-80nm
+3751.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_29_152,L-200um-width-325nm-corr-110nm
+3826.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_30_153,L-200um-width-325nm-corr-149nm
+3251.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_39_154,L-400um-width-345nm-corr-50nm
+3326.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_40_155,L-400um-width-345nm-corr-80nm
+3401.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_41_156,L-400um-width-345nm-corr-110nm
+3476.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_42_157,L-400um-width-345nm-corr-149nm
+3551.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_43_158,L-400um-width-325nm-corr-0nm
+3626.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_44_159,L-400um-width-325nm-corr-30nm
+3701.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_45_160,L-400um-width-325nm-corr-50nm
+3001.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_19_248,L-200um-width-345nm-corr-0nm
+3076.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_20_249,L-200um-width-345nm-corr-30nm
+3151.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_21_250,L-200um-width-345nm-corr-50nm
+2951.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_35_251,L-200um-width-365nm-corr-110nm
+3026.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_36_252,L-200um-width-365nm-corr-149nm
+3101.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_37_253,L-400um-width-345nm-corr-0nm
+1601.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_3_254,L-100um-width-345nm-corr-50nm
+1676.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_4_255,L-100um-width-345nm-corr-80nm
+1751.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_5_256,L-100um-width-345nm-corr-110nm
+1826.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_6_257,L-100um-width-345nm-corr-149nm
+1901.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_7_258,L-100um-width-325nm-corr-0nm
+1976.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_8_259,L-100um-width-325nm-corr-30nm
+2051.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_9_260,L-100um-width-325nm-corr-50nm
+2126.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_10_261,L-100um-width-325nm-corr-80nm
+2201.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_11_262,L-100um-width-325nm-corr-110nm
+2276.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_12_263,L-100um-width-325nm-corr-149nm
+2351.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_13_264,L-100um-width-365nm-corr-0nm
+2426.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_14_265,L-100um-width-365nm-corr-30nm
+2501.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_15_266,L-100um-width-365nm-corr-50nm
+2776.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_16_267,L-100um-width-365nm-corr-80nm
+2851.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_17_268,L-100um-width-365nm-corr-110nm
+2926.55,5346.45,TM,1310,TMBraggTest,TMBraggTest_18_269,L-100um-width-365nm-corr-149nm
+2651.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_31_270,L-200um-width-365nm-corr-0nm
+2726.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_32_271,L-200um-width-365nm-corr-30nm
+2801.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_33_272,L-200um-width-365nm-corr-50nm
+2876.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_34_273,L-200um-width-365nm-corr-80nm
+1451.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_1_278,L-100um-width-345nm-corr-0nm
+1526.45,6161.75,TM,1310,TMBraggTest,TMBraggTest_2_279,L-100um-width-345nm-corr-30nm
+2636.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_59_338,L-600um-width-345nm-corr-110nm
+1661.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_46_339,L-400um-width-325nm-corr-80nm
+1736.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_47_340,L-400um-width-325nm-corr-110nm
+1811.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_48_341,L-400um-width-325nm-corr-149nm
+1886.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_49_342,L-400um-width-365nm-corr-0nm
+1961.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_50_343,L-400um-width-365nm-corr-30nm
+2036.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_51_344,L-400um-width-365nm-corr-50nm
+2111.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_52_345,L-400um-width-365nm-corr-80nm
+2186.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_53_346,L-400um-width-365nm-corr-110nm
+2261.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_54_347,L-400um-width-365nm-corr-149nm
+2336.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_55_348,L-600um-width-345nm-corr-0nm
+2411.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_56_349,L-600um-width-345nm-corr-30nm
+2486.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_57_350,L-600um-width-345nm-corr-50nm
+2711.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_60_354,L-600um-width-345nm-corr-149nm
+2561.15,3782.9,TM,1310,TMBraggTest,TMBraggTest_58_356,L-600um-width-345nm-corr-80nm
+1523.05,287.35,TM,1550,TMBraggTest,TMBraggTest_77_399,L-600um-width-416nm-corr-180nm
+1448.05,287.35,TM,1550,TMBraggTest,TMBraggTest_76_400,L-600um-width-416nm-corr-150nm
+1566.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_20_401,L-100um-width-456nm-corr-150nm
+1491.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_19_402,L-100um-width-456nm-corr-110nm
+1526.25,728.4,TM,1550,TMBraggTest,TMBraggTest_92_404,L-900um-width-416nm-corr-0nm
+1451.25,728.4,TM,1550,TMBraggTest,TMBraggTest_91_405,L-900um-width-436nm-corr-180nm
+1598.05,287.35,TM,1550,TMBraggTest,TMBraggTest_78_406,L-600um-width-456nm-corr-0nm
+427.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_6_407,L-100um-width-436nm-corr-150nm
+352.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_5_408,L-100um-width-436nm-corr-110nm
+277.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_4_409,L-100um-width-436nm-corr-80nm
+202.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_3_410,L-100um-width-436nm-corr-50nm
+127.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_2_411,L-100um-width-436nm-corr-30nm
+52.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_1_412,L-100um-width-436nm-corr-0nm
+1416.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_18_413,L-100um-width-456nm-corr-80nm
+1341.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_17_414,L-100um-width-456nm-corr-50nm
+1266.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_16_438,L-100um-width-456nm-corr-30nm
+1102.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_15_439,L-100um-width-456nm-corr-0nm
+1027.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_14_440,L-100um-width-416nm-corr-180nm
+952.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_13_443,L-100um-width-416nm-corr-150nm
+877.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_12_444,L-100um-width-416nm-corr-110nm
+802.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_11_445,L-100um-width-416nm-corr-80nm
+727.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_10_446,L-100um-width-416nm-corr-50nm
+652.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_9_451,L-100um-width-416nm-corr-30nm
+577.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_8_452,L-100um-width-416nm-corr-0nm
+502.45,1286.45,TM,1550,TMBraggTest,TMBraggTest_7_453,L-100um-width-436nm-corr-180nm
+2498.05,287.35,TM,1550,TMBraggTest,TMBraggTest_90_454,L-900um-width-436nm-corr-150nm
+2423.05,287.35,TM,1550,TMBraggTest,TMBraggTest_89_455,L-900um-width-436nm-corr-110nm
+2348.05,287.35,TM,1550,TMBraggTest,TMBraggTest_88_456,L-900um-width-436nm-corr-80nm
+2273.05,287.35,TM,1550,TMBraggTest,TMBraggTest_87_457,L-900um-width-436nm-corr-50nm
+2198.05,287.35,TM,1550,TMBraggTest,TMBraggTest_86_458,L-900um-width-436nm-corr-30nm
+1601.25,728.4,TM,1550,TMBraggTest,TMBraggTest_93_459,L-900um-width-416nm-corr-30nm
+3104.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_38_460,L-200um-width-456nm-corr-50nm
+3029.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_37_461,L-200um-width-456nm-corr-30nm
+2954.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_36_462,L-200um-width-456nm-corr-0nm
+2501.25,728.4,TM,1550,TMBraggTest,TMBraggTest_105_463,L-900um-width-456nm-corr-180nm
+2426.25,728.4,TM,1550,TMBraggTest,TMBraggTest_104_464,L-900um-width-456nm-corr-150nm
+2351.25,728.4,TM,1550,TMBraggTest,TMBraggTest_103_465,L-900um-width-456nm-corr-110nm
+2276.25,728.4,TM,1550,TMBraggTest,TMBraggTest_102_466,L-900um-width-456nm-corr-80nm
+2201.25,728.4,TM,1550,TMBraggTest,TMBraggTest_101_467,L-900um-width-456nm-corr-50nm
+1716.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_22_471,L-200um-width-436nm-corr-0nm
+1641.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_21_472,L-100um-width-456nm-corr-180nm
+2879.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_35_473,L-200um-width-416nm-corr-180nm
+2804.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_34_474,L-200um-width-416nm-corr-150nm
+2729.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_33_475,L-200um-width-416nm-corr-110nm
+2654.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_32_476,L-200um-width-416nm-corr-80nm
+2579.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_31_477,L-200um-width-416nm-corr-50nm
+2126.25,728.4,TM,1550,TMBraggTest,TMBraggTest_100_480,L-900um-width-456nm-corr-30nm
+2051.25,728.4,TM,1550,TMBraggTest,TMBraggTest_99_481,L-900um-width-456nm-corr-0nm
+1976.25,728.4,TM,1550,TMBraggTest,TMBraggTest_98_482,L-900um-width-416nm-corr-180nm
+1901.25,728.4,TM,1550,TMBraggTest,TMBraggTest_97_483,L-900um-width-416nm-corr-150nm
+1826.25,728.4,TM,1550,TMBraggTest,TMBraggTest_96_484,L-900um-width-416nm-corr-110nm
+1751.25,728.4,TM,1550,TMBraggTest,TMBraggTest_95_485,L-900um-width-416nm-corr-80nm
+1676.25,728.4,TM,1550,TMBraggTest,TMBraggTest_94_486,L-900um-width-416nm-corr-50nm
+2316.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_30_487,L-200um-width-416nm-corr-30nm
+2241.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_29_488,L-200um-width-416nm-corr-0nm
+2166.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_28_489,L-200um-width-436nm-corr-180nm
+2091.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_27_493,L-200um-width-436nm-corr-150nm
+2016.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_26_494,L-200um-width-436nm-corr-110nm
+2123.05,287.35,TM,1550,TMBraggTest,TMBraggTest_85_495,L-900um-width-436nm-corr-0nm
+2048.05,287.35,TM,1550,TMBraggTest,TMBraggTest_84_496,L-600um-width-456nm-corr-180nm
+1973.05,287.35,TM,1550,TMBraggTest,TMBraggTest_83_497,L-600um-width-456nm-corr-150nm
+1898.05,287.35,TM,1550,TMBraggTest,TMBraggTest_82_498,L-600um-width-456nm-corr-110nm
+1823.05,287.35,TM,1550,TMBraggTest,TMBraggTest_81_499,L-600um-width-456nm-corr-80nm
+1748.05,287.35,TM,1550,TMBraggTest,TMBraggTest_80_500,L-600um-width-456nm-corr-50nm
+1673.05,287.35,TM,1550,TMBraggTest,TMBraggTest_79_501,L-600um-width-456nm-corr-30nm
+1941.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_25_502,L-200um-width-436nm-corr-80nm
+1866.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_24_503,L-200um-width-436nm-corr-50nm
+1791.75,1278.8,TM,1550,TMBraggTest,TMBraggTest_23_504,L-200um-width-436nm-corr-30nm
+4512.05,285.5,TM,1550,TMBraggTest,TMBraggTest_75_546,L-600um-width-416nm-corr-110nm
+4437.05,285.5,TM,1550,TMBraggTest,TMBraggTest_74_547,L-600um-width-416nm-corr-80nm
+4362.05,285.5,TM,1550,TMBraggTest,TMBraggTest_73_548,L-600um-width-416nm-corr-50nm
+4287.05,285.5,TM,1550,TMBraggTest,TMBraggTest_72_549,L-600um-width-416nm-corr-30nm
+4212.05,285.5,TM,1550,TMBraggTest,TMBraggTest_71_550,L-600um-width-416nm-corr-0nm
+4137.05,285.5,TM,1550,TMBraggTest,TMBraggTest_70_551,L-600um-width-436nm-corr-180nm
+4062.05,285.5,TM,1550,TMBraggTest,TMBraggTest_69_552,L-600um-width-436nm-corr-150nm
+3987.05,285.5,TM,1550,TMBraggTest,TMBraggTest_68_553,L-600um-width-436nm-corr-110nm
+3912.05,285.5,TM,1550,TMBraggTest,TMBraggTest_67_554,L-600um-width-436nm-corr-80nm
+3837.05,285.5,TM,1550,TMBraggTest,TMBraggTest_66_555,L-600um-width-436nm-corr-50nm
+3762.05,285.5,TM,1550,TMBraggTest,TMBraggTest_65_556,L-600um-width-436nm-corr-30nm
+3687.05,285.5,TM,1550,TMBraggTest,TMBraggTest_64_557,L-600um-width-436nm-corr-0nm
+3612.05,285.5,TM,1550,TMBraggTest,TMBraggTest_63_558,L-400um-width-456nm-corr-180nm
+3537.05,285.5,TM,1550,TMBraggTest,TMBraggTest_62_559,L-400um-width-456nm-corr-150nm
+3462.05,285.5,TM,1550,TMBraggTest,TMBraggTest_61_560,L-400um-width-456nm-corr-110nm
+4511.15,715.9,TM,1550,TMBraggTest,TMBraggTest_60_561,L-400um-width-456nm-corr-80nm
+4436.15,715.9,TM,1550,TMBraggTest,TMBraggTest_59_562,L-400um-width-456nm-corr-50nm
+4361.15,715.9,TM,1550,TMBraggTest,TMBraggTest_58_563,L-400um-width-456nm-corr-30nm
+4286.15,715.9,TM,1550,TMBraggTest,TMBraggTest_57_564,L-400um-width-456nm-corr-0nm
+4211.15,715.9,TM,1550,TMBraggTest,TMBraggTest_56_565,L-400um-width-416nm-corr-180nm
+4136.15,715.9,TM,1550,TMBraggTest,TMBraggTest_55_566,L-400um-width-416nm-corr-150nm
+4061.15,715.9,TM,1550,TMBraggTest,TMBraggTest_54_567,L-400um-width-416nm-corr-110nm
+3986.15,715.9,TM,1550,TMBraggTest,TMBraggTest_53_568,L-400um-width-416nm-corr-80nm
+3911.15,715.9,TM,1550,TMBraggTest,TMBraggTest_52_569,L-400um-width-416nm-corr-50nm
+3836.15,715.9,TM,1550,TMBraggTest,TMBraggTest_51_570,L-400um-width-416nm-corr-30nm
+3761.15,715.9,TM,1550,TMBraggTest,TMBraggTest_50_571,L-400um-width-416nm-corr-0nm
+3686.15,715.9,TM,1550,TMBraggTest,TMBraggTest_49_572,L-400um-width-436nm-corr-180nm
+3611.15,715.9,TM,1550,TMBraggTest,TMBraggTest_48_573,L-400um-width-436nm-corr-150nm
+3536.15,715.9,TM,1550,TMBraggTest,TMBraggTest_47_574,L-400um-width-436nm-corr-110nm
+3461.15,715.9,TM,1550,TMBraggTest,TMBraggTest_46_575,L-400um-width-436nm-corr-80nm
+3629.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_45_576,L-400um-width-436nm-corr-50nm
+3554.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_44_577,L-400um-width-436nm-corr-30nm
+3479.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_43_578,L-400um-width-436nm-corr-0nm
+3404.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_42_579,L-200um-width-456nm-corr-180nm
+3329.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_41_580,L-200um-width-456nm-corr-150nm
+3254.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_40_581,L-200um-width-456nm-corr-110nm
+3179.65,1278.95,TM,1550,TMBraggTest,TMBraggTest_39_584,L-200um-width-456nm-corr-80nm
+3176.9,6156.15,TM,1310,TMBraggTest,TMBraggTest_38_107,L-400um-width-345nm-corr-30nm
+6251.65,5571.45,TE,1550,Xu,APGw505p324c28_1,no commment
+6171.65,5571.45,TE,1550,Xu,APGw505p324c24_2,no commment
+6091.65,5571.45,TE,1550,Xu,APGw505p324c22_3,no commment
+6011.65,5571.45,TE,1550,Xu,APGw505p324c20_4,no commment
+5931.65,5571.45,TE,1550,Xu,APGw505p324c18_5,no commment
+5851.65,5571.45,TE,1550,Xu,APGw505p324c16_6,no commment
+5771.65,5571.45,TE,1550,Xu,APGw505p324c14_7,no commment
+5691.65,5571.45,TE,1550,Xu,APGw505p318c28_8,no commment
+5611.65,5571.45,TE,1550,Xu,APGw505p318c24_9,no commment
+5531.65,5571.45,TE,1550,Xu,APGw505p318c22_10,no commment
+6251.65,5871.45,TE,1550,Xu,APGw500p324c28_11,no commment
+6171.65,5871.45,TE,1550,Xu,APGw500p324c24_12,no commment
+6091.65,5871.45,TE,1550,Xu,APGw500p324c22_13,no commment
+6011.65,5871.45,TE,1550,Xu,APGw500p324c20_14,no commment
+5931.65,5871.45,TE,1550,Xu,APGw500p324c18_15,no commment
+5851.65,5871.45,TE,1550,Xu,APGw500p324c16_16,no commment
+5771.65,5871.45,TE,1550,Xu,APGw500p324c14_17,no commment
+5691.65,5871.45,TE,1550,Xu,APGw500p318c28_18,no commment
+5611.65,5871.45,TE,1550,Xu,APGw500p318c24_19,no commment
+5531.65,5871.45,TE,1550,Xu,APGw500p318c22_20,no commment
+6251.65,6171.45,TE,1550,Xu,APGw495p324c28_21,no commment
+6171.65,6171.45,TE,1550,Xu,APGw495p324c24_22,no commment
+6091.65,6171.45,TE,1550,Xu,APGw495p324c22_23,no commment
+6011.65,6171.45,TE,1550,Xu,APGw495p324c20_24,no commment
+5931.65,6171.45,TE,1550,Xu,APGw495p324c18_25,no commment
+5851.65,6171.45,TE,1550,Xu,APGw495p324c16_26,no commment
+5771.65,6171.45,TE,1550,Xu,APGw495p324c14_27,no commment
+5691.65,6171.45,TE,1550,Xu,APGw495p318c28_28,no commment
+5611.65,6171.45,TE,1550,Xu,APGw495p318c24_29,no commment
+5531.65,6171.45,TE,1550,Xu,APGw495p318c22_30,no commment
+5451.65,5871.45,TE,1550,Xu,APGw500p318c20_31,no commment
+5371.65,5871.45,TE,1550,Xu,APGw500p318c18_32,no commment
+5291.65,5871.45,TE,1550,Xu,APGw500p318c16_33,no commment
+5211.65,5871.45,TE,1550,Xu,APGw500p318c14_34,no commment
+5131.65,5871.45,TE,1550,Xu,APGw500p312c28_35,no commment
+5051.65,5871.45,TE,1550,Xu,APGw500p312c24_36,no commment
+4971.65,5871.45,TE,1550,Xu,APGw500p312c22_37,no commment
+4891.65,5871.45,TE,1550,Xu,APGw500p312c20_38,no commment
+4811.65,5871.45,TE,1550,Xu,APGw500p312c18_39,no commment
+4731.65,5871.45,TE,1550,Xu,APGw500p312c16_40,no commment
+5451.65,5571.45,TE,1550,Xu,APGw505p318c20_41,no commment
+5371.65,5571.45,TE,1550,Xu,APGw505p318c18_42,no commment
+5291.65,5571.45,TE,1550,Xu,APGw505p318c16_43,no commment
+5211.65,5571.45,TE,1550,Xu,APGw505p318c14_44,no commment
+5131.65,5571.45,TE,1550,Xu,APGw505p312c28_45,no commment
+5051.65,5571.45,TE,1550,Xu,APGw505p312c24_46,no commment
+4971.65,5571.45,TE,1550,Xu,APGw505p312c22_47,no commment
+4891.65,5571.45,TE,1550,Xu,APGw505p312c20_48,no commment
+4811.65,5571.45,TE,1550,Xu,APGw505p312c18_49,no commment
+4731.65,5571.45,TE,1550,Xu,APGw505p312c16_50,no commment
+5451.65,6171.45,TE,1550,Xu,APGw495p318c20_51,no commment
+5371.65,6171.45,TE,1550,Xu,APGw495p318c18_52,no commment
+5291.65,6171.45,TE,1550,Xu,APGw495p318c16_53,no commment
+5211.65,6171.45,TE,1550,Xu,APGw495p318c14_54,no commment
+5131.65,6171.45,TE,1550,Xu,APGw495p312c28_55,no commment
+5051.65,6171.45,TE,1550,Xu,APGw495p312c24_56,no commment
+4971.65,6171.45,TE,1550,Xu,APGw495p312c22_57,no commment
+4891.65,6171.45,TE,1550,Xu,APGw495p312c20_58,no commment
+4811.65,6171.45,TE,1550,Xu,APGw495p312c18_59,no commment
+4731.65,6171.45,TE,1550,Xu,APGw495p312c16_60,no commment
+5373.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM2_61,no commment
+5373.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM2_62,no commment
+5453.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM2_63,no commment
+5453.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM2_64,no commment
+4733.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_65,no commment
+4733.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_66,no commment
+4813.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_67,no commment
+4813.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_68,no commment
+4893.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_69,no commment
+4893.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_70,no commment
+4973.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_71,no commment
+4973.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_72,no commment
+5053.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_73,no commment
+5053.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_74,no commment
+5133.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_75,no commment
+5133.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_76,no commment
+5213.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_77,no commment
+5213.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_78,no commment
+5293.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM2_79,no commment
+5293.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM2_80,no commment
+6013.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM2_81,no commment
+6013.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM2_82,no commment
+6093.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM2_83,no commment
+6093.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM2_84,no commment
+6173.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM2_85,no commment
+6173.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM2_86,no commment
+6253.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETMCal_87,no commment
+6253.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETMCal_88,no commment
+5533.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM2_89,no commment
+5533.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM2_90,no commment
+5613.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM2_91,no commment
+5613.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM2_92,no commment
+5693.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM2_93,no commment
+5693.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM2_94,no commment
+5773.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM2_95,no commment
+5773.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM2_96,no commment
+5853.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM2_97,no commment
+5853.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM2_98,no commment
+5933.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM2_99,no commment
+5933.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM2_100,no commment
+3800.15,6303.75,TE,1550,YieldRing,YieldRingR12g200L450_101,no commment
+3783.7,5901.1,TE,1550,YieldRing,YieldRingR12g200L450_102,no commment
+3902.65,5473.65,TE,1550,YieldRing,YieldRingR12g200L450_103,no commment
+4070.9,5630.0,TE,1550,Han,TEMShallow_104,P385N400D120_Z
+4086.2,4831.3,TE,1550,Han,TEMShallow_105,P380N800D80_Z
+4651.65,5571.45,TE,1550,Xu,APGw505p312c14_106,no commment
+4130.2,6297.35,TE,1550,YieldRing,YieldRingR12g200L450_108,no commment
+4124.6,5440.7,TE,1550,YieldRing,YieldRingR12g200L450_109,no commment
+4215.1,6167.7,TE,1550,Xu,Cal_110,no commment
+4215.1,5867.7,TE,1550,Xu,Cal_111,no commment
+4215.1,5567.7,TE,1550,Xu,Cal_112,no commment
+4333.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_113,no commment
+4333.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_114,no commment
+4413.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_115,no commment
+4413.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_116,no commment
+4493.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_117,no commment
+4493.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_118,no commment
+4573.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_119,no commment
+4573.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_120,no commment
+4653.65,5387.25,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_121,no commment
+4653.65,5260.25,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_122,no commment
+4651.65,5871.45,TE,1550,Xu,APGw500p312c14_123,no commment
+3991.3,4986.35,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_124,no commment
+3991.3,4859.35,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_125,no commment
+3984.95,5898.35,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_126,no commment
+3984.95,5771.35,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_127,no commment
+4226.35,5377.4,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_128,no commment
+4226.35,5250.4,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_129,no commment
+4556.7,5567.3,TE,1550,Xu,UGw500p318c120_130,no commment
+4476.7,5567.3,TE,1550,Xu,UGw500p318c110_131,no commment
+4396.7,5567.3,TE,1550,Xu,UGw500p318c100_132,no commment
+4316.7,5567.3,TE,1550,Xu,UGw500p318c90_133,no commment
+4556.7,5867.3,TE,1550,Xu,UGw500p318c80_134,no commment
+4476.7,5867.3,TE,1550,Xu,UGw500p318c70_135,no commment
+4396.7,5867.3,TE,1550,Xu,UGw500p318c60_136,no commment
+4316.7,5867.3,TE,1550,Xu,UGw500p318c50_137,no commment
+4556.7,6167.3,TE,1550,Xu,UGw500p318c40_138,no commment
+4476.7,6167.3,TE,1550,Xu,UGw500p318c30_139,no commment
+4396.7,6167.3,TE,1550,Xu,UGw500p318c20_140,no commment
+4316.7,6167.3,TE,1550,Xu,UGw500p318c10_141,no commment
+4651.65,6171.45,TE,1550,Xu,APGw495p312c14_144,no commment
+4630.7,4573.95,TE,1550,Han,TEMShallow_164,P375N200D120_Z
+4503.85,4573.95,TE,1550,Han,TEMShallow_166,P375N200D80_Z
+4385.5,4575.25,TE,1550,Han,TEMShallow_168,P375N200D40_Z
+4244.7,4097.95,TE,1550,Han,TEMShallow_169,P385N800D120_Z
+4103.55,4078.55,TE,1550,Han,TEMShallow_173,P385N800D80_Z
+3946.3,4088.7,TE,1550,Han,TEMShallow_174,P385N800D40_Z
+4622.625,4263.562,TE,1550,device,UBCcontraGratings2_175,gap280nmpitch312nmnumber500currugation120nm130nm
+4639.573,3383.229,TE,1550,device,UBCcontraGratings2_176,gap200nmpitch316nm
+3879.2,4672.3,TE,1550,YieldRing,YieldRingR12g200L450_170,no commment
+4048.75,6292.95,TE,1550,YieldRing,YieldRingR12g200L450_142,no commment
+3886.65,6289.35,TE,1550,YieldRing,YieldRingR12g200L450_143,no commment
+3479.75,3755.15,TE,1550,YieldRing,YieldRingR12g200L450_161,no commment
+3772.9,3744.2,TE,1550,YieldRing,YieldRingR12g200L450_162,no commment
+3241.45,4666.7,TE,1550,YieldRing,YieldRingR12g200L450_163,no commment
+3649.15,4675.3,TE,1550,YieldRing,YieldRingR12g200L450_165,no commment
+3498.95,4713.9,TE,1550,YieldRing,YieldRingR12g200L450_167,no commment
+4083.35,4600.85,TE,1550,YieldRing,YieldRingR12g200L450_171,no commment
+4171.8,4663.8,TE,1550,YieldRing,YieldRingR12g200L450_172,no commment
+3910.4,3329.75,TE,1550,YieldRing,YieldRingR12g200L450_177,no commment
+4556.9,3493.6,TE,1550,YieldRing,YieldRingR12g200L450_178,no commment
+4508.85,3653.9,TE,1550,YieldRing,YieldRingR12g200L450_179,no commment
+3569.35,3635.5,TE,1550,YieldRing,YieldRingR12g200L450_180,no commment
+4709.2,4126.05,TE,1550,YieldRing,YieldRingR12g200L450_187,no commment
+5066.4,3250.55,TE,1550,YieldRing,YieldRingR12g200L450_193,no commment
+5412.5,3211.45,TE,1550,YieldRing,YieldRingR12g200L450_194,no commment
+4893.1,3236.7,TE,1550,YieldRing,YieldRingR12g200L450_195,no commment
+4725.25,3228.2,TE,1550,YieldRing,YieldRingR12g200L450_196,no commment
+5929.55,3220.7,TE,1550,YieldRing,YieldRingR12g200L450_197,no commment
+5758.6,3226.9,TE,1550,YieldRing,YieldRingR12g200L450_198,no commment
+5922.05,4486.3,TE,1550,YieldRing,YieldRingR12g200L450_199,no commment
+5752.15,4552.65,TE,1550,YieldRing,YieldRingR12g200L450_200,no commment
+5569.3,4416.75,TE,1550,YieldRing,YieldRingR12g200L450_201,no commment
+5063.55,3543.4,TE,1550,YieldRing,YieldRingR12g200L450_202,no commment
+5582.35,3674.25,TE,1550,YieldRing,YieldRingR12g200L450_203,no commment
+5407.85,3661.8,TE,1550,YieldRing,YieldRingR12g200L450_204,no commment
+5566.0,4134.1,TE,1550,YieldRing,YieldRingR12g200L450_205,no commment
+5575.95,4582.15,TE,1550,YieldRing,YieldRingR12g200L450_206,no commment
+5054.8,3960.8,TE,1550,YieldRing,YieldRingR12g200L450_207,no commment
+5754.1,3676.0,TE,1550,YieldRing,YieldRingR12g200L450_208,no commment
+4270.65,4576.4,TE,1550,Han,TEMShallow_181,P380N200D80_Z
+4633.173,3814.825,TE,1550,device,UBCcontraGratings2_183,gap200nmpitch320nm
+4500.85,4132.35,TE,1550,Han,TEMShallow_184,P380N200D40_Z
+4391.35,4121.3,TE,1550,Han,TEMShallow_185,P380N200D0_Z
+5242.7,4573.15,TE,1550,Han,TEMShallow_186,P380N400D0_Z
+5121.75,4573.15,TE,1550,Han,TEMShallow_188,P380N200D120_Z
+5672.357,3369.457,TE,1550,device,UBCcontraGratings2_189,gap240nmpitch320nmnumber500
+6012.357,3369.457,TE,1550,device,UBCcontraGratings2_190,gap320nmpitch320nmnumber500
+5502.357,3369.457,TE,1550,device,UBCcontraGratings2_191,gap200nmpitch320nmnumber500
+6182.357,3369.457,TE,1550,device,UBCcontraGratings2_192,gap360nmpitch320nmnumber500
+5493.925,4698.191,TE,1550,device,UBCcontraGratings2_209,gap280nmpitch312nmnumber500currugation30nm40nm
+5833.925,4698.191,TE,1550,device,UBCcontraGratings2_210,gap280nmpitch312nmnumber500currugation70nm80nm
+5663.925,4698.191,TE,1550,device,UBCcontraGratings2_211,gap280nmpitch312nmnumber500currugation50nm60nm
+6003.925,4698.191,TE,1550,device,UBCcontraGratings2_212,gap280nmpitch312nmnumber500currugation90nm100nm
+6173.925,4698.191,TE,1550,device,UBCcontraGratings2_213,gap280nmpitch312nmnumber500currugation110nm120nm
+5302.625,4263.562,TE,1550,device,UBCcontraGratings2_214,gap280nmpitch312nmnumber500currugation160nm170nm
+5132.625,4263.562,TE,1550,device,UBCcontraGratings2_215,gap280nmpitch312nmnumber500currugation150nm160nm
+4792.625,4263.562,TE,1550,device,UBCcontraGratings2_216,gap280nmpitch312nmnumber500currugation130nm140nm
+5386.2,4138.4,TE,1550,YieldRing,YieldRingR12g200L450_217,no commment
+4962.625,4263.562,TE,1550,device,UBCcontraGratings2_218,gap280nmpitch312nmnumber500currugation140nm150nm
+4979.573,3383.229,TE,1550,device,UBCcontraGratings2_219,gap280nmpitch316nm
+5149.573,3383.229,TE,1550,device,UBCcontraGratings2_220,gap320nmpitch316nm
+5005.1,4573.95,TE,1550,Han,TEMShallow_222,P375N400D120_Z
+4809.573,3383.229,TE,1550,device,UBCcontraGratings2_223,gap240nmpitch316nm
+4877.2,4573.95,TE,1550,Han,TEMShallow_224,P375N400D80_Z
+5313.173,3814.825,TE,1550,device,UBCcontraGratings2_225,gap360nmpitch320nm
+4973.173,3814.825,TE,1550,device,UBCcontraGratings2_226,gap280nmpitch320nm
+4803.173,3814.825,TE,1550,device,UBCcontraGratings2_227,gap240nmpitch320nm
+5143.173,3814.825,TE,1550,device,UBCcontraGratings2_228,gap320nmpitch320nm
+5319.573,3383.229,TE,1550,device,UBCcontraGratings2_229,gap360nmpitch316nm
+5838.337,4261.446,TE,1550,device,UBCcontraGratings2_231,gap280nm
+6178.337,4261.446,TE,1550,device,UBCcontraGratings2_232,gap360nm
+5467.923,4259.602,TE,1550,device,UBCcontraGratings2_233,gap200nm
+6008.337,4261.446,TE,1550,device,UBCcontraGratings2_234,gap320nm
+5668.337,4261.446,TE,1550,device,UBCcontraGratings2_235,gap240nm
+4756.25,4573.95,TE,1550,Han,TEMShallow_237,P375N400D40_Z
+5370.6,4573.15,TE,1550,Han,TEMShallow_238,P380N400D40_Z
+5842.357,3369.457,TE,1550,device,UBCcontraGratings2_239,gap280nmpitch320nmnumber500
+5495.757,3813.514,TE,1550,device,UBCcontraGratings2_240,gap200nmpitch312nmnumber500
+5835.757,3813.514,TE,1550,device,UBCcontraGratings2_241,gap280nmpitch312nmnumber500
+6175.757,3813.514,TE,1550,device,UBCcontraGratings2_242,gap360nmpitch312nmnumber500
+5665.757,3813.514,TE,1550,device,UBCcontraGratings2_243,gap240nmpitch312nmnumber500
+6005.757,3813.514,TE,1550,device,UBCcontraGratings2_244,gap320nmpitch312nmnumber500
+922.7,5492.35,TE,1550,Han,TEMShallow_290,P385N400D40_Z
+814.65,5479.6,TE,1550,Han,TEMShallow_291,P385N200D120_Z
+578.65,5477.6,TE,1550,Han,TEMShallow_295,P385N200D40_Z
+691.95,5484.65,TE,1550,Han,TEMShallow_299,P385N200D80_Z
+5590.7,3231.0,TE,1550,YieldRing,YieldRingR12g200L450_221,no commment
+5922.3,3676.95,TE,1550,YieldRing,YieldRingR12g200L450_230,no commment
+5048.35,4129.65,TE,1550,YieldRing,YieldRingR12g200L450_236,no commment
+5401.9,3963.65,TE,1550,YieldRing,YieldRingR12g200L450_245,no commment
+5217.9,4113.4,TE,1550,YieldRing,YieldRingR12g200L450_246,no commment
+4876.95,4120.6,TE,1550,YieldRing,YieldRingR12g200L450_247,no commment
+2424.55,5525.9,TE,1550,YieldRing,YieldRingR12g200L450_274,no commment
+2584.75,5535.55,TE,1550,YieldRing,YieldRingR12g200L450_275,no commment
+2685.1,5558.75,TE,1550,YieldRing,YieldRingR12g200L450_276,no commment
+2572.3,6274.9,TE,1550,YieldRing,YieldRingR12g200L450_277,no commment
+1421.5,6087.25,TE,1550,YieldRing,YieldRingR12g200L450_292,no commment
+665.85,5230.7,TE,1550,YieldRing,YieldRingR12g200L450_293,no commment
+49.95,5212.2,TE,1550,YieldRing,YieldRingR12g200L450_294,no commment
+1164.4,5226.65,TE,1550,YieldRing,YieldRingR12g200L450_298,no commment
+1075.65,3626.9,TE,1550,YieldRing,YieldRingR12g200L450_306,no commment
+1417.55,3632.7,TE,1550,YieldRing,YieldRingR12g200L450_307,no commment
+825.05,4675.3,TE,1550,YieldRing,YieldRingR12g200L450_308,no commment
+653.35,4675.3,TE,1550,YieldRing,YieldRingR12g200L450_309,no commment
+546.05,4709.6,TE,1550,YieldRing,YieldRingR12g200L450_310,no commment
+168.35,4701.05,TE,1550,YieldRing,YieldRingR12g200L450_311,no commment
+61.05,4675.3,TE,1550,YieldRing,YieldRingR12g200L450_312,no commment
+650.157,3767.651,TE,1550,device,UBCcontraGratings2_313,gap200nmpitch316nmnumber500
+1160.157,3767.651,TE,1550,device,UBCcontraGratings2_314,gap320nmpitch316nmnumber500
+529.95,3642.7,TE,1550,YieldRing,YieldRingR12g200L450_327,no commment
+321.2,3751.45,TE,1550,YieldRing,YieldRingR12g200L450_328,no commment
+238.7,3765.2,TE,1550,YieldRing,YieldRingR12g200L450_329,no commment
+1504.15,3647.0,TE,1550,Han,TEMShallow_330,P385N400D80_Z
+901.8,3626.9,TE,1550,YieldRing,YieldRingR12g200L450_333,no commment
+990.157,3767.651,TE,1550,device,UBCcontraGratings2_334,gap280nmpitch316nmnumber500
+820.157,3767.651,TE,1550,device,UBCcontraGratings2_335,gap240nmpitch316nmnumber500
+1330.157,3767.651,TE,1550,device,UBCcontraGratings2_336,gap360nmpitch316nmnumber500
+2790.75,4683.85,TE,1550,YieldRing,YieldRingR12g200L450_337,no commment
+1621.3,3726.65,TE,1550,YieldRing,YieldRingR12g200L450_351,no commment
+2265.9,4676.1,TE,1550,YieldRing,YieldRingR12g200L450_352,no commment
+2500.0,4678.3,TE,1550,YieldRing,YieldRingR12g200L450_353,no commment
+2670.7,4678.3,TE,1550,YieldRing,YieldRingR12g200L450_355,no commment
+2057.05,1959.1,TE,1550,YieldRing,YieldRingR12g200L450_357,no commment
+2258.95,1959.1,TE,1550,YieldRing,YieldRingR12g200L450_358,no commment
+2512.4,1959.1,TE,1550,YieldRing,YieldRingR12g200L450_359,no commment
+2731.5,1959.1,TE,1550,YieldRing,YieldRingR12g200L450_360,no commment
+2963.5,1959.1,TE,1550,YieldRing,YieldRingR12g200L450_361,no commment
+1739.15,3097.55,TE,1550,YieldRing,YieldRingR12g200L450_362,no commment
+2005.5,3097.55,TE,1550,YieldRing,YieldRingR12g200L450_363,no commment
+2495.25,3093.25,TE,1550,YieldRing,YieldRingR12g200L450_364,no commment
+2319.1,3093.25,TE,1550,YieldRing,YieldRingR12g200L450_365,no commment
+2697.15,3093.25,TE,1550,YieldRing,YieldRingR12g200L450_366,no commment
+3019.35,3093.25,TE,1550,YieldRing,YieldRingR12g200L450_367,no commment
+1627.45,1954.8,TE,1550,YieldRing,YieldRingR12g200L450_368,no commment
+1825.05,1954.8,TE,1550,YieldRing,YieldRingR12g200L450_369,no commment
+1584.5,3097.55,TE,1550,YieldRing,YieldRingR12g200L450_380,no commment
+57.5,3086.0,TE,1550,YieldRing,YieldRingR12g200L450_382,no commment
+1331.0,1976.3,TE,1550,YieldRing,YieldRingR12g200L450_383,no commment
+884.25,3097.55,TE,1550,YieldRing,YieldRingR12g200L450_384,no commment
+158.4,1971.0,TE,1550,YieldRing,YieldRingR12g200L450_387,no commment
+62.5,1913.7,TE,1550,YieldRing,YieldRingR12g200L450_388,no commment
+243.3,2549.15,TE,1550,YieldRing,YieldRingR12g200L450_389,no commment
+163.3,2546.6,TE,1550,YieldRing,YieldRingR12g200L450_390,no commment
+67.8,2482.05,TE,1550,YieldRing,YieldRingR12g200L450_391,no commment
+183.95,3114.4,TE,1550,YieldRing,YieldRingR12g200L450_392,no commment
+1073.25,3097.55,TE,1550,YieldRing,YieldRingR12g200L450_393,no commment
+1331.0,3097.55,TE,1550,YieldRing,YieldRingR12g200L450_394,no commment
+746.75,3088.95,TE,1550,YieldRing,YieldRingR12g200L450_395,no commment
+639.35,1967.7,TE,1550,YieldRing,YieldRingR12g200L450_396,no commment
+875.65,1972.0,TE,1550,YieldRing,YieldRingR12g200L450_397,no commment
+1103.35,1976.3,TE,1550,YieldRing,YieldRingR12g200L450_398,no commment
+434.9,612.8,TE,1550,Han,TEMShallow_415,P380N800D120_Z
+435.85,182.5,TE,1550,Han,TEMShallow_419,P380N800D40_Z
+893.35,176.3,TE,1550,Han,TEMShallow_420,P380N800D0_Z
+740.45,176.8,TE,1550,Han,TEMShallow_421,P380N400D120_Z
+589.1,176.3,TE,1550,Han,TEMShallow_422,P380N400D80_Z
+893.9,612.95,TE,1550,Han,TEMShallow_431,P375N800D120_Z
+741.0,613.45,TE,1550,Han,TEMShallow_432,P375N800D80_Z
+589.65,612.95,TE,1550,Han,TEMShallow_433,P375N800D40_Z
+1179.75,1413.75,TE,1550,YieldRing,YieldRingR12g200L450_434,no commment
+1041.25,986.2,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_441,no commment
+1041.25,859.2,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_442,no commment
+345.55,602.65,TE,1550,YieldRing,YieldRingR12g200L450_447,no commment
+1347.45,969.45,TE,1550,YieldRing,YieldRingR12g200L450_448,no commment
+1257.45,960.95,TE,1550,YieldRing,YieldRingR12g200L450_449,no commment
+1136.7,965.2,TE,1550,YieldRing,YieldRingR12g200L450_450,no commment
+2828.8,447.2,TE,1550,YieldRing,YieldRingR12g200L450_468,no commment
+2487.2,1399.7,TE,1550,YieldRing,YieldRingR12g200L450_469,no commment
+2391.75,1399.7,TE,1550,YieldRing,YieldRingR12g200L450_470,no commment
+2919.5,419.75,TE,1550,YieldRing,YieldRingR12g200L450_478,no commment
+2734.7,393.35,TE,1550,YieldRing,YieldRingR12g200L450_479,no commment
+2600.3,468.95,TE,1550,YieldRing,YieldRingR12g200L450_490,no commment
+3083.1,412.7,TE,1550,YieldRing,YieldRingR12g200L450_491,no commment
+3009.35,466.05,TE,1550,YieldRing,YieldRingR12g200L450_492,no commment
+5325.737,2033.142,TE,1550,device,UBCcontraGratings2_505,gap360nmpitch320nmnumber1000
+4815.737,2033.142,TE,1550,device,UBCcontraGratings2_506,gap240nmpitch320nmnumber1000
+4985.737,2033.142,TE,1550,device,UBCcontraGratings2_507,gap280nmpitch320nmnumber1000
+5155.737,2033.142,TE,1550,device,UBCcontraGratings2_508,gap320nmpitch320nmnumber1000
+6176.588,1997.997,TE,1550,device,UBCcontraGratings2_509,gap360nmpitch320nmnumber2000
+5496.588,1997.997,TE,1550,device,UBCcontraGratings2_510,gap200nmpitch320nmnumber2000
+6006.588,1997.997,TE,1550,device,UBCcontraGratings2_511,gap320nmpitch320nmnumber2000
+5666.588,1997.997,TE,1550,device,UBCcontraGratings2_512,gap240nmpitch320nmnumber2000
+5836.588,1997.997,TE,1550,device,UBCcontraGratings2_513,gap280nmpitch320nmnumber2000
+6028.4,2795.1,TE,1550,YieldRing,YieldRingR12g200L450_514,no commment
+5931.35,2803.85,TE,1550,YieldRing,YieldRingR12g200L450_515,no commment
+6253.4,2885.8,TE,1550,YieldRing,YieldRingR12g200L450_516,no commment
+6138.75,2774.2,TE,1550,YieldRing,YieldRingR12g200L450_517,no commment
+5825.0,2762.15,TE,1550,YieldRing,YieldRingR12g200L450_518,no commment
+5613.8,2759.1,TE,1550,YieldRing,YieldRingR12g200L450_519,no commment
+4885.75,2458.25,TE,1550,YieldRing,YieldRingR12g200L450_520,no commment
+5432.9,2455.25,TE,1550,YieldRing,YieldRingR12g200L450_521,no commment
+5058.15,2495.75,TE,1550,YieldRing,YieldRingR12g200L450_522,no commment
+5411.65,1909.35,TE,1550,YieldRing,YieldRingR12g200L450_523,no commment
+5704.1,2796.85,TE,1550,YieldRing,YieldRingR12g200L450_524,no commment
+5290.15,2460.5,TE,1550,YieldRing,YieldRingR12g200L450_525,no commment
+5146.1,2472.5,TE,1550,YieldRing,YieldRingR12g200L450_526,no commment
+3732.3,3085.75,TE,1550,YieldRing,YieldRingR12g200L450_527,no commment
+3821.35,3135.6,TE,1550,YieldRing,YieldRingR12g200L450_528,no commment
+3247.05,3093.25,TE,1550,YieldRing,YieldRingR12g200L450_529,no commment
+3453.25,3093.25,TE,1550,YieldRing,YieldRingR12g200L450_530,no commment
+3238.45,2551.95,TE,1550,YieldRing,YieldRingR12g200L450_531,no commment
+3483.3,2551.95,TE,1550,YieldRing,YieldRingR12g200L450_532,no commment
+3762.55,2534.75,TE,1550,YieldRing,YieldRingR12g200L450_533,no commment
+3229.85,1989.2,TE,1550,YieldRing,YieldRingR12g200L450_534,no commment
+3393.1,1989.2,TE,1550,YieldRing,YieldRingR12g200L450_535,no commment
+3903.1,2292.1,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_536,no commment
+3903.1,2165.1,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_537,no commment
+3517.7,1989.2,TE,1550,YieldRing,YieldRingR12g200L450_538,no commment
+3706.7,1980.6,TE,1550,YieldRing,YieldRingR12g200L450_539,no commment
+4645.737,2033.142,TE,1550,device,UBCcontraGratings2_540,gap200nmpitch320nmnumber1000
+3630.85,3134.7,TE,1550,YieldRing,YieldRingR12g200L450_541,no commment
+3795.85,1022.35,TE,1550,YieldRing,YieldRingR12g200L450_542,no commment
+3697.65,1022.35,TE,1550,YieldRing,YieldRingR12g200L450_543,no commment
+3876.7,1430.2,TE,1550,YieldRing,YieldRingR12g200L450_544,no commment
+3788.7,1372.0,TE,1550,YieldRing,YieldRingR12g200L450_545,no commment
+3703.65,1439.15,TE,1550,YieldRing,YieldRingR12g200L450_582,no commment
+3989.25,1017.85,TE,1550,YieldRing,YieldRingR12g200L450_583,no commment
+4645.737,965.212,TE,1550,device,UBCcontraGratings2_585,gap200nmpitch312nmnumber1000
+4239.1,1022.9,TE,1550,YieldRing,YieldRingR12g200L450_586,no commment
+4456.0,1013.1,TE,1550,YieldRing,YieldRingR12g200L450_587,no commment
+4553.85,1018.0,TE,1550,YieldRing,YieldRingR12g200L450_588,no commment
+4553.85,1192.5,TE,1550,YieldRing,YieldRingR12g200L450_589,no commment
+3379.85,393.85,TE,1550,YieldRing,YieldRingR12g200L450_590,no commment
+3188.3,448.8,TE,1550,YieldRing,YieldRingR12g200L450_591,no commment
+4607.2,453.1,TE,1550,YieldRing,YieldRingR12g200L450_592,no commment
+3287.9,419.75,TE,1550,YieldRing,YieldRingR12g200L450_593,no commment
+4645.737,1497.951,TE,1550,device,UBCcontraGratings2_594,gap200nmpitch316nmnumber1000
+3897.1,1020.85,TE,1550,YieldRing,YieldRingR12g200L450_595,no commment
+5242.45,797.2,TE,1550,YieldRing,YieldRingR12g200L450_596,no commment
+5325.737,1497.951,TE,1550,device,UBCcontraGratings2_597,gap360nmpitch316nmnumber1000
+5836.588,1139.457,TE,1550,device,UBCcontraGratings2_598,gap280nmpitch316nmnumber2000
+4985.737,1497.951,TE,1550,device,UBCcontraGratings2_599,gap280nmpitch316nmnumber1000
+5496.588,287.362,TE,1550,device,UBCcontraGratings2_600,gap200nmpitch312nmnumber2000
+6006.588,1139.457,TE,1550,device,UBCcontraGratings2_601,gap320nmpitch316nmnumber2000
+5666.588,1139.457,TE,1550,device,UBCcontraGratings2_602,gap240nmpitch316nmnumber2000
+5155.737,1497.951,TE,1550,device,UBCcontraGratings2_603,gap320nmpitch316nmnumber1000
+5449.75,820.25,TE,1550,YieldRing,YieldRingR12g200L450_604,no commment
+4731.65,823.9,TE,1550,YieldRing,YieldRingR12g200L450_605,no commment
+5073.05,780.95,TE,1550,badLabel,badlabel_TE1550_Xu_TETM1_606,no commment
+5073.05,653.95,TE,1550,badLabel,badlabel_TM1550_Xu_TETM1_607,no commment
+4906.15,827.15,TE,1550,YieldRing,YieldRingR12g200L450_608,no commment
+5325.737,965.212,TE,1550,device,UBCcontraGratings2_609,gap360nmpitch312nmnumber1000
+4985.737,965.212,TE,1550,device,UBCcontraGratings2_610,gap280nmpitch312nmnumber1000
+5155.737,965.212,TE,1550,device,UBCcontraGratings2_611,gap320nmpitch312nmnumber1000
+4815.737,1497.951,TE,1550,device,UBCcontraGratings2_612,gap240nmpitch316nmnumber1000
+6176.588,1139.457,TE,1550,device,UBCcontraGratings2_613,gap360nmpitch316nmnumber2000
+5645.1,1548.85,TE,1550,YieldRing,YieldRingR12g200L450_614,no commment
+5585.05,1017.6,TE,1550,YieldRing,YieldRingR12g200L450_615,no commment
+5819.05,804.4,TE,1550,YieldRing,YieldRingR12g200L450_616,no commment
+6156.8,587.45,TE,1550,YieldRing,YieldRingR12g200L450_617,no commment
+5579.55,164.9,TE,1550,YieldRing,YieldRingR12g200L450_618,no commment
+5216.6,200.7,TE,1550,YieldRing,YieldRingR12g200L450_619,no commment
+4896.3,426.95,TE,1550,YieldRing,YieldRingR12g200L450_620,no commment
+4705.65,419.5,TE,1550,YieldRing,YieldRingR12g200L450_621,no commment
+5755.75,1014.55,TE,1550,YieldRing,YieldRingR12g200L450_627,no commment
+5666.588,287.362,TE,1550,device,UBCcontraGratings2_622,gap240nmpitch312nmnumber2000
+5836.588,287.362,TE,1550,device,UBCcontraGratings2_623,gap280nmpitch312nmnumber2000
+6176.588,287.362,TE,1550,device,UBCcontraGratings2_624,gap360nmpitch312nmnumber2000
+5496.588,1139.457,TE,1550,device,UBCcontraGratings2_625,gap200nmpitch316nmnumber2000
+6006.588,287.362,TE,1550,device,UBCcontraGratings2_626,gap320nmpitch312nmnumber2000
+3991.158,1417.351,TE,1550,TESpiralBG,IMECuniform02_P316_R15_Gap2_Corr20_N1582_Length500_628,no commment
+4391.963,1796.707,TE,1550,TESpiralWG,ImecTEDev3_R15_Length3000_Gap2_Width0_5_629,no commment
+4124.939,1112.162,TE,1550,TESpiralBG,IMECuniform03_P316_R15_Gap2_Corr40_N1582_Length500_630,no commment
+3867.199,1613.399,TE,1550,TESpiralBG,IMECuniform01_P316_R15_Gap2_Corr10_N1582_Length500_631,no commment
+4109.315,1650.381,TE,1550,TESpiralBG,IMECuniform04_P316_R15_Gap2_Corr10_N3165_Length1000_632,no commment
+4302.387,1562.579,TE,1550,TESpiralBG,IMECuniform07_P316_R15_Gap2_Corr10_N9494_Length3000_633,no commment
+5312.993,161.471,TE,1550,FrqDiscr,WBG1dev1_310nm_160pts_noSlab_P2nm_634,no commment
+4415.912,1311.575,TE,1550,TESpiralBG,IMECuniform08_P316_R15_Gap2_Corr20_N9494_Length3000_635,no commment
+4197.595,1342.819,TE,1550,TESpiralBG,IMECuniform05_P316_R15_Gap2_Corr20_N3165_Length1000_636,no commment
+4318.819,1092.438,TE,1550,TESpiralBG,IMECuniform06_P316_R15_Gap2_Corr40_N3165_Length1000_637,no commment
+3989.999,1882.149,TE,1550,TESpiralWG,ImecTEDev1_R15_Length500_Gap2_Width0_5_638,no commment
+3018.623,832.36,TE,1550,FrqDiscr,WBG2dev2_310nm_200pts_noSlab_P2nm_639,no commment
+3202.591,833.223,TE,1550,FrqDiscr,WBG2dev3_314nm_4516pts_noSlab_P2nm_640,no commment
+2598.968,840.456,TE,1550,TESpiralBG,IMECuniform09_P316_R15_Gap2_Corr40_N9494_Length3000_641,no commment
+2835.98,832.019,TE,1550,FrqDiscr,WBG2dev1_310nm_160pts_noSlab_P2nm_642,no commment
+5179.147,535.126,TE,1550,FrqDiscr,WBG1dev2_310nm_200pts_noSlab_P2nm_643,no commment
+4187.035,1882.765,TE,1550,TESpiralWG,ImecTEDev2_R15_Length1000_Gap2_Width0_5_644,no commment
+5361.634,534.37,TE,1550,FrqDiscr,WBG1dev3_310nm_4516pts_noSlab_P2nm_645,no commment
+987.151,5218.637,TM,1550,TMSpiralWG,ImecTMDev6_R15_Length500_Gap1_Width0_5_646,no commment
+1697.1,5261.673,TM,1550,TMSpiralBG,IMECuniform21_P440_R15_Gap1_Corr40_N1136_Length500_647,no commment
+505.15,5227.7,TE,1550,ybranchZhitian,TElossDev1_648,no commment
+1053.101,5445.195,TM,1550,TMSpiralWG,ImecTMDev7_R15_Length500_Gap3_Width0_5_649,no commment
+751.95,5215.421,TM,1550,TMSpiralBG,IMECuniform16_P440_R15_Gap2_Corr100_N1136_Length500_650,no commment
+644.75,6040.9,TE,1550,ZhitianDiscr,Dev2_WBG1P310_pts200_WBG2P310_pts200_651,no commment
+1563.326,5495.691,TE,1550,TESpiralBG,IMECuniform22_P316_R15_Gap3_Corr10_N1582_Length500_652,no commment
+1251.45,5238.009,TM,1550,TMSpiralWG,ImecTMDev8_R15_Length1000_Gap1_Width0_5_653,no commment
+1211.436,4578.063,TE,1550,ZhitianStraightDiscr,Dev2_WBG1P310_pts200_WBG2P310_pts200_654,no commment
+1890.801,5263.89,TM,1550,TMSpiralBG,IMECuniform22_P440_R15_Gap3_Corr40_N1136_Length500_655,no commment
+1327.2,5461.164,TM,1550,TMSpiralWG,ImecTMDev9_R15_Length1000_Gap3_Width0_5_656,no commment
+861.9,6035.15,TE,1550,ZhitianDiscr,Dev3_WBG1P310_pts4516_WBG2P314_pts4516_657,no commment
+423.95,6046.1,TE,1550,ZhitianDiscr,Dev1_WBG1P310_pts160_WBG2P310_pts160_658,no commment
+1404.25,5721.981,TM,1550,TMSpiralBG,IMECuniform18_P440_R15_Gap2_Corr100_N6818_Length3000_659,no commment
+1656.801,5721.995,TE,1550,TESpiralWG,ImecTEDev7_R15_Length500_Gap3_Width0_5_660,no commment
+1860.0,5719.909,TE,1550,TESpiralWG,ImecTEDev8_R15_Length1000_Gap1_Width0_5_661,no commment
+1773.855,5502.905,TE,1550,TESpiralBG,IMECuniform23_P316_R15_Gap1_Corr10_N3165_Length1000_662,no commment
+1480.57,5239.517,TM,1550,TMSpiralBG,IMECuniform24_P440_R15_Gap3_Corr40_N2273_Length1000_663,no commment
+265.301,5366.393,TM,1550,TMSpiralBG,IMECuniform17_P440_R15_Gap2_Corr100_N2273_Length1000_664,no commment
+393.651,5605.832,TE,1550,TESpiralBG,IMECuniform16_P316_R15_Gap2_Corr80_N1582_Length500_665,no commment
+3710.601,5659.155,TM,1550,TMSpiralBG,IMECuniform19_P440_R15_Gap2_Corr100_N13636_Length6000_666,no commment
+3398.46,5696.486,TE,1550,TESpiralBG,IMECuniform20_P316_R15_Gap2_Corr80_N31646_Length10000_667,no commment
+2403.7,5721.8,TE,1550,ybranchZhitian,TElossDev2_668,no commment
+2269.25,5720.25,TM,1550,ybranchZhitian,TMlossDev2_669,no commment
+2198.025,5482.768,TE,1550,TESpiralBG,IMECuniform21_P316_R15_Gap1_Corr10_N1582_Length500_670,no commment
+6103.8,3011.327,TM,1550,TMSpiralWG,ImecTMDev3_R15_Length3000_Gap2_Width0_5_671,no commment
+2545.6,5699.482,TM,1550,TMSpiralBG,IMECuniform20_P440_R15_Gap2_Corr100_N22727_Length10000_672,no commment
+1983.756,5487.193,TE,1550,TESpiralBG,IMECuniform24_P316_R15_Gap3_Corr10_N3165_Length1000_673,no commment
+2309.651,5264.137,TE,1550,TESpiralWG,ImecTEDev6_R15_Length500_Gap1_Width0_5_674,no commment
+2872.53,5687.457,TE,1550,TESpiralBG,IMECuniform18_P316_R15_Gap2_Corr80_N9494_Length3000_675,no commment
+5812.625,2937.21,TM,1550,TMSpiralWG,ImecTMDev4_R15_Length6000_Gap2_Width0_5_676,no commment
+3909.645,2935.353,TM,1550,TMSpiralBG,IMECuniform01_P440_R15_Gap2_Corr20_N1136_Length500_677,no commment
+4216.207,2662.114,TM,1550,TMSpiralBG,IMECuniform05_P440_R15_Gap2_Corr40_N2273_Length1000_678,no commment
+5503.462,2932.346,TM,1550,TMSpiralWG,ImecTMDev5_R15_Length10000_Gap2_Width0_5_679,no commment
+2057.95,5719.714,TE,1550,TESpiralWG,ImecTEDev9_R15_Length1000_Gap3_Width0_5_680,no commment
+4336.55,2105.205,TE,1550,TESpiralBG,IMECuniform15_P316_R15_Gap2_Corr40_N31646_Length10000_681,no commment
+3115.97,5690.834,TE,1550,TESpiralBG,IMECuniform19_P316_R15_Gap2_Corr80_N18987_Length6000_682,no commment
+4021.982,2665.103,TM,1550,TMSpiralBG,IMECuniform02_P440_R15_Gap2_Corr40_N1136_Length500_683,no commment
+4537.847,2939.58,TM,1550,TMSpiralBG,IMECuniform10_P440_R15_Gap2_Corr20_N13636_Length6000_684,no commment
+4105.754,2932.746,TM,1550,TMSpiralBG,IMECuniform04_P440_R15_Gap2_Corr20_N2273_Length1000_685,no commment
+4145.333,2414.168,TM,1550,TMSpiralBG,IMECuniform06_P440_R15_Gap2_Corr60_N2273_Length1000_686,no commment
+4807.728,2943.706,TM,1550,TMSpiralBG,IMECuniform13_P440_R15_Gap2_Corr20_N22727_Length10000_687,no commment
+4061.85,2140.961,TE,1550,TESpiralBG,IMECuniform12_P316_R15_Gap2_Corr40_N18987_Length6000_688,no commment
+5119.049,2938.757,TM,1550,TMSpiralWG,ImecTMDev1_R15_Length500_Gap2_Width0_5_689,no commment
+4921.439,2669.578,TM,1550,TMSpiralBG,IMECuniform14_P440_R15_Gap2_Corr40_N22727_Length10000_690,no commment
+5310.346,2937.119,TM,1550,TMSpiralWG,ImecTMDev2_R15_Length1000_Gap2_Width0_5_691,no commment
+4652.258,2668.895,TM,1550,TMSpiralBG,IMECuniform11_P440_R15_Gap2_Corr40_N13636_Length6000_692,no commment
+4339.217,2417.766,TM,1550,TMSpiralBG,IMECuniform09_P440_R15_Gap2_Corr60_N6818_Length3000_693,no commment
+4304.926,2938.681,TM,1550,TMSpiralBG,IMECuniform07_P440_R15_Gap2_Corr20_N6818_Length3000_694,no commment
+4325.986,3801.863,TE,1550,TESpiralWG,ImecTEDev5_R15_Length10000_Gap2_Width0_5_695,no commment
+3997.619,3816.593,TE,1550,TESpiralWG,ImecTEDev4_R15_Length6000_Gap2_Width0_5_696,no commment
+3993.578,3244.413,TE,1550,TESpiralBG,IMECuniform11_P316_R15_Gap2_Corr20_N18987_Length6000_697,no commment
+2109.07,5258.316,TM,1550,TMSpiralBG,IMECuniform23_P440_R15_Gap1_Corr40_N2273_Length1000_698,no commment
+4201.423,3529.206,TE,1550,TESpiralBG,IMECuniform13_P316_R15_Gap2_Corr10_N31646_Length10000_699,no commment
+2490.9,5217.45,TM,1550,ybranchZhitian,TMlossDev1_700,no commment
+4575.231,2416.699,TM,1550,TMSpiralBG,IMECuniform12_P440_R15_Gap2_Corr60_N13636_Length6000_701,no commment
+5233.757,2633.14,TM,1550,TMSpiralBG,IMECuniform15_P440_R15_Gap2_Corr60_N22727_Length10000_702,no commment
+4418.709,2666.931,TM,1550,TMSpiralBG,IMECuniform08_P440_R15_Gap2_Corr40_N6818_Length3000_703,no commment
+3955.373,2450.691,TM,1550,TMSpiralBG,IMECuniform03_P440_R15_Gap2_Corr60_N1136_Length500_704,no commment
+4268.902,3244.111,TE,1550,TESpiralBG,IMECuniform14_P316_R15_Gap2_Corr20_N31646_Length10000_705,no commment
+3925.711,3530.441,TE,1550,TESpiralBG,IMECuniform10_P316_R15_Gap2_Corr10_N18987_Length6000_706,no commment
+1842.187,4571.794,TE,1550,ZhitianStraightDiscr,Dev1_WBG1P310_pts160_WBG2P310_pts160_707,no commment
+2620.941,5215.195,TE,1550,TESpiralBG,IMECuniform17_P316_R15_Gap2_Corr80_N3165_Length1000_708,no commment
