@@ -10,6 +10,12 @@ active_timers = obj.manageTimer('pause');
 
 opticalStage = obj.instr.opticalStage;
 
+
+% disable active feedback for optical stage
+    [a,b] = obj.instr.opticalStage.set_closed_loop(0);
+    obj.msg('Optical stage active feedback disabled.');
+    obj.msg(strcat('response from Corvus: ',num2str(a),',',num2str(b)));
+
 %Save the intial value : revert back at the end.
 initial_vel = obj.instr.opticalStage.getParam('Velocity'); % for resetting to initial value
 initial_accel = obj.instr.opticalStage.getParam('Acceleration'); % for resetting to initial value
@@ -333,6 +339,10 @@ obj.instr.laser.off();
 
 obj.instr.detector.setPWMPowerUnit(powerUnit);
 obj.manageTimer('resume', active_timers);
+
+    [a,b] = obj.instr.opticalStage.set_closed_loop(1);
+    obj.msg('Optical stage active feedback enabled.');
+    obj.msg(strcat('response from Corvus: ',num2str(a),',',num2str(b)));
 
 delete(waitbar_handle);
 

@@ -1,0 +1,9 @@
+%<X-coord>,<Y-coord>,<polarization>,<wavelength>,<type>,<deviceID>,<comment>
+440,393,TE,1550,alignTE,AlignwRingTB,TE1550_220_150_20d_oxide
+440,1670,TE,1550,alignTE,AlignwRingTL,TE1550_220_150_20d_oxide
+5838,1670,TE,1550,alignTE,AlignwRingTR,TE1550_220_150_20d_oxide
+5838,393,TE,1550,alignTE,AlignwRingBR,TE1550_220_150_20d_oxide
+646,1423,TE,1550,yield,RingYield1,TE1550_220_150_20d_oxide
+1640,1315,TE,1550,yield,RingYield2,TE1550_220_150_20d_oxide
+
+

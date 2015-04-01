@@ -212,9 +212,9 @@ end
     function path_select_cb(hObject, eventdata)
         dirName = uigetdir(obj.AppSettings.path.testData, 'Select Test Data Path');
         if dirName ~= 0
-            set(obj.gui.panel(thisPanel).pathDir, 'String', dirName);
+            set(obj.gui.panel(thisPanel).pathDir, 'String', [dirName, '\']);
             % Update current user setting
-            obj.AppSettings.path.testData = dirName;
+            obj.AppSettings.path.testData = [dirName, '\'];
         end
     end
 

@@ -233,22 +233,22 @@ classdef CorvusEco < InstrClass & CoordSysClass
         %% Closed loop configuration commands
         function [a1, a2] = set_closed_loop(self, enable)
            %enables the closed loop control for axis 1 and 2; 
-           %if enable=1: enable closed loop if enable=0: disable
+           %if enable=1: enable closed loop if enable=0: disabled
            % returns setting in stage controller for axis 1 and 2; s
            if self.Connected
                self.Busy = 1;
-               
+
                %[indx][axis] setcloop
-               send_command(strcat(num2str(enable),' 1 setcloop')); %change axis 1
-               send_command(strcat(num2str(enable),' 2 setcloop')); %change axis 2
+               self.send_command(strcat(num2str(enable),' 1 setcloop')); %change axis 1
+               self.send_command(strcat(num2str(enable),' 2 setcloop')); %change axis 2
                %Read settings back 
-               send_command(' 1 getcloop');
+               self.send_command(' 1 getcloop');
                self.wait_for_command();
                a1 = str2num(self.read_response());
                
-               send_command(' 2 setcloop');
+               self.send_command(' 2 getcloop');
                self.wait_for_command();
-               a2 = str2num(self.read_response());             
+               a2 = str2num(self.read_response()) ;           
               
                self.Busy = 0;
                

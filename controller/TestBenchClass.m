@@ -373,6 +373,17 @@ classdef TestBenchClass < handle
                 self.instr.(instrNames{i}) = self.instrDefaults.(instrNames{i}){1};
             end
         end
+        
+        function checkPathInfo(self)
+            pathNames = fieldnames(self.AppSettings.path);
+            for n = 1:length(pathNames)
+                thisPath = self.AppSettings.path.(pathNames{n});
+                if ~strcmpi(thisPath(end), '\')
+                    thisPath = [thisPath, '\'];
+                    self.AppSettings.path.(pathNames{n}) = thisPath;
+                end
+            end
+        end
     end
     
     methods (Static, Access = private)

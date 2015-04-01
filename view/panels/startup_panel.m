@@ -230,6 +230,7 @@ set(obj.gui.panelFrame(thisPanel), 'Visible', 'on');
         emailAddress = get(hObject, 'String');
         if ~isempty(strfind(emailAddress, '@'))
             obj.AppSettings.infoParams.Email = emailAddress;
+            set(obj.gui.nextButton, 'Enable', 'on');
         end
     end
 

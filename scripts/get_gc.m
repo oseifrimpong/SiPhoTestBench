@@ -6,9 +6,23 @@ os = obj.instr.opticalStage.getProp('Overshoot');
 axes(hmap); %make active
 
 dataObjs = get(hmap, 'Children'); %handles to low-level graphics 
-xdata = get(dataObjs, 'XData'); %data from low-level grahics objects
-ydata = get(dataObjs, 'YData');
-zdata = get(dataObjs, 'ZData');
+t = get(dataObjs, 'Type'); 
+if iscell(t)
+    for ii=1:length(t)
+        if strcmp(t{ii},'surface')
+            idx = ii;
+        end
+    end
+    xdata = get(dataObjs(idx), 'XData'); %data from low-level grahics objects
+    ydata = get(dataObjs(idx), 'YData');
+    zdata = get(dataObjs(idx), 'ZData');
+else
+    xdata = get(dataObjs, 'XData'); %data from low-level grahics objects
+    ydata = get(dataObjs, 'YData');
+    zdata = get(dataObjs, 'ZData');
+end
+
+
 
 
 %get the offset from the graph
