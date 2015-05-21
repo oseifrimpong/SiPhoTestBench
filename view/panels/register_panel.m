@@ -65,7 +65,7 @@ if (obj.instr.opticalStage.Connected)
         obj.gui.panel(thisPanel).heatMapDisp);
     % Coordinates ui
     ui_position(2) = ui_position(2) + ui_position(4);
-    ui_position(4) = 0.28;
+    ui_position(4) = 0.15;
     obj = coordinates_ui(...
         obj, ...
         'register', ...
@@ -80,6 +80,18 @@ if (obj.instr.opticalStage.Connected)
         obj.gui.panelFrame(thisPanel), ...
         ui_position);
 end
+
+% Edge coupled fiber stage ui
+if (obj.instr.fiberStage.Connected)
+    ui_position(2) = ui_position(2) + ui_position(4);
+    ui_position(4) = 0.18;
+    obj = edge_coupled_stage_ui(...
+        obj, ....
+        'register', ...
+        obj.gui.panelFrame(thisPanel), ...
+        ui_position);
+end
+
 
 % Laser ui
 if (obj.instr.laser.Connected)

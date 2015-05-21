@@ -139,7 +139,7 @@ for i = 1:length(deviceName)
 end
 
 % GDS table loop
-for i = 1:7
+for i = 1:3
     % position coordinates
     x_table_coord = 0.05;
     y_table_coord = 0.7 - (0.11*(i-1));

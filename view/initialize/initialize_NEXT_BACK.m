@@ -57,25 +57,27 @@ switch currentPanelName
         obj = instrument_panel(obj);
     case 'Instr'
         %  Generate/Refresh the next panel --- Mount
-        obj = mount_align_panel(obj);
+        obj = register_panel(obj);
+% shon 21 May 2015
+%        obj = mount_align_panel(obj);
     case 'Mount'
         %  Generate/Refresh the next panel --- Chip Registration
         obj = register_panel(obj);
-        try
-            obj.instr.camera.close();
-        end
+%         try
+%             obj.instr.camera.close();
+%         end
     case 'Register'
         %  Generate/Refresh the next panel --- Select Devices
         obj = devices_panel(obj);
-        try
-            obj.instr.camera.close();
-        end
+%         try
+%             obj.instr.camera.close();
+%         end
     case 'Devices'
         %  Generate/Refresh the next panel --- Run Assay
         obj = test_panel(obj);
-    case 'Test'
-        %  Generate/Refresh the next panel --- Analyze data
-        obj = analyze_panel(obj);
+%     case 'Test'
+%         %  Generate/Refresh the next panel --- Analyze data
+%         obj = analyze_panel(obj);
 end
 % If current panel is not yet the last panel (Analysis), make the
 % next panel visible
@@ -127,6 +129,8 @@ switch panelName
         try
             obj.instr.camera.close();
         end
+    case 'Test'
+        set(obj.gui.nextButton, 'Visible', 'off');
 end
 delete(allchild(currentPanel));
 end
