@@ -53,11 +53,11 @@ obj.gui.(parentStruct)(panelIndex).cameraUI.cameraPreviewAxe = axes(...
     'box', 'on');
 axis on;
 
-if (~isempty(obj.instr.camera))
-    cam_enable = 'on';
-else
+% if (~isempty(obj.instr.camera))
+%     cam_enable = 'on';
+% else
     cam_enable = 'off';
-end
+% end
 
 obj.gui.(parentStruct)(panelIndex).cameraUI.loadCameraButton = uicontrol(...
     'Parent', obj.gui.(parentStruct)(panelIndex).cameraUI.mainPanel,...

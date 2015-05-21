@@ -28,7 +28,7 @@ agreement = sprintf(strcat(...
     'along with this program.  If not, see <http://www.gnu.org/licenses/>.'));
 
 agreeH = msgbox(agreement, 'SiPho Testbench License Agreement', 'modal');
-pause(2);
+pause(1);
 try
     delete(agreeH);
 end
