@@ -108,7 +108,7 @@ obj.gui.(parentStruct)(panelIndex).laserUI.laserSettingsButton = uicontrol(...
     'Callback', {@laser_settings_cb, obj});
 
 x_align = x_start;
-y_align = y_align - 0.2;
+y_align = y_align - 0.15;
 
 % lasing color display
 obj.gui.(parentStruct)(panelIndex).laserUI.lasingIndicator = uicontrol(...
@@ -206,7 +206,7 @@ obj.gui.(parentStruct)(panelIndex).laserUI.separating_line_axes = axes(...
     'Xlim', [0, 1], ...
     'Ylim', [0, 1]);
 % line across ui panel
-line([0, 1], [.6, .6], 'parent', obj.gui.(parentStruct)(panelIndex).laserUI.separating_line_axes, 'color', 'black');
+line([0, 1], [y_align - 0.1, y_align - 0.1], 'parent', obj.gui.(parentStruct)(panelIndex).laserUI.separating_line_axes, 'color', 'black');
 
 %% Sweeps Section
 

@@ -14,41 +14,43 @@
 
 classdef NewFocus8742 < InstrClass
     
-    % NanoPZ linear actuator user manual available online at:
-    % http://assets.newport.com/webDocuments-EN/images/20619.pdf
-    % Victor Bass 2013
-    
-    properties (Access = protected)
+%    properties (Access = protected)
+    properties
         xPos;  % stage x position
         yPos;  % stage y position
         zPos;  % stage z position
         thetaPos; % stage angle position
         phiPos; % fiber angle position
         fullDistance;
-        Calibrated;  % stage calibrated
-        Overshoot;
-        PauseTime;
-        Timeout;
+        calibrated;  % stage calibrated
+        overshoot;
+        pauseTime;
+        timeout;
+        
+        % new stuff for 8742
+        strDeviceKeys; % str all the connected device keys
+        masterAddr; % str master device ID
+        slaveDeviceKey; 
+        slaveAddr; 
+        masterDeviceKey; 
+        CmdLib8742; % .NET object
     end
     
     methods
         % constructor
         function self = NewFocus8742()
             self.Name = 'NewFocus8742';
-            self.Group = 'Edge Coupled Fiber Stage';
+            self.Group = 'Fiber Stage';
             self.Connected = 0;  % 0=not connected, 1=connected
             self.Busy = 0;
-            self.Calibrated = 0;
-            self.Obj = ' ';  % serial port object
-            % serial port connection properties
-            self.Param.COMPort = 3;
-            self.Param.BaudRate = 19200;
+            self.calibrated = 0;
+            self.CmdLib8742 = ' ';  % .NET assembly object
             % motor settings shared by Corvus Eco
             self.Param.Acceleration = 0;
             self.Param.Velocity = 0;
-            self.PauseTime = 0.08;
-            self.Timeout = 10; % s
-            self.Overshoot = 0.02; % copied from Corvus Eco
+            self.pauseTime = 0.08;
+            self.timeout = 10; % s
+            self.overshoot = 0.02; % copied from Corvus Eco
             % stage positions
             self.xPos = nan;
             self.yPos = nan;
@@ -57,6 +59,19 @@ classdef NewFocus8742 < InstrClass
             self.phiPos = nan;
             % Stage Params
             self.fullDistance = 12.5*1000;
+            self.pauseTime = 0.5; % 0.5 sec
+            
+            % load .NET assembly
+            try
+                NET.addAssembly('C:\Program Files (x86)\New Focus\New Focus Picomotor Application\Samples\CmdLib.dll');
+                disp('NewFocus8742 .NET assembly loaded.');
+            catch ME
+                error(ME.message);
+            end            
+            % instantiate object (.NET assembly)
+            self.strDeviceKeys = 'dummy';
+            self.CmdLib8742 = NewFocus.Picomotor.CmdLib8742(true,10000,self.strDeviceKeys);
+            % -> returns CmdLib8742 with no properties
         end
     end
     
@@ -64,41 +79,36 @@ classdef NewFocus8742 < InstrClass
         function self = connect(self)
             % checks is stage is already connected
             if self.Connected == 1
-                msg = 'Optical Stage is already connected';
+                msg = 'Fiber Stage is already connected';
                 error(msg);
             end
-            % set serial port properties
-            self.Obj = serial(['COM', num2str(self.Param.COMPort)]);
-            set(self.Obj,'BaudRate',self.Param.BaudRate);
-            % try to open the connection
-            try
-                fopen(self.Obj);
-            catch ME
-                rethrow(ME);
-            end
-            % tell user optical stage is connected
-            if strcmp(self.Obj.Status, 'open')
-                self.Connected = 1;
-                disp('NanoPZ connected');
-            end
             
-            %initialization commands
-            self.send_command('0VE?'); pause(1);
-            self.send_command('1VE?'); pause(1);
-            self.send_command('1BX?'); pause(1);
-            self.send_command('1BX'); %scan switchbox
-            pause(3);
+            % Get device keys; returns System.String[]
+            self.strDeviceKeys = self.CmdLib8742.GetDeviceKeys;
+            disp(self.strDeviceKeys);
             
-            %NanoPZ initialization query
-            self.send_command('1TE?'); pause(self.PauseTime);
-            self.send_command('1BX?'); pause(self.PauseTime);
-            self.send_command('1MX?'); pause(self.PauseTime);
-            self.send_command('1ID?'); pause(self.PauseTime);
-            self.send_command('1PH?'); pause(self.PauseTime);
-            self.send_command('1TS?'); pause(self.PauseTime);
-            self.send_command('1TP?'); pause(self.PauseTime);
-            self.send_command('1MX?'); pause(self.PauseTime);
+            [~, sellf.masterAddr]= GetIdentification(self.CmdLib8742, self.strDeviceKeys(1),'dummy');
+            %[logical scalar RetVal, System.String identificaiton] = ....
+            % -> returns: New_Focus 8742 v2.2 08/01/13 12175
+            disp(self.masterAddr);
             
+            %get key of master; 
+            self.masterDeviceKey = self.CmdLib8742.GetFirstDeviceKey;
+            disp(self.masterDeviceKey);
+            % -> returns: 8742 12175
+
+            %get all the slave device addresses; saved in a System.int32[] structure
+            self.slaveAddr = GetDeviceAddresses(self.CmdLib8742, self.masterDeviceKey);
+            disp(self.slaveAddr);
+            
+            %get identification of slave
+            [~, self.slaveDeviceKey] = GetIdentification(self.CmdLib8742,...
+                self.masterDeviceKey, self.slaveAddr(1), 'as');
+            % -> returns: New_Focus 8742 v2.2 08/01/13 12167    
+            disp(self.slaveDeviceKey);
+            
+            % need to somehow very that we're connected
+            self.Connected = 1;            
         end
         
         function self = disconnect(self)
@@ -108,10 +118,8 @@ classdef NewFocus8742 < InstrClass
                 error(msg);
             end
             
-            % try to close connection and delete serial port object
+            % try to close connection and delete CmdLib8742 object
             try
-                fclose(self.Obj);
-                delete(self.Obj);
             catch ME
                 error(ME.message);
             end
@@ -121,27 +129,12 @@ classdef NewFocus8742 < InstrClass
         
         function self = reset(self)
             if self.Connected
-                if self.Busy
-                    self.stop;
-                    self.Busy = 0;
-                end
-            else
-                msg = strcat(self.Name, ':not connected');
+                msg = strcat(self.Name, ':reset method not implemented');
                 error(msg);
             end
         end
         
         function self = send_command(self, command)
-            if self.Obj.BytesAvailable > 0
-                m = fscanf(self.Obj, '%s', self.Obj.BytesAvailable);
-            end
-            
-            if strcmp(self.Obj.Status, 'open')
-                fprintf(self.Obj, command);
-            else
-                msg = strcat(self.Name, ':not connected');
-                error(msg);
-            end
         end
         
         function response = read_response(self)
@@ -152,16 +145,16 @@ classdef NewFocus8742 < InstrClass
                 throw(err);
             end
             start_time = tic;
-            while toc(start_time) < self.Timeout
+            while toc(start_time) < self.timeout
                 if self.Obj.BytesAvailable > 0
                     response = fscanf(self.Obj);
                     break
                 else
-                    pause(self.PauseTime);
+                    pause(self.pauseTime);
                 end
             end
-            if toc(start_time) >= self.Timeout
-                err = MException(strcat(self.Name,':ReadTimeOut'),...
+            if toc(start_time) >= self.timeout
+                err = MException(strcat(self.Name,':Readtimeout'),...
                     'optical stage connection timed out');
                 throw(err);
             end
@@ -169,11 +162,11 @@ classdef NewFocus8742 < InstrClass
         
         function waitForCommand(self)
             startTime = tic;
-            while (~self.Obj.BytesAvailable && toc(startTime) < self.Timeout)
-                pause(self.PauseTime);
+            while (~self.Obj.BytesAvailable && toc(startTime) < self.timeout)
+                pause(self.pauseTime);
             end
             
-            if toc(startTime) >= self.Timeout
+            if toc(startTime) >= self.timeout
                 err = MException(strcat(self.Name,':WaitForCommand'),...
                     'optical stage connection timed out');
                 throw(err);
@@ -183,7 +176,7 @@ classdef NewFocus8742 < InstrClass
         function self = calibrate(self)
             if self.Connected
                 self.Busy = 1;
-                self.Calibrated = 1;
+                self.calibrated = 1;
                 self.xPos = 0;
                 self.yPos = 0;
                 self.zPos = 0;
@@ -205,7 +198,7 @@ classdef NewFocus8742 < InstrClass
         end
         
         function [x,y,z] = getPosition(self)
-            %             if self.Calibrated
+            %             if self.calibrated
             x = self.xPos;
             y = self.yPos;
             z = self.zPos;
@@ -220,35 +213,34 @@ classdef NewFocus8742 < InstrClass
         
         function motion = queryMotion(self)
             if self.Connected
-                pause(self.PauseTime)
+                pause(self.pauseTime)
                 %                queryMsg = '1TS?';
                 %                self.send_command(queryMsg);
                 %                response = self.read_response();
                 %                response = strtrim(response);
                 %                motion = response(end)
-                self.send_command('1PH?'); pause(self.PauseTime);
-                self.send_command('1TS?'); pause(self.PauseTime);
-                self.send_command('1TP?'); pause(self.PauseTime);
+                self.send_command('1PH?'); pause(self.pauseTime);
+                self.send_command('1TS?'); pause(self.pauseTime);
+                self.send_command('1TP?'); pause(self.pauseTime);
                 
             end
         end
         
         function motorQuery = queryMotionMotor(self)
             if self.Connected
-                pause(self.PauseTime);
-                self.send_command('1MX?'); pause(self.PauseTime);
+                pause(self.pauseTime);
+                self.send_command('1MX?'); pause(self.pauseTime);
                 queryMsg = '1TP?';%'1MX?';%'1ID?';
                 self.send_command(queryMsg);
                 response = self.read_response();
                 response = strtrim(response);
                 motorQuery = response(end);
-                %pause(self.PauseTime);
+                %pause(self.pauseTime);
             end
         end
         
         function self = move_x(self, distance)
             if self.Connected
-                %                 if self.Calibrated
                 accurateDistance = self.offsetDistance(distance);
                 
                 self.Busy = 1;
@@ -262,21 +254,21 @@ classdef NewFocus8742 < InstrClass
                 
                 clc
                 self.send_command(motor_on); %Switch motor on
-                pause(self.PauseTime);
+                pause(self.pauseTime);
                 
                 self.send_command(choose_motor);
-                pause(self.PauseTime);
+                pause(self.pauseTime);
                 if ~self.queryMotionMotor() == 5
                     pause(.5);
                 else
-                    pause(self.PauseTime);
+                    pause(self.pauseTime);
                 end
                 
                 % Vince edit here: move accurate distance
                 for dd = 1:length(accurateDistance)
                     move_cmd = ['1PR', num2str(accurateDistance(dd))];
                     self.send_command(move_cmd);
-                    pause(abs(accurateDistance(dd))/500+2.5*self.PauseTime);
+                    pause(abs(accurateDistance(dd))/500+2.5*self.pauseTime);
                 end
                 
                 self.send_command(motor_off);
@@ -317,7 +309,7 @@ classdef NewFocus8742 < InstrClass
                 %                 end
                 %
                 
-                %                 if self.Calibrated
+                %                 if self.calibrated
                 accurateDistance = self.offsetDistance(distance);
                 
                 self.Busy = 1;
@@ -331,22 +323,22 @@ classdef NewFocus8742 < InstrClass
                 
                 clc
                 self.send_command(motor_on); %Switch motor on
-                pause(self.PauseTime);
+                pause(self.pauseTime);
                 
                 
                 self.send_command(choose_motor);
-                pause(self.PauseTime);
+                pause(self.pauseTime);
                 if ~self.queryMotionMotor() == 6
                     pause(.5);
                 else
-                    pause(self.PauseTime);
+                    pause(self.pauseTime);
                 end
                 
                 % Vince edit here: move accurate distance
                 for dd = 1:length(accurateDistance)
                     move_cmd = ['1PR', num2str(-accurateDistance(dd))];
                     self.send_command(move_cmd);
-                    pause(abs(accurateDistance(dd))/500+2.5*self.PauseTime);
+                    pause(abs(accurateDistance(dd))/500+2.5*self.pauseTime);
                 end
                 
                 self.send_command(motor_off);
@@ -379,7 +371,7 @@ classdef NewFocus8742 < InstrClass
 %                 end
 %                 
                 
-%                 if self.Calibrated
+%                 if self.calibrated
                     self.Busy = 1;
                     motor_on = '1MO';
                     choose_motor = '1MX2';  %selects controller 1, motor 2
@@ -411,7 +403,7 @@ classdef NewFocus8742 < InstrClass
         
         function self = move_z(self, distance)
             if self.Connected
-                %                 if self.Calibrated
+                %                 if self.calibrated
                 accurateDistance = self.offsetDistance(distance);
                 
                 self.Busy = 1;
@@ -426,22 +418,22 @@ classdef NewFocus8742 < InstrClass
                 
                 clc
                 self.send_command(motor_on); %Switch motor on
-                pause(self.PauseTime);
+                pause(self.pauseTime);
                 
                 
                 self.send_command(choose_motor);
-                pause(self.PauseTime);
+                pause(self.pauseTime);
                 if ~self.queryMotionMotor() == 3
                     pause(.5);
                 else
-                    pause(self.PauseTime);
+                    pause(self.pauseTime);
                 end
                 
                 % Vince edit here: move accurate distance
                 for dd = 1:length(accurateDistance)
                     move_cmd = ['1PR', num2str(-accurateDistance(dd))];
                     self.send_command(move_cmd);
-                    pause(abs(accurateDistance(dd))/500+2.5*self.PauseTime);
+                    pause(abs(accurateDistance(dd))/500+2.5*self.pauseTime);
                 end
                 
                 self.send_command(motor_off);
@@ -467,7 +459,7 @@ classdef NewFocus8742 < InstrClass
         
         function self = move_stgangle(self, degrees)
             if self.Connected
-                %                 if self.Calibrated
+                %                 if self.calibrated
                 self.Busy = 1;
                 motor_on = '1MO';
                 choose_motor = '1MX4';  %selects controller 1, motor 3
@@ -479,19 +471,19 @@ classdef NewFocus8742 < InstrClass
                 %self.send_command(motor_on);
                 
                 self.send_command(motor_on); %Switch motor on
-                pause(self.PauseTime);
+                pause(self.pauseTime);
                 
                 
                 self.send_command(choose_motor);
-                pause(self.PauseTime);
+                pause(self.pauseTime);
                 if ~self.queryMotionMotor() == 4
                     pause(.5);
                 else
-                    pause(self.PauseTime);
+                    pause(self.pauseTime);
                 end
                 
                 self.send_command(move_cmd);
-                pause(abs(degrees)+2.5*self.PauseTime);
+                pause(abs(degrees)+2.5*self.pauseTime);
                 
                 self.send_command(motor_off);
                 %self.queryMotion();
@@ -520,7 +512,7 @@ classdef NewFocus8742 < InstrClass
         
         function self = move_fbrangle(self, degrees)
             if self.Connected
-                %                 if self.Calibrated
+                %                 if self.calibrated
                 self.Busy = 1;
                 motor_on = '1MO';
                 choose_motor = '1MX5';  %selects controller 1, motor 3
@@ -533,19 +525,19 @@ classdef NewFocus8742 < InstrClass
                 
                 clc
                 self.send_command(motor_on); %Switch motor on
-                pause(self.PauseTime);
+                pause(self.pauseTime);
                 
                 
                 self.send_command(choose_motor);
-                pause(self.PauseTime);
+                pause(self.pauseTime);
                 if ~self.queryMotionMotor() == 5
                     pause(.5);
                 else
-                    pause(self.PauseTime);
+                    pause(self.pauseTime);
                 end
                 
                 self.send_command(move_cmd);
-                pause(abs(degrees)/5+2.5*self.PauseTime);
+                pause(abs(degrees)/5+2.5*self.pauseTime);
                 
                 self.send_command(motor_off);
                 %self.queryMotion();
@@ -566,9 +558,9 @@ classdef NewFocus8742 < InstrClass
         
         function eject(self)
             self.move_z(-self.fullDistance);
-            pause(self.PauseTime);
+            pause(self.pauseTime);
             self.move_x(self.fullDistance);
-            pause(self.PauseTime);
+            pause(self.pauseTime);
             self.move_y(self.fullDistance);
             
             self.xPos = 0;
@@ -578,9 +570,9 @@ classdef NewFocus8742 < InstrClass
         
         function load(self)
             self.move_x(-self.fullDistance/2);
-            pause(self.PauseTime);
+            pause(self.pauseTime);
             self.move_y(-self.fullDistance/2);
-            %             pause(self.PauseTime);
+            %             pause(self.pauseTime);
             %             self.move_z(self.fullDistance/2);
         end
         
