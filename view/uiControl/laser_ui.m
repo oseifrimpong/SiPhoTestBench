@@ -35,12 +35,12 @@ else
     panelIndex = 1;
 end
 % panel element size variables
-stringBoxSize = [0.275, 0.125];
-pushButtonSize = [0.2, 0.15];
-editBoxSize = [0.1, 0.125];
-popupSize = [0.1, 0.1];
+stringBoxSize = [0.275, 0.15];
+pushButtonSize = [0.2, 0.17];
+editBoxSize = [0.1, 0.16];
+popupSize = [0.1, 0.12];
 move_button_x = 0.065;
-move_button_y = 0.15;
+move_button_y = 0.17;
 
 % laser and sweeps panel
 obj.gui.(parentStruct)(panelIndex).laserUI.mainPanel = uipanel(...
@@ -108,7 +108,7 @@ obj.gui.(parentStruct)(panelIndex).laserUI.laserSettingsButton = uicontrol(...
     'Callback', {@laser_settings_cb, obj});
 
 x_align = x_start;
-y_align = y_align - 0.15;
+y_align = y_align - stringBoxSize(2) - 0.03;
 
 % lasing color display
 obj.gui.(parentStruct)(panelIndex).laserUI.lasingIndicator = uicontrol(...
@@ -206,12 +206,12 @@ obj.gui.(parentStruct)(panelIndex).laserUI.separating_line_axes = axes(...
     'Xlim', [0, 1], ...
     'Ylim', [0, 1]);
 % line across ui panel
-line([0, 1], [y_align - 0.1, y_align - 0.1], 'parent', obj.gui.(parentStruct)(panelIndex).laserUI.separating_line_axes, 'color', 'black');
+line([0, 1], [y_align - 0.05, y_align - 0.05], 'parent', obj.gui.(parentStruct)(panelIndex).laserUI.separating_line_axes, 'color', 'black');
 
 %% Sweeps Section
 
 x_align = x_start;
-y_align = y_align - 0.2;
+y_align = y_align - stringBoxSize(2) - 0.1;
 
 % sweep string
 obj.gui.(parentStruct)(panelIndex).laserUI.rangeString = uicontrol(...
@@ -286,7 +286,7 @@ obj.gui.(parentStruct)(panelIndex).laserUI.sweepSettingsButton = uicontrol(...
     'Callback', {@sweep_settings_cb, obj, parentStruct, panelIndex});
 
 x_align = x_start;
-y_align = y_align - 0.2;
+y_align = y_align - stringBoxSize(2) - 0.03;
 
 % sweep speed string
 obj.gui.(parentStruct)(panelIndex).laserUI.sweepSpeedString = uicontrol(...
@@ -333,7 +333,7 @@ obj.gui.(parentStruct)(panelIndex).laserUI.sweepStepDisplay = uicontrol(...
     'Enable', 'on', ...
     'Units', 'normalized', ...
     'String', num2str(obj.AppSettings.SweepParams.StepWvl), ...
-    'Position', [x_align, y_align, editBoxSize(1)/2, editBoxSize(2)], ...
+    'Position', [x_align, y_align, editBoxSize(1), editBoxSize(2)], ...
     'Callback', {@sweep_step_display_cb, obj});
 
 x_align = x_align + 0.255;
@@ -349,7 +349,7 @@ obj.gui.(parentStruct)(panelIndex).laserUI.abortButton = uicontrol(...
     'Callback', {@laser_abort_cb});
 
 x_align = x_start;
-y_align = y_align - 0.2;
+y_align = y_align - stringBoxSize(2) - 0.03;
 
 % sweep range string
 obj.gui.(parentStruct)(panelIndex).laserUI.sweepRangeString = uicontrol(...

@@ -1,14 +1,14 @@
 % © Copyright 2014-2015 WenXuan Wu, Shon Schmidt, and Jonas Flueckiger
-% 
+%
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as published by
 % the Free Software Foundation, version 3 of the License.
-% 
+%
 % This program is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 % GNU Lesser General Public License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -141,6 +141,30 @@ for i = 1:length(deviceName)
     devicePD{i+1} = obj.devices.(deviceName{i}).Name;
 end
 
+[NumOfPoints, GDS, Motor, DeviceNames] = obj.instr.opticalStage.getCoordPairs();
+if NumOfPoints < 3
+    deviceIndex = ones(1, 3);
+    GDSx = {'{x}', '{x}', '{x}'};
+    GDSy = {'{y}', '{y}', '{y}'};
+    Stagex = {'{x}', '{x}', '{x}'};
+    Stagey = {'{y}', '{y}', '{y}'};
+    isSet = 0;
+else
+    deviceIndex = ones(1, NumOfPoints);
+    GDSx = cell(1, NumOfPoints);
+    GDSy = cell(1, NumOfPoints);
+    Stagex = cell(1, NumOfPoints);
+    Stagey = cell(1, NumOfPoints);
+    for i = 1:NumOfPoints
+        deviceIndex(DeviceNames.index(i)) = find(strcmpi(DeviceNames.name{i}, devicePD), 1);
+        GDSx{GDS.index(i)} = str2double(GDS.coord(i, 1));
+        GDSy{GDS.index(i)} = str2double(GDS.coord(i, 2));
+        Stagex{Motor.index(i)} = str2double(Motor.coord(i, 1));
+        Stagey{Motor.index(i)} = str2double(Motor.coord(i, 2));
+    end
+    isSet = 1;
+end
+
 % GDS table loop
 for i = 1:3
     % position coordinates
@@ -155,6 +179,7 @@ for i = 1:3
         'Units', 'normalized', ...
         'Position', [x_table_coord , y_table_coord, 0.2, table_element_y], ...
         'String', devicePD, ...
+        'Value', deviceIndex(i), ...
         'Callback', {@gds_selection_cb, obj, parentStruct, panelIndex, i});
     
     x_table_coord = x_table_coord + 0.26;
@@ -167,7 +192,7 @@ for i = 1:3
         'HorizontalAlignment','left', ...
         'Units', 'normalized', ...
         'Position', [x_table_coord, y_table_coord - 0.02, 0.1, table_element_y], ...
-        'String', '{x}');
+        'String', GDSx{i});
     
     x_table_coord = x_table_coord + 0.1;
     
@@ -179,7 +204,7 @@ for i = 1:3
         'HorizontalAlignment','left', ...
         'Units', 'normalized', ...
         'Position', [x_table_coord, y_table_coord - 0.02, 0.1, table_element_y], ...
-        'String', '{y}');
+        'String', GDSy{i});
     
     x_table_coord = x_table_coord + 0.17;
     
@@ -191,7 +216,7 @@ for i = 1:3
         'HorizontalAlignment','left', ...
         'Units', 'normalized', ...
         'Position', [x_table_coord, y_table_coord - 0.02, 0.1, table_element_y], ...
-        'String', '{x}');
+        'String', Stagex{i});
     
     x_table_coord = x_table_coord + 0.1;
     
@@ -203,7 +228,7 @@ for i = 1:3
         'HorizontalAlignment','left', ...
         'Units', 'normalized', ...
         'Position', [x_table_coord, y_table_coord - 0.02, 0.1, table_element_y], ...
-        'String', '{y}');
+        'String', Stagey{i});
     
     x_table_coord = x_table_coord + 0.15;
     
@@ -211,6 +236,7 @@ for i = 1:3
     obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{i,6} = uicontrol(...
         'Parent', obj.gui.(parentStruct)(panelIndex).coordUI.mainPanel, ...
         'Style','radiobutton', ...
+        'Value', isSet, ...
         'HorizontalAlignment','left', ...
         'BackGroundColor', [0.9, 0.9, 0.9], ...
         'Units', 'normalized', ...
@@ -234,7 +260,7 @@ end
 % %Populate coordinate table
 % %if coordinate system is already set up load previous values
 % [NumOfPoints,GDS,Motor, DeviceNameIndex]=obj.instr.opticalStage.getCoordPairs;
-% 
+%
 % %update error
 % set(obj.gui.(parentStruct)(panelIndex).coordUI.errorDisplay, 'String', ...
 %     num2str(obj.instr.opticalStage.coordSysError));
@@ -256,11 +282,12 @@ end
 
 function clear_all_cb(~, ~, obj, parentStruct, panelIndex)
 % clear both GDS and stage coords
-for ii = 1:7
-    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,2}, 'String', ' ');
-    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,3}, 'String', ' ');
-    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,4}, 'String', ' ');
-    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,5}, 'String', ' ');
+for ii = 1:3
+    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,1}, 'Value', 1);
+    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,2}, 'String', '{x}');
+    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,3}, 'String', '{y}');
+    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,4}, 'String', '{x}');
+    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,5}, 'String', '{y}');
     set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,6}, 'Value', 0);
     set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,7}, 'Value', 0);
 end
@@ -303,9 +330,14 @@ if get(hObject,'Value')
     set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 5}, 'String', num2str(cur_y));
     gds_x = str2double(get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 2}, 'String'));
     gds_y = str2double(get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 3}, 'String'));
+    
+    selectedDeviceIndex = get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 1}, 'Value');
+    deviceNames = get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index,1}, 'String');
+    selectedDeviceName = deviceNames{selectedDeviceIndex};
+    
     %update the coordsys class
     if ~isnan(gds_x) && ~isnan(gds_y) && isnumeric(gds_x) && isnumeric(gds_y)
-        obj.instr.opticalStage.addCoordPair([gds_x, gds_y],[cur_x, cur_y], index);
+        obj.instr.opticalStage.addCoordPair([gds_x, gds_y],[cur_x, cur_y], selectedDeviceName, index);
     else
         obj.msg('coordinate pair is invalid');
         return;
@@ -313,24 +345,31 @@ if get(hObject,'Value')
     %update error
     set(obj.gui.(parentStruct)(panelIndex).coordUI.errorDisplay, 'String', ...
         num2str(obj.instr.opticalStage.coordSysError));
+    
+    % Set current device location
+    deviceNames = get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index,1}, 'String');
+    currentDeviceIndex = get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index,1}, 'Value');
+    currentDeviceName = deviceNames{currentDeviceIndex};
+    obj.chip.CurrentLocation = currentDeviceName;
+    set(obj.gui.(parentStruct)(panelIndex).opticalStageUI.currentDevicePD, 'Value', currentDeviceIndex);
 else
     msg = 'coordinates_ui: Already set';
     obj.msg(msg);
+    set(hObject,'Value', 1)
 end
-% Set current device location
-deviceNames = get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index,1}, 'String');
-currentDeviceIndex = get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index,1}, 'Value');
-currentDeviceName = deviceNames{currentDeviceIndex};
-obj.chip.CurrentLocation = currentDeviceName;
-set(obj.gui.(parentStruct)(panelIndex).opticalStageUI.currentDevicePD, 'Value', currentDeviceIndex);
+
 end
 
 function clr_coord_cb(~, ~, obj, parentStruct, panelIndex, index)
 % clear the stage coords
-set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 4}, 'String', ' ');
-set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 5}, 'String', ' ');
+set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 1}, 'Value', 1);
+set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 2}, 'String', '{x}');
+set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 3}, 'String', '{y}');
+set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 4}, 'String', '{x}');
+set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 5}, 'String', '{y}');
 %unset the radiobutton
 set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index,6}, 'Value', 0);
+set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index,7}, 'Value', 0);
 try
     obj.instr.opticalStage.removeCoordPair(index);
 catch ME
