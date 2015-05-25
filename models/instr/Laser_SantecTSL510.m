@@ -137,7 +137,7 @@ classdef Laser_SantecTSL510 < InstrClass
                         
                         %create gpib object
                         try
-                            self.obj = gpib('ni',BoardIndex,...
+                            self.Obj = gpib('ni',BoardIndex,...
                                 self.Param.COMPort);
                         catch ME
                             rethrow(ME)
@@ -146,7 +146,7 @@ classdef Laser_SantecTSL510 < InstrClass
                         
                         %open gpib connection
                         try
-                            fopen(self.obj);
+                            fopen(self.Obj);
                             self.Connected = 1; 
                         catch ME
                             rethrow(ME); 
@@ -185,9 +185,9 @@ classdef Laser_SantecTSL510 < InstrClass
         function sendCommand(self, command)
                
                 %check if connection is open
-                if strcmp(self.obj.status, 'closed')
+                if strcmp(self.Obj.status, 'closed')
                     try
-                        fopen(self.obj);
+                        fopen(self.Obj);
                     catch ME
                         disp('Santec Laser COM error', ME);
                         rethrow(ME);
@@ -197,7 +197,7 @@ classdef Laser_SantecTSL510 < InstrClass
                 
                 %Send command
                 try
-                    fprintf(self.obj, command);
+                    fprintf(self.Obj, command);
                 catch ME
                     disp('Santec Laser COM error: fprintf fail', ME);
 
@@ -223,8 +223,8 @@ classdef Laser_SantecTSL510 < InstrClass
                 end
                 start_time = tic;
                 while isempty(response) && (toc(start_time)<self.timeout)
-                    self.obj.TransferStatus;
-                    response = fscanf(self.obj); %expect it to read all at once.
+                    self.Obj.TransferStatus;
+                    response = fscanf(self.Obj); %expect it to read all at once.
                     pause(self.PauseTime);
                 end
                 if toc(start_time) >= self.timeout
