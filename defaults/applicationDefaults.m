@@ -26,7 +26,7 @@ ds.instrDefaults.opticalStage = {OpticalStage, CorvusEco, NanoPZ,...
 ds.instrDefaults.fiberStage = {FiberStage, NewFocus8742};
 % ds.instrDefaults.fluidicStage = {FluidicStage, VelmexXSlide};
 % ds.instrDefaults.pump = {Pump, Nexus3000, Masterflex};
-ds.instrDefaults.thermalControl = {TEC, TECNewport3040, TEC_SRS_LDC501};
+ds.instrDefaults.thermalControl = {TEC, TECNewport3040, TEC_SRS_LDC501, TEC_ILXLightwave_LDT_5910B};
 % ds.instrDefaults.camera = {Camera, LumeneraLw575C};
 % ds.instrDefaults.powerSupply = {PowerSupply, Power_Supply_AgilentE3634A};
 

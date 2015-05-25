@@ -12,44 +12,44 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-classdef Laser < InstrClass
+classdef Laser < InstrClass & Laser_Agilent8164A
     
     properties
         % copied from Laser_Avilent8164A class
         % need to make GroupObj public so detector class can get it
-        GroupObj; % handles to group objects
-        NumPWMChannels; % necessary for multiframe lambda scan setup, need to get from detector obj
-        PWMSlotInfo; % number of PWM modules installed in mainframe
-        StitchNum; % for saving number of stitches input by user in GUI
+        % GroupObj; % handles to group objects
+        % NumPWMChannels; % necessary for multiframe lambda scan setup, need to get from detector obj
+        % PWMSlotInfo; % number of PWM modules installed in mainframe
+        % StitchNum; % for saving number of stitches input by user in GUI
     end
     
     properties (Access = protected)
         % copied from Laser_Avilent8164A class
-        Password; % password to unlock the instrument
-        Libname; % for trigger control?
-        Session; % for trigger control?
-        PauseTime; % so Matlab doesn't overrun the COM port
-        
-        Lasing; % 0=off, 1=laser output enabled
-        ReadyForSweep; % flag
-        
-        % mainframe slot info
-        NumberOfSlots; % number of laser/detector slots in mainframe
-        TunableLaserSlot; % determined in slot info function
-        NumDataPoints; % number of data points for this sweep
-        MaxDataPoints; % detector depth for sweep
-        
-        StartWvl; % sweep wavelength (nm)
-        StopWvl; % sweep wavelength (nm)
-        StepWvl; % step (nm)           
-        SweepSpeed; % 1=slow ... 5=fast
-        NumberOfScans; % number of scans for sweep
-        
-        % bounds
-        MinWavelength; % bounds read from instrument
-        MaxWavelength; % bounds read from instrument
-        MinPower; % bounds read from instrument
-        MaxPower; % bounds read from instrument
+%         Password; % password to unlock the instrument
+%         Libname; % for trigger control?
+%         Session; % for trigger control?
+%         PauseTime; % so Matlab doesn't overrun the COM port
+%         
+%         Lasing; % 0=off, 1=laser output enabled
+%         ReadyForSweep; % flag
+%         
+%         % mainframe slot info
+%         NumberOfSlots; % number of laser/detector slots in mainframe
+         TunableLaserSlot; % determined in slot info function
+%         NumDataPoints; % number of data points for this sweep
+%         MaxDataPoints; % detector depth for sweep
+%         
+%         StartWvl; % sweep wavelength (nm)
+%         StopWvl; % sweep wavelength (nm)
+%         StepWvl; % step (nm)           
+%         SweepSpeed; % 1=slow ... 5=fast
+%         NumberOfScans; % number of scans for sweep
+%         
+%         % bounds
+%         MinWavelength; % bounds read from instrument
+%         MaxWavelength; % bounds read from instrument
+%         MinPower; % bounds read from instrument
+%         MaxPower; % bounds read from instrument
     end
     
     % static methods

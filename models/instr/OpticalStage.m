@@ -12,7 +12,7 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-classdef OpticalStage < InstrClass
+classdef OpticalStage < InstrClass & CoordSysClass
     properties % public
         coordSysIsValid; % a bug w/ the coord class i don't feel like trying to figure out right now
     end

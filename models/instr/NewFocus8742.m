@@ -14,49 +14,71 @@
 
 classdef NewFocus8742 < InstrClass
     
-    % NanoPZ linear actuator user manual available online at:
-    % http://assets.newport.com/webDocuments-EN/images/20619.pdf
-    % Victor Bass 2013
-    
-    properties (Access = protected)
-        xPos;  % stage x position
-        yPos;  % stage y position
-        zPos;  % stage z position
-        thetaPos; % stage angle position
-        phiPos; % fiber angle position
-        fullDistance;
-        Calibrated;  % stage calibrated
-        Overshoot;
-        PauseTime;
-        Timeout;
+%    properties (Access = protected)
+    properties
+        x;  % stage x position
+        y;  % stage y position
+        z;  % stage z position
+        xTheta; % rotation about x axis
+        zTheta; % rotation about z axis
+        
+%        fullDistance;
+%        calibrated;  % stage calibrated
+%        overshoot;
+%        pauseTime;
+%        timeout;
+        
+        % new stuff for 8742
+        strDeviceKeys; % str all the connected device keys
+        masterAddr; % str master device ID
+        slaveDeviceKey; 
+        slaveAddr; 
+        masterDeviceKey; 
+        CmdLib8742; % .NET object
     end
     
     methods
         % constructor
         function self = NewFocus8742()
             self.Name = 'NewFocus8742';
-            self.Group = 'Edge Coupled Fiber Stage';
+            self.Group = 'Fiber Stage';
             self.Connected = 0;  % 0=not connected, 1=connected
             self.Busy = 0;
-            self.Calibrated = 0;
-            self.Obj = ' ';  % serial port object
-            % serial port connection properties
-            self.Param.COMPort = 3;
-            self.Param.BaudRate = 19200;
+%            self.calibrated = 0;
+            self.CmdLib8742 = ' ';  % .NET assembly object
             % motor settings shared by Corvus Eco
             self.Param.Acceleration = 0;
             self.Param.Velocity = 0;
-            self.PauseTime = 0.08;
-            self.Timeout = 10; % s
-            self.Overshoot = 0.02; % copied from Corvus Eco
+%             self.pauseTime = 0.08;
+%             self.timeout = 10; % s
+%             self.overshoot = 0.02; % copied from Corvus Eco
             % stage positions
-            self.xPos = nan;
-            self.yPos = nan;
-            self.zPos = nan;
-            self.thetaPos = nan;
-            self.phiPos = nan;
+            self.x = nan;
+            self.y = nan;
+            self.z = nan;
+            self.xTheta = nan;
+            self.zTheta = nan;
             % Stage Params
-            self.fullDistance = 12.5*1000;
+%            self.fullDistance = 12.5*1000;
+%            self.pauseTime = 0.5; % 0.5 sec
+            
+            % load .NET assembly
+            try
+                NET.addAssembly('C:\Program Files (x86)\New Focus\New Focus Picomotor Application\Samples\CmdLib.dll');
+                disp('NewFocus8742 .NET assembly loaded.');
+            catch ME
+                error(ME.message);
+            end            
+            % instantiate object (.NET assembly)
+            self.strDeviceKeys = 'dummy';
+            self.CmdLib8742 = NewFocus.Picomotor.CmdLib8742(true,10000,self.strDeviceKeys);
+            % -> returns CmdLib8742 with no properties
+            
+            self.Param.Acceleration = 0;
+            self.Param.StepResolution = 0;
+            self.Param.Acceleration = 0;
+            self.Param.Acceleration = 0;
+            
         end
     end
     
@@ -64,54 +86,55 @@ classdef NewFocus8742 < InstrClass
         function self = connect(self)
             % checks is stage is already connected
             if self.Connected == 1
-                msg = 'Optical Stage is already connected';
+                msg = 'Fiber Stage is already connected';
                 error(msg);
             end
-            % set serial port properties
-            self.Obj = serial(['COM', num2str(self.Param.COMPort)]);
-            set(self.Obj,'BaudRate',self.Param.BaudRate);
-            % try to open the connection
-            try
-                fopen(self.Obj);
-            catch ME
-                rethrow(ME);
-            end
-            % tell user optical stage is connected
-            if strcmp(self.Obj.Status, 'open')
-                self.Connected = 1;
-                disp('NanoPZ connected');
+            
+            % Get device keys; returns System.String[]
+            self.strDeviceKeys = self.CmdLib8742.GetDeviceKeys;
+            disp(self.strDeviceKeys);
+            
+            if isempty(self.strDeviceKeys)
+                disp('8742 not connected. Aborting.');
+                return
             end
             
-            %initialization commands
-            self.send_command('0VE?'); pause(1);
-            self.send_command('1VE?'); pause(1);
-            self.send_command('1BX?'); pause(1);
-            self.send_command('1BX'); %scan switchbox
-            pause(3);
+            [~, sellf.masterAddr]= GetIdentification(self.CmdLib8742, self.strDeviceKeys(1),'dummy');
+            %[logical scalar RetVal, System.String identificaiton] = ....
+            % -> returns: New_Focus 8742 v2.2 08/01/13 12175
+            disp(self.masterAddr);
             
-            %NanoPZ initialization query
-            self.send_command('1TE?'); pause(self.PauseTime);
-            self.send_command('1BX?'); pause(self.PauseTime);
-            self.send_command('1MX?'); pause(self.PauseTime);
-            self.send_command('1ID?'); pause(self.PauseTime);
-            self.send_command('1PH?'); pause(self.PauseTime);
-            self.send_command('1TS?'); pause(self.PauseTime);
-            self.send_command('1TP?'); pause(self.PauseTime);
-            self.send_command('1MX?'); pause(self.PauseTime);
+            %get key of master; 
+            self.masterDeviceKey = self.CmdLib8742.GetFirstDeviceKey;
+            disp(self.masterDeviceKey);
+            % -> returns: 8742 12175
+
+            %get all the slave device addresses; saved in a System.int32[] structure
+            deviceAddresses = GetDeviceAddresses(self.CmdLib8742, self.masterDeviceKey);
+            self.slaveAddr = deviceAddresses(1);
+            disp(self.slaveAddr);
             
+            %get identification of slave
+            [~, self.slaveDeviceKey] = GetIdentification(self.CmdLib8742,...
+                self.masterDeviceKey, self.slaveAddr, 'as');
+            % -> returns: New_Focus 8742 v2.2 08/01/13 12167    
+            disp(self.slaveDeviceKey);
+            
+            % need to somehow very that we're connected
+            self.Connected = 1;            
+
+            % read instrument parameters into params
+%clo            self.getInstrumentParameters();            
         end
         
         function self = disconnect(self)
-            % check if stage is connected
             if self.Connected == 0
                 msg = strcat(self.Name,':not connected');
                 error(msg);
             end
             
-            % try to close connection and delete serial port object
             try
-                fclose(self.Obj);
-                delete(self.Obj);
+            % can't unload .NET CmdLib (read forums)
             catch ME
                 error(ME.message);
             end
@@ -119,187 +142,85 @@ classdef NewFocus8742 < InstrClass
             self.Connected = 0;
         end
         
-        function self = reset(self)
-            if self.Connected
-                if self.Busy
-                    self.stop;
-                    self.Busy = 0;
-                end
-            else
-                msg = strcat(self.Name, ':not connected');
+        % shon 24 May 2015
+        function self = getInstrumentParameters(self)
+            if self.Connected == 0
+                msg = strcat(self.Name,':not connected');
                 error(msg);
-            end
-        end
-        
-        function self = send_command(self, command)
-            if self.Obj.BytesAvailable > 0
-                m = fscanf(self.Obj, '%s', self.Obj.BytesAvailable);
             end
             
-            if strcmp(self.Obj.Status, 'open')
-                fprintf(self.Obj, command);
-            else
-                msg = strcat(self.Name, ':not connected');
-                error(msg);
-            end
-        end
-        
-        function response = read_response(self)
-            response = '';
-            if ~self.Connected
-                err = MException(strcat(self.Name,':Read'),...
-                    'optical stage status: closed');
-                throw(err);
-            end
-            start_time = tic;
-            while toc(start_time) < self.Timeout
-                if self.Obj.BytesAvailable > 0
-                    response = fscanf(self.Obj);
-                    break
-                else
-                    pause(self.PauseTime);
-                end
-            end
-            if toc(start_time) >= self.Timeout
-                err = MException(strcat(self.Name,':ReadTimeOut'),...
-                    'optical stage connection timed out');
-                throw(err);
-            end
-        end
-        
-        function waitForCommand(self)
-            startTime = tic;
-            while (~self.Obj.BytesAvailable && toc(startTime) < self.Timeout)
-                pause(self.PauseTime);
-            end
-            
-            if toc(startTime) >= self.Timeout
-                err = MException(strcat(self.Name,':WaitForCommand'),...
-                    'optical stage connection timed out');
-                throw(err);
-            end
-        end
-        
-        function self = calibrate(self)
-            if self.Connected
-                self.Busy = 1;
-                self.Calibrated = 1;
-                self.xPos = 0;
-                self.yPos = 0;
-                self.zPos = 0;
-                choose_x_motor = '1MX5'; % xxMX selects the switchbox channel for controler xx
-                choose_y_motor = '1MX4';
-                choose_z_motor = '1MX3';
-                set_zero_position = '1OR'; % xxOR sets controller xx's motor position to 0
-                self.send_command(choose_x_motor);
-                self.send_command(set_zero_position);
-                self.send_command(choose_y_motor);
-                self.send_command(set_zero_position);
-                self.send_command(choose_z_motor);
-                self.send_command(set_zero_position);
-                self.Busy = 0;
-            else
-                msg = strcat(self.Name, ' not connected.');
-                error(msg);
-            end
-        end
-        
-        function [x,y,z] = getPosition(self)
-            %             if self.Calibrated
-            x = self.xPos;
-            y = self.yPos;
-            z = self.zPos;
-            %                 disp(strcat('Y position ', num2str(x)));
-            %                 disp(strcat('X position ', num2str(y)));
-            %                 disp(strcat('Z position ', num2str(z)));
-            %             else
-            %                 msg = strcat(self.Name, ' not calibrated. Cannot get position.');
-            %                 error(msg);
-            %             end
-        end
-        
-        function motion = queryMotion(self)
-            if self.Connected
-                pause(self.PauseTime)
-                %                queryMsg = '1TS?';
-                %                self.send_command(queryMsg);
-                %                response = self.read_response();
-                %                response = strtrim(response);
-                %                motion = response(end)
-                self.send_command('1PH?'); pause(self.PauseTime);
-                self.send_command('1TS?'); pause(self.PauseTime);
-                self.send_command('1TP?'); pause(self.PauseTime);
+            try
+                % for now, set all motors to same parameter set
+                % read from master device, motor 1 (C)
+                stepsPerSec2 = 0;
+                self.Param.Acceleration = self.CmdLib8742.GetAcceleration(...
+                    self.masterDeviceKey, int32(1), int32(stepsPerSec2));
                 
+%                 stepResolution = 0;
+%                 self.Param.StepResolution = self.CmdLib8742.GetCLStepResolution(...
+%                     self.masterDeviceKey, int32(1), int32(stepResolution));
+%                 
+%                 threshold = 0;
+%                 self.Param.Acceleration = self.CmdLib8742.GetCLThreshold(...
+%                     self.masterDeviceKey, int32(1), int32(threshold));
+%                 
+%                 units = 0;
+%                 self.Param.Acceleration = self.CmdLib8742.GetCLUnits(...
+%                     self.masterDeviceKey, int32(1), int32(units));
+                
+            catch ME
+                error(ME.message);
             end
+            
+            self.Connected = 0;
         end
         
-        function motorQuery = queryMotionMotor(self)
-            if self.Connected
-                pause(self.PauseTime);
-                self.send_command('1MX?'); pause(self.PauseTime);
-                queryMsg = '1TP?';%'1MX?';%'1ID?';
-                self.send_command(queryMsg);
-                response = self.read_response();
-                response = strtrim(response);
-                motorQuery = response(end);
-                %pause(self.PauseTime);
-            end
+        %% shon started here...
+        % some notes for myself based on current connections
+
+        % master 1 = C
+        % master 2 = B
+        % master 3 = A
+        % master 4 = n/a
+        % slave 1 = n/a
+        % slave 2 = B'
+        % slave 3 = A'
+        % slave 4 = n/a
+        
+        % z = +A' +B' or -A' -B'
+        % zTheta = +A -B or +B -A
+        % x = +A +B or -A -B
+        % xTheta = +A -B or -A +B
+        % y = +C or -C
+        
+        function abortMotion(self)
+            % hack = send abort command to both master and slave
+            self.CmdLib8742.AbortMotion(self.masterDeviceKey);
+            self.CmdLib8742.AbortMotion(self.slaveDeviceKey);            
         end
         
         function self = move_x(self, distance)
+            % to move + in x = +A and +B
+            % to move - in x = -A and -B
             if self.Connected
-                %                 if self.Calibrated
-                accurateDistance = self.offsetDistance(distance);
+                % disable button in GUI
                 
-                self.Busy = 1;
-                motor_on = '1MO';  %turns on controller 1's motors
-                choose_motor = '1MX5';  %selects controller 1, motor 1
+                % convert distance to steps
+%                accurateDistance = self.offsetDistance(distance);
+                
+                % move A (master device motor #3)
+                self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
+                    int32(3), distance);
+                
+                % move B (master device motor #2)
+                self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
+                    int32(2), distance);
+
+                % old notes from nano-PZ ... not sure they're relevant
+                %
                 % NANO PC move in micro-step roughly equals to 10nm/step.
                 % tranform distance (in um) into micro-step (X100)
-                %                     move_cmd = ['1PR', num2str(distance*100)];  %moves selected motor the input number of micro steps
                 % the *100 converts from ustep(default unit) to um
-                motor_off = '1MF';  %turns off controller 1's motors
-                
-                clc
-                self.send_command(motor_on); %Switch motor on
-                pause(self.PauseTime);
-                
-                self.send_command(choose_motor);
-                pause(self.PauseTime);
-                if ~self.queryMotionMotor() == 5
-                    pause(.5);
-                else
-                    pause(self.PauseTime);
-                end
-                
-                % Vince edit here: move accurate distance
-                for dd = 1:length(accurateDistance)
-                    move_cmd = ['1PR', num2str(accurateDistance(dd))];
-                    self.send_command(move_cmd);
-                    pause(abs(accurateDistance(dd))/500+2.5*self.PauseTime);
-                end
-                
-                self.send_command(motor_off);
-                %self.queryMotion();
-                
-                disp('x move complete')
-                self.xPos = self.xPos + distance*100;
-                self.Busy = 0;
-                %                     self.send_command(move_cmd);
-                % %                     self.send_command(motor_off);  %recommended to avoid actuator drift while switching channels
-                %                     self.xPos = self.xPos + distance*100;
-                %                     self.Busy = 0;
-                %                 else
-                %                     msg = strcat(self.Name, ' not calibrated. Please calibrate before moving.');
-                %                     error(msg);
-                %                 end
-%                     self.send_command(motor_off);  %recommended to avoid actuator drift while switching channels
-                    self.xPos = self.xPos + distance*100;
-                    self.Busy = 0;
-%                 else
-%                     msg = strcat(self.Name, ' not calibrated. Please calibrate before moving.');
-%                     error(msg);
-%                 end
             else
                 msg = strcat(self.Name, ' not connected.');
                 error(msg);
@@ -307,102 +228,17 @@ classdef NewFocus8742 < InstrClass
         end
         
         function self = move_y(self, distance)
+            % to move + in y = C
+            % to move - in y = -C
             if self.Connected
+                % disable button in GUI
                 
-                %                 self.send_command('1TP2?');
-                %                 while self.Obj.BytesAvailable <= 0
-                %                     if self.Obj.BytesAvailable > 0
-                %                         dd = fscanf(self.Obj, '%s', self.Obj.BytesAvailable)
-                %                     end
-                %                 end
-                %
+                % convert distance to steps
+%                accurateDistance = self.offsetDistance(distance);
                 
-                %                 if self.Calibrated
-                accurateDistance = self.offsetDistance(distance);
-                
-                self.Busy = 1;
-                motor_on = '1MO';
-                choose_motor = '1MX4';  %selects controller 1, motor 2
-                % NANO PC move in micro-step roughly equals to 10nm/step.
-                % tranform distance (in um) into micro-step (X100)
-                %                     move_cmd = ['1PR', num2str(-distance*100)];  % the *100 converts from ustep(default unit) to um
-                %                    move_cmd = ['1PR', num2str(distance*100)]  % the *100 converts from ustep(default unit) to um
-                motor_off = '1MF';
-                
-                clc
-                self.send_command(motor_on); %Switch motor on
-                pause(self.PauseTime);
-                
-                
-                self.send_command(choose_motor);
-                pause(self.PauseTime);
-                if ~self.queryMotionMotor() == 6
-                    pause(.5);
-                else
-                    pause(self.PauseTime);
-                end
-                
-                % Vince edit here: move accurate distance
-                for dd = 1:length(accurateDistance)
-                    move_cmd = ['1PR', num2str(-accurateDistance(dd))];
-                    self.send_command(move_cmd);
-                    pause(abs(accurateDistance(dd))/500+2.5*self.PauseTime);
-                end
-                
-                self.send_command(motor_off);
-                %self.queryMotion();
-                
-                disp('y move complete')
-                
-                self.yPos = self.yPos + distance*100;
-                self.Busy = 0;
-                %                     self.send_command(move_cmd);
-                % %                     self.send_command(motor_off);
-                %                     self.yPos = self.yPos + distance*100;
-                %                     self.Busy = 0;
-                %                 else
-                %                     msg = strcat(self.Name, ' not calibrated. Please calibrate before moving.');
-                %                     error(msg);
-                %                 end
-                
-                %                 self.send_command('1TP2?');
-                %                 while self.Obj.BytesAvailable <= 0
-                %                     if self.Obj.BytesAvailable > 0
-                %                         dd = fscanf(self.Obj, '%s', self.Obj.BytesAvailable)
-                %                     end
-                %                 end
-%                 self.send_command('1TP2?');
-%                 while self.Obj.BytesAvailable <= 0
-%                     if self.Obj.BytesAvailable > 0
-%                         dd = fscanf(self.Obj, '%s', self.Obj.BytesAvailable)
-%                     end
-%                 end
-%                 
-                
-%                 if self.Calibrated
-                    self.Busy = 1;
-                    motor_on = '1MO';
-                    choose_motor = '1MX2';  %selects controller 1, motor 2
-                    move_cmd = ['1PR', num2str(distance*100)]  % the *100 converts from ustep(default unit) to um
-                    motor_off = '1MF';
-                    self.send_command(motor_on);
-                    self.send_command(choose_motor);
-                    self.send_command(move_cmd);
-%                     self.send_command(motor_off);
-                    self.yPos = self.yPos + distance*100;
-                    self.Busy = 0;
-%                 else
-%                     msg = strcat(self.Name, ' not calibrated. Please calibrate before moving.');
-%                     error(msg);
-%                 end
-
-%                 self.send_command('1TP2?');
-%                 while self.Obj.BytesAvailable <= 0
-%                     if self.Obj.BytesAvailable > 0
-%                         dd = fscanf(self.Obj, '%s', self.Obj.BytesAvailable)
-%                     end
-%                 end
-                
+                % move A' (master device motor #1)
+                self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
+                    int32(1), distance);
             else
                 msg = strcat(self.Name, ' not connected.');
                 error(msg);
@@ -410,179 +246,88 @@ classdef NewFocus8742 < InstrClass
         end
         
         function self = move_z(self, distance)
+            % to move + in z = +A' and +B'
+            % to move - in z = -A' and -B'
             if self.Connected
-                %                 if self.Calibrated
-                accurateDistance = self.offsetDistance(distance);
+                % disable button in GUI
                 
-                self.Busy = 1;
-                motor_on = '1MO';
-                choose_motor = '1MX3';  %selects controller 1, motor 3
-                % NANO PC move in micro-step roughly equals to 10nm/step.
-                % tranform distance (in um) into micro-step (X100)
-                %                     move_cmd = ['1PR', num2str(-distance*100)]; %jtk change to 'minus'
-                % the *100 converts from ustep(default unit) to um
-                motor_off = '1MF';
-                %self.send_command(motor_on);
+                % convert distance to steps
+%                accurateDistance = self.offsetDistance(distance);
                 
-                clc
-                self.send_command(motor_on); %Switch motor on
-                pause(self.PauseTime);
-                
-                
-                self.send_command(choose_motor);
-                pause(self.PauseTime);
-                if ~self.queryMotionMotor() == 3
-                    pause(.5);
-                else
-                    pause(self.PauseTime);
-                end
-                
-                % Vince edit here: move accurate distance
-                for dd = 1:length(accurateDistance)
-                    move_cmd = ['1PR', num2str(-accurateDistance(dd))];
-                    self.send_command(move_cmd);
-                    pause(abs(accurateDistance(dd))/500+2.5*self.PauseTime);
-                end
-                
-                self.send_command(motor_off);
-                %self.queryMotion();
-                
-                disp('z move complete')
-                
-                self.yPos = self.yPos + distance*100;
-                self.Busy = 0;
-                %                     self.send_command(move_cmd);
-                % %                     self.send_command(motor_off);
-                %                     self.zPos = self.zPos + distance*100;
-                %                     self.Busy = 0;
-                %                 else
-                %                     msg = strcat(self.Name, ' not calibrated. Please calibrate before moving.');
-                %                     error(msg);
-                %                 end
+                % move A' (slave device motor #3)
+                self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
+                    self.slaveAddr, int32(3), distance);
+                % move B' (slave device motor #2)
+                self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
+                    self.slaveAddr, int32(2), distance);
             else
                 msg = strcat(self.Name, ' not connected.');
                 error(msg);
             end
         end
         
-        function self = move_stgangle(self, degrees)
+        function self = move_xTheta(self, degrees)
+            % to move + in xTheta = +A' and -B'
+            % to move - in xTheta = -A' and +B'
             if self.Connected
-                %                 if self.Calibrated
-                self.Busy = 1;
-                motor_on = '1MO';
-                choose_motor = '1MX4';  %selects controller 1, motor 3
-                % NANO PC move in micro-step roughly equals to 10nm/step.
-                % tranform distance (in um) into micro-step (X100)
-                move_cmd = ['1PR', num2str(degrees*5000)]; %jtk change to 'minus'
-                % the *100 converts from ustep(default unit) to um
-                motor_off = '1MF';
-                %self.send_command(motor_on);
+                % disable button in GUI
                 
-                self.send_command(motor_on); %Switch motor on
-                pause(self.PauseTime);
+                % convert distance to steps
+%                accurateDistance = self.offsetDistance(distance);
                 
-                
-                self.send_command(choose_motor);
-                pause(self.PauseTime);
-                if ~self.queryMotionMotor() == 4
-                    pause(.5);
-                else
-                    pause(self.PauseTime);
-                end
-                
-                self.send_command(move_cmd);
-                pause(abs(degrees)+2.5*self.PauseTime);
-                
-                self.send_command(motor_off);
-                %self.queryMotion();
-                
-                disp('stg angle move complete')
-                
-                self.thetaPos = self.thetaPos + degrees*5000;
-                self.Busy = 0;
-                %                 else
-                %                     msg = strcat(self.Name, ' not calibrated. Please calibrate before moving.');
-                %                     error(msg);
-                %                 end
-
-%                     self.send_command(motor_off);
-                    self.zPos = self.zPos + distance*100;
-                    self.Busy = 0;
-%                 else
-%                     msg = strcat(self.Name, ' not calibrated. Please calibrate before moving.');
-%                     error(msg);
-%                 end
+                % move A' (slave device motor #3)
+                self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
+                    self.slaveAddr, int32(3), degrees);
+                % move B' (slave device motor #2)
+                self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
+                    self.slaveAddr, int32(2), -degrees);
             else
                 msg = strcat(self.Name, ' not connected.');
                 error(msg);
             end
         end
         
-        function self = move_fbrangle(self, degrees)
+        function self = move_zTheta(self, degrees)
+            % to move + in zTheta = +A and -B
+            % to move - in zTheta = -A and +B
             if self.Connected
-                %                 if self.Calibrated
-                self.Busy = 1;
-                motor_on = '1MO';
-                choose_motor = '1MX5';  %selects controller 1, motor 3
-                % NANO PC move in micro-step roughly equals to 10nm/step.
-                % tranform distance (in um) into micro-step (X100)
-                move_cmd = ['1PR', num2str(degrees*5000)]; %jtk change to 'minus'
-                % the *100 converts from ustep(default unit) to um
-                motor_off = '1MF';
-                %self.send_command(motor_on);
+                % disable button in GUI
                 
-                clc
-                self.send_command(motor_on); %Switch motor on
-                pause(self.PauseTime);
+                % convert distance to steps
+%                accurateDistance = self.offsetDistance(distance);
                 
+                % move A (master device motor #3)
+                self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
+                    int32(3), degrees);
                 
-                self.send_command(choose_motor);
-                pause(self.PauseTime);
-                if ~self.queryMotionMotor() == 5
-                    pause(.5);
-                else
-                    pause(self.PauseTime);
-                end
-                
-                self.send_command(move_cmd);
-                pause(abs(degrees)/5+2.5*self.PauseTime);
-                
-                self.send_command(motor_off);
-                %self.queryMotion();
-                
-                disp('fiber angle move complete')
-                
-                self.phiPos = self.phiPos + degrees*100;
-                self.Busy = 0;
-                %                 else
-                %                     msg = strcat(self.Name, ' not calibrated. Please calibrate before moving.');
-                %                     error(msg);
-                %                 end
+                % move B (master device motor #2)
+                self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
+                    int32(2), -degrees);
             else
                 msg = strcat(self.Name, ' not connected.');
                 error(msg);
             end
         end
         
-        function eject(self)
-            self.move_z(-self.fullDistance);
-            pause(self.PauseTime);
-            self.move_x(self.fullDistance);
-            pause(self.PauseTime);
-            self.move_y(self.fullDistance);
-            
-            self.xPos = 0;
-            self.yPos = 0;
-            self.zPos = 0;
-        end
+%         function eject(self)
+%             self.move_z(-self.fullDistance);
+%             pause(self.pauseTime);
+%             self.move_x(self.fullDistance);
+%             pause(self.pauseTime);
+%             self.move_y(self.fullDistance);
+%             
+%             self.x = 0;
+%             self.y = 0;
+%             self.z = 0;
+%         end
         
-        function load(self)
-            self.move_x(-self.fullDistance/2);
-            pause(self.PauseTime);
-            self.move_y(-self.fullDistance/2);
-            %             pause(self.PauseTime);
-            %             self.move_z(self.fullDistance/2);
-        end
+%         function load(self)
+%             self.move_x(-self.fullDistance/2);
+%             pause(self.pauseTime);
+%             self.move_y(-self.fullDistance/2);
+%             %             pause(self.pauseTime);
+%             %             self.move_z(self.fullDistance/2);
+%         end
         
         %         function position = currentPosition(self)
         %
