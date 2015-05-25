@@ -12,7 +12,7 @@ opticalStage = obj.instr.opticalStage;
 
 
 % disable active feedback for optical stage
-    [a,b] = obj.instr.opticalStage.set_closed_loop(0);
+    [a,b] = obj.instr.opticalStage.set_closed_loop(1);
     obj.msg('Optical stage active feedback disabled.');
     obj.msg(strcat('response from Corvus: ',num2str(a),',',num2str(b)));
 

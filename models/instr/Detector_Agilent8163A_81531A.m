@@ -20,6 +20,7 @@ classdef Detector_Agilent8163A_81531A < InstrClass
         EngineMgr; % Engine Manager for the
         Engine;
         
+        
         PauseTime; % so Matlab doesn't overrun the COM port
         % Properties
         Slots;

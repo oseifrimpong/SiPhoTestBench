@@ -173,6 +173,25 @@ classdef OpticalStage < InstrClass
             end
         end
         
+        
+                %% Closed loop configuration commands
+        function [a1, a2] = set_closed_loop(self, enable)
+           %enables the closed loop control for axis 1 and 2; 
+           %if enable=1: enable closed loop if enable=0: disabled
+           % returns setting in stage controller for axis 1 and 2; s
+
+            if enable
+                disp('enables closed loop');
+                a1=1;
+                a2=1; 
+            else
+                disp('disables closed loop');
+                a1=0;
+                a2=0;
+            end
+        end
+        
+        
         function self = setProp(self, prop, val)
             if self.(prop)
                 self.(prop) = val;
