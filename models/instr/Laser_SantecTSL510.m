@@ -108,12 +108,12 @@ classdef Laser_SantecTSL510 < InstrClass
             
             self.Param.PowerLevel = 0; % initialize currenet power level
             self.Param.COMPort = 1; %  GPIB port #
-            self.Param.TunableLaserSlot = 0; % slot 0 in mainframe
+            %self.Param.TunableLaserSlot = 0; % slot 0 in mainframe
             self.Param.PowerUnit = 0; % 0=dB, 1=W
             self.Param.PowerLevel = 0; % (dB if self.Param.PowerUnit=0)
-            self.Param.LowSSE = 0; % 0=no, 1=low-noise scan
+            %self.Param.LowSSE = 0; % 0=no, 1=low-noise scan
             self.Param.Password = '0000';
-            self.Param.UseFastILEngine = 0;
+            %self.Param.UseFastILEngine = 0;
             
             %self.TotalSlots = 0;
             %self.TotalNumOfDetectors = 0; %this is done now on the detector side. 
@@ -131,8 +131,9 @@ classdef Laser_SantecTSL510 < InstrClass
                             {'gpib',BoardIndex, num2str(self.Param.COMPort)});
                         if isobject(instrf)
                             disp('Connection error in MLPLaser: com obj already exists');
+                            disp('delete object and reconnect');
+                            delete(instf); 
                             self.Connected = 0; 
-                            return;
                         end
                         
                         %create gpib object
@@ -143,7 +144,7 @@ classdef Laser_SantecTSL510 < InstrClass
                             rethrow(ME)
                         end
    
-                        
+                 
                         %open gpib connection
                         try
                             fopen(self.Obj);
@@ -151,22 +152,24 @@ classdef Laser_SantecTSL510 < InstrClass
                         catch ME
                             rethrow(ME); 
                         end
-                        
-                        
-                        
-                        
 
                         % preset
                         self.preset();
                         
                         % get instrument parameter bounds and current settings
-                        % wtf. No public field minWavelength exists for class Laser_Agilent8164A.
-                        %                    wvl = self.queryWavelength();
-                        pwr = self.queryPower();
+                        
+                        %get wavelength min and max
+                        [self.wvlMin, self.wvlMax]=self.getWavelengthMinMax;
+                        disp(['wvlMin = ',num2str(self.wvlMin),'nm']);
+                        disp(['wvlMax = ',num2str(self.wvlMax),'nm']);
+                        %disp(['freqMin = ',num2str(self.freqMin),'THz']);
+                        %disp(['freqMax = ',num2str(self.freqMax),'THz']);
+                        
+                        [self.pwrMin, self.pwrMax] = self.queryPower();
                         
                         self.Connected = 1;
                         msg = strcat(self.Name, ': Successfully connected.');
-                        % disp(msg);
+                        disp(msg);
                     catch ME
                         msg = strcat(self.Name, ': Cannot connect and initialize.');
                         % disp(msg);
@@ -212,12 +215,13 @@ classdef Laser_SantecTSL510 < InstrClass
             response = ''; %init
 
                 %check if connection is open
-                if strcmp(self.commsHandle.status, 'closed')
+                if strcmp(self.Obj.status, 'closed')
                     try
-                        fopen(self.commsHandle);
+                        fopen(self.Obj);
                     catch ME
                         self.setReady;
-                        self.logError('Santec Laser COM error', ME);
+                        disp('Santec Laser COM error');
+                        rethrow(ME); 
                         return;
                     end
                 end
@@ -239,14 +243,19 @@ classdef Laser_SantecTSL510 < InstrClass
         %% wait for completion
         function waitForCompletion(self)
             ready = 0;
+            self.sendCommand('*OPC?');
+            if ~str2num(self.readResponse());  %in case operation is already completed by the time it gets here.
+                return
+            end
+                
             start_time = tic;
             while ~ready  && toc(start_time)< self.timeout
                 self.sendCommand('*OPC?');
                 pause(0.05);
-                ready= str2num(self.readResponse());
+                ready= str2num(self.readResponse())
             end
             if toc(start_time) >= self.timeout
-                self.logError('WaitforCompletion timed out ');
+                disp('WaitforCompletion timed out ');
             end
             
         end
@@ -269,7 +278,7 @@ classdef Laser_SantecTSL510 < InstrClass
         function preset(self)
             %password only needed if connected when laser is just switched
             %on
-            self.sendCommand([':syst:pass ', self.password]);
+            self.sendCommand([':syst:pass ', self.Password]);
             % get identification
             self.sendCommand('*IDN?');
             self.Serial = self.readResponse;
@@ -284,12 +293,7 @@ classdef Laser_SantecTSL510 < InstrClass
             
             
             %set all the default values.
-            %get wavelength min and max
-            [self.wvlMin, self.wvlMax, self.freqMin, self.freqMax]=self.getWavelengthMinMax;
-            disp(['wvlMin = ',num2str(self.wvlMin),'nm']);
-            disp(['wvlMax = ',num2str(self.wvlMax),'nm']);
-            disp(['freqMin = ',num2str(self.freqMin),'THz']);
-            disp(['freqMax = ',num2str(self.freqMax),'THz']);
+
             %set the wavelength unit to [nm]
             defaultWvlUnit = 0; 
             self.setWavelengthUnit(defaultWvlUnit); % 0 - nm ; 1 - THz
@@ -338,7 +342,7 @@ classdef Laser_SantecTSL510 < InstrClass
             self.setPower(defaultPwr);
             
             self.off(); %close shutter
-            
+            disp('preset complete');
 
             
         end
@@ -440,21 +444,38 @@ classdef Laser_SantecTSL510 < InstrClass
                 wvl = round(wvl*1000)/1000; %resolution limit to 1pm. 
                 if (wvl<=self.wvlMax) && (wvl>=self.wvlMin)
                     self.sendCommand([':WAV ',num2str(wvl)]);
-                    self.logStatus('setting wavelength....'); 
+                    disp('setting wavelength....'); 
                 else
                    warndlg(sprintf('Wavelength value out of range \n \t\t\t - nothing done'),...
                        'Value out of range', 'modal');
                 end
                 self.waitForCompletion(); %takes a while for wvl to settle
+                pause(0.4);
                 %check if set and get are the same;
+                %disp(sprintf('Wavelength returned from Laser: %f nm',self.getWavelength()));
                 if wvl ~= self.getWavelength
                     [errorNumber, errorMessage] = self.getError();
-                    self.logError(sprintf('Error code %d and message from Laser: \n \t\t\t\%s', errorNumber,errorMessage));
-                    ex = MException('Laser:setWvl',...
-                        strcat('Wavelength mismatch: set wvl: ',num2str(wvl),'get wvl: ', num2str(self.getWavelength)));
-                    self.logError('setWavelength Error', ex);
+                    disp(sprintf('Error code %d and message from Laser: \n \t\t\t %s', errorNumber,errorMessage));
+                    if ~errorNumber  %try again, wait time might not be long enough...
+                        pause(0.4); 
+                       if wvl~=self.getWavelength
+                           self.Busy = 0;
+                           disp(['Wavelength set to :',num2str(wvl)]);
+                           return
+                       else
+                           ex = MException('Laser:setWvl',...
+                               strcat('Wavelength mismatch: set wvl: ',num2str(wvl),'  get wvl: ', num2str(self.getWavelength)));
+                           disp('setWavelength Error');
+                           throw(ex);
+                       end
+                    else
+                        ex = MException('Laser:setWvl',...
+                            strcat('Wavelength mismatch: set wvl: ',num2str(wvl),'  get wvl: ', num2str(self.getWavelength)));
+                        disp('setWavelength Error');
+                        throw(ex);
+                    end
                 else
-                    self.logStatus(['Wavelength set to :',num2str(wvl)]);
+                    disp(['Wavelength set to :',num2str(wvl)]);
                 end
                 
             self.Busy = 0;
@@ -468,7 +489,8 @@ classdef Laser_SantecTSL510 < InstrClass
             if (wvl>=self.wvlMax) || (wvl<=self.wvlMin)
                 ex = MException('Laser:getWavelength',...
                     strcat('getWavelength returned wvl out of range'));
-                self.logError('getWavelength Error', ex);
+                disp('getWavelength Error');
+                throw(ex);
             end
         end
         
@@ -482,9 +504,9 @@ classdef Laser_SantecTSL510 < InstrClass
             end
             in = self.getWavelengthUnit;
             if in == 0
-                self.logStatus(['Wavelength unit set to: [nm]']);
+                disp(['Wavelength unit set to: [nm]']);
             else if in ==1
-                    self.logStatus(['Wavelength unit set to: [THz]']);
+                    disp(['Wavelength unit set to: [THz]']);
                 end
             end
         end
@@ -513,14 +535,15 @@ classdef Laser_SantecTSL510 < InstrClass
                 if pwr ~= in
                     ex = MException('Laser:setPwr',...
                         strcat('Power mismatch: set pwr: ',num2str(pwr),'get pwr: ', num2str(in)));
-                    self.logError('setPower error', ex);
+                    disp('setPower error', ex);
+                    throw(ex);
                 end
                 
                 actualPower = self.getPowerActual;
                 if actualPower<in
-                    self.logError(sprintf('Current output power (%f [dBm]) is lower than set power (%f [dBm])',actualPower,in)); 
+                    disp(sprintf('Current output power (%f [dBm]) is lower than set power (%f [dBm])',actualPower,in)); 
                 end
-                self.logStatus(['Current output power: ', num2str(self.getPowerActual), 'dBm']);
+                disp(['Current output power: ', num2str(self.getPowerActual), 'dBm']);
             self.Busy = 0;
         end
         
@@ -540,6 +563,36 @@ classdef Laser_SantecTSL510 < InstrClass
 
         end
         
+        
+        %% set power unit
+        function setPowerUnit(self,unit)
+            self.Busy = 1;
+            % unit = 0 -> dBm
+            % unit = 1 -> Watts
+            in = self.getPowerUnit;
+            if in~=unit
+                self.sendCommand([':POW:UNIT ', num2str(unit)]);
+            end
+            in = self.getPowerUnit;
+            if in == 0
+                disp(['Power unit set to: [dBm]']);
+            else if in ==1
+                    disp(['Power unit set to: [mW]']);
+                end
+            end
+            self.Busy = 0;
+        end
+        
+        %% get power unit
+        function unit = getPowerUnit(self)
+            % unit = 0 -> dBm
+            % unit = 1 -> mWatts
+            
+            self.sendCommand(':POW:UNIT?');
+            unit = str2num(self.readResponse());
+            
+        end
+        
         %% set sweep range
         function setStartWvl(self,wvl)
             self.Busy = 1;
@@ -550,16 +603,18 @@ classdef Laser_SantecTSL510 < InstrClass
                 else
                     err = MException('Sweep:setStartWvl',...
                         'Wavelength value out of range');
-                    self.logError('LaserSweep:setStartWvl',err); 
+                    disp('LaserSweep:setStartWvl'); 
+                    throw(err);
                 end
                 self.waitForCompletion(); 
                 %check if set and get are the same;
                 if wvl ~= self.getStartWvl
                     ex = MException('Laser:setWvl',...
                         strcat('Wavelength mismatch: set wvl: ',num2str(wvl),'get wvl: ', num2str(self.getWavelength)));
-                    self.logError('setWavelength Error', ex);
+                    disp('setWavelength Error');
+                    throw(ex); 
                 else
-                    self.logStatus(['Sweep: Start Wavelength set to :',num2str(wvl)]);
+                    disp(['Sweep: Start Wavelength set to :',num2str(wvl)]);
                 end
             self.Busy = 0;
         end
@@ -572,7 +627,8 @@ classdef Laser_SantecTSL510 < InstrClass
             if (wvl>self.wvlMax) || (wvl<self.wvlMin)
                 ex = MException('Laser:getStarWvl',...
                     strcat('getStartWvl returned wvl out of range'));
-                self.logError('getWavelength Error', ex);
+                disp('getWavelength Error');
+                throw(ex);
             end
         end
         
@@ -584,16 +640,18 @@ classdef Laser_SantecTSL510 < InstrClass
                 else
                     err = MException('Sweep:setStopWvl',...
                         'Wavelength value out of range');
-                    self.logError('LaserSweep:setStopWvl',err); 
+                    disp('LaserSweep:setStopWvl'); 
+                    throw(err);
                 end
 
                 %check if set and get are the same;
                 if wvl ~= self.getStopWvl
                     ex = MException('Laser:setWvl',...
                         strcat('Wavelength mismatch: set wvl: ',num2str(wvl),'get wvl: ', num2str(self.getStopWvl)));
-                    self.logError('LaserSweep:setStopWvlError', ex);
+                    disp('LaserSweep:setStopWvlError');
+                    throw(ex);
                 else
-                    self.logStatus(['Sweep: Stop Wavelength set to :',num2str(wvl)]);
+                    disp(['Sweep: Stop Wavelength set to :',num2str(wvl)]);
                 end
             self.Busy = 0;
         end
@@ -606,7 +664,8 @@ classdef Laser_SantecTSL510 < InstrClass
             if (wvl>self.wvlMax) || (wvl<self.wvlMin)
                 ex = MException('Laser:getStopError',...
                     strcat('getStopWvl returned wvl out of range'));
-                self.logError('getWavelength Error', ex);
+                disp('getWavelength Error');
+                throw(ex);
             end
         end
         
@@ -616,7 +675,7 @@ classdef Laser_SantecTSL510 < InstrClass
         %% Sweep
         function [datapoints, channels] = setupSweep(self)
             self.Busy = 1;
-            self.logStatus('Setting Sweep Parameters ...');
+            disp('Setting Sweep Parameters ...');
             
             %Fixed sweep parameters
             % numbers of sweep cycles
@@ -727,7 +786,7 @@ classdef Laser_SantecTSL510 < InstrClass
         
         %% Returns the current wavelength and the min and max wavelength bounds
         
-        function [Wavelength] = queryWavelength(self)
+        function [wvlMin, wvlMax] = getWavelengthMinMax(self)
                 self.sendCommand(':WAV:MIN?');
                 wvlMin = self.readResponse();
                 wvlMin=str2num(wvlMin);
@@ -737,7 +796,7 @@ classdef Laser_SantecTSL510 < InstrClass
         end
         
         %% Returns the current laser power as well as the min and max power bounds
-        function [pwr] = queryPower(self)
+        function [pwrMin, pwrMax] = queryPower(self)
             
             self.sendCommand(':POW:MIN?');
             pwrMin=str2num(self.readResponse());
@@ -782,6 +841,9 @@ classdef Laser_SantecTSL510 < InstrClass
                     case -410
                         errorNumber = -410;
                         errorMessage = 'Query INTERRUPTED';
+                    otherwise
+                        errorNumber = 1000;
+                        errorMessage = resp; 
                 end
         end
         
