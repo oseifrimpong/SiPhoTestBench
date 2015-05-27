@@ -18,7 +18,7 @@ classdef Detector_Agilent8163A_81531A < InstrClass
     end
     properties (Access = protected)
         EngineMgr; % Engine Manager for the
-        Engine;
+
         
         
         PauseTime; % so Matlab doesn't overrun the COM port
@@ -53,6 +53,8 @@ classdef Detector_Agilent8163A_81531A < InstrClass
         Wvl;% Preallocate for speed
         wvlMin;
         wvlMax;
+        minAveragingTime;
+        maxAveragingTime;
     end
     
     %% static methods
@@ -80,15 +82,18 @@ classdef Detector_Agilent8163A_81531A < InstrClass
             self.NumOfDetectors = 0; % Hard-coded for now;
             self.PWMSlotInfo = 0;  %new
             self.PWMSlots = 0; %new %array with slot numbers used
-            self.SelectedDetectors = [];
+            self.SelectedDetectors = 1;
             self.TotalNumOfDetectors = 0;
             self.MaxDataPoints = 4000; %hard coded for now, needs to be queried
             
-            self.SlotNumber = 0; % channel # in slot
-            self.ChannelNumber = 0;% Sofware label number of detecto
-            self.Zeroed = 0 ; % 0=no, 1=yes, Flag for Zeroing detector bias
+            self.SlotNumber = 1; % channel # in slot
+            self.ChannelNumber = 1;% Sofware label number of detecto
+            self.Zeroed = 1 ; % 0=no, 1=yes, Flag for Zeroing detector bias
             self.DetectorNumber = -1;
             self.DetectorSwitchOffset = 0;
+            
+            self.minAveragingTime = 100e-6;  %from instrument
+            self.maxAveragingTime = 1000; %arbitrary
             
             self.wvlMax = 1700;
             self.wvlMin = 700; 
@@ -99,6 +104,7 @@ classdef Detector_Agilent8163A_81531A < InstrClass
             
             % Parameters
             self.Param.COMPort = '20';
+            self.Param.ClipLimit = -200; 
             self.Param.AveragingTime = .001; % s
             self.Param.RangeMode = 0; %1=auto, 0=manual, use Range val
             self.Param.PowerRange = -20; % dB
@@ -144,7 +150,8 @@ classdef Detector_Agilent8163A_81531A < InstrClass
                 self.GroupObj.Mainframespecific = get(self.Obj, 'Mainframespecific');
                 self.GroupObj.Pwmdataaquisition = get(self.Obj, 'Powermetermodulespwmdataacquisition');
                 self.GroupObj.Powermetermodules = get(self.Obj, 'Powermetermodules');
-                self.GroupObj.Utility = get(self.Obj, 'Utility');              
+                self.GroupObj.Utility = get(self.Obj, 'Utility'); 
+                                self.GroupObj.Utilitypassthrough = get(self.Obj, 'Utilitypassthrough');
                 disp('connection to detector established');
                 
                 self.Libname = get(self.Obj, 'DriverName');
@@ -236,7 +243,12 @@ classdef Detector_Agilent8163A_81531A < InstrClass
                 [slot, channel] = self.switchDetector(i);
                 invoke(self.GroupObj.Powermetermodules, 'setpwmpowerunit', ...
                     slot, channel, PowerUnit);
+                self.Param.PowerUnit =PowerUnit; 
             end
+        end
+        %%
+        function powerUnit = getPWMPowerUnit(self)
+            powerUnit = self.Param.PowerUnit;
         end
  
         function setWavelength(self,wvl)
@@ -274,7 +286,7 @@ classdef Detector_Agilent8163A_81531A < InstrClass
                 powerVal = invoke(self.GroupObj.Powermetermodules, 'pwmreadvalue', ...
                     slot, channel);
             catch ME
-                rethrow(ME)
+                %rethrow(ME)
                 try
                     err=self.queryError();
                 catch ME1
@@ -314,19 +326,7 @@ classdef Detector_Agilent8163A_81531A < InstrClass
             end
         end
         
-        function self = setupSweep(self, numOfDataPoints)
-            reset_to_default = 0;
-            self.DataPoints = numOfDataPoints;
-            self.GroupObj.Multiframelambdascan = get(self.Obj, 'Applicationswavelengthscanfunctionsmultiframelambdascan');
-            for ii = 1:self.NumOfDetectors
-                % Channel Number is always 0 for N7700A detector model
-                current_channel = ii-1;
-                invoke(self.GroupObj.Multiframelambdascan,'setinitialrangeparams', ...
-                    current_channel,reset_to_default,self.Param.PowerRange, ...
-                    self.RangeDecrement);
-            end
-            self.ReadyForSweep = 1;
-        end
+
         
         %Set up data logging if trigger set then the detectors waits for
         %trigger if not it starts recording right awy
@@ -338,28 +338,79 @@ classdef Detector_Agilent8163A_81531A < InstrClass
                 self.Param.AveragingTime, self.DataPoints);
         end
         
-        function [LoggingConnected, LoggingResult] = get_pwm_logging(self,DetectorNumber)
+        function [LoggingStatus, LoggingResult] = get_pwm_logging(self,DetectorNumber)
             % Get data from scanning to the right
-            self.switchDetector(DetectorNumber)
+            [slot, channel ] = self.switchDetector(DetectorNumber);
             LoggingResult = zeros(1, self.DataPoints);
             self.Param.PowerUnit=0; %fixed to dBm
-            [LoggingConnected, LoggingResult] = invoke(self.GroupObj.Pwmdataaquisition,...
-                'getpwmloggingresultsq', self.SlotNumber, self.ChannelNumber, self.Param.WaitForCompletion,...
-                self.Param.PowerUnit, LoggingResult)
+            [LoggingStatus, LoggingResult] = invoke(self.GroupObj.Pwmdataaquisition,...
+                'getpwmloggingresultsq', slot, channel, self.Param.WaitForCompletion,...
+                self.Param.PowerUnit, LoggingResult);
         end
         
         function setup_trigger(self, TriggerIn, TriggerOut, DetectorNumber)
             %TriggerIn=2; %0:ignore 1:single (sme), 2:complete (cme)
             %TriggerOut=0; %0:disabled, 1:at the end, 3:at the beginning
-            self.switchDetector(DetectorNumber);
-            invoke(self.GroupObj.Powermetermodules, 'setpwmtriggerconfiguration', self.SlotNumber, ...
+            [slot, channel ] = self.switchDetector(DetectorNumber);
+            invoke(self.GroupObj.Powermetermodules, 'setpwmtriggerconfiguration', slot, ...
                 TriggerIn, TriggerOut);
-            [in, out] = invoke(self.GroupObj.Powermetermodules, 'getpwmtriggerconfiguration', self.SlotNumber);
+            [in, out] = invoke(self.GroupObj.Powermetermodules, 'getpwmtriggerconfiguration', slot);
         end
         
         % Returns details about a driver error
         function [errorNumber, errorMessage] = queryError(self)
             [errorNumber, errorMessage] = invoke(self.GroupObj.Utility, 'errorquery');
+        end
+        
+        
+        % Returns details about a driver error
+        function AveragingTime = getAvgTime(self)
+            [slot, channel ] = self.switchDetector(1); %all detectors have the same averaging time; hack;
+            AveragingTime = invoke(self.GroupObj.Powermetermodules, 'getpwmaveragingtimeq',slot, channel);
+        end
+        % Returns details about a driver error
+      function setAvgTime(self, AvgTime)
+%             [slot, channel ] = self.switchDetector(1); %all detectors have the same averaging time; hack;
+%             invoke(self.GroupObj.Powermetermodules, 'setpwmaveragingtime', slot, channel, AvgTime);
+%             
+
+            if AvgTime<self.minAveragingTime || AvgTime> self.maxAveragingTime
+                errordlg(sprintf('Requested averaging time is out of range: \n Tmin = %f [s] and Tmax = %f [s]',...
+                    self.minAveragingTime, self.maxAveragingTime), 'Entry Error', 'modal');
+                AvgTime = self.minAveragingTime;
+                disp(sprintf('Requested averaging time is out of range \n\t\t T_avg set to %f instead',self.minAveragingTime));
+                %should also maybe put a uiwait....
+            end
+            
+    
+            try
+                [~, ll] = size(self.PWMSlots);
+                for ii = 1:ll
+                    invoke(self.GroupObj.Utilitypassthrough, 'cmd',[':SENS',num2str(ii),':POW:ATIM ',num2str(AvgTime)]);
+                    %there are only certain averaging times allowd. by
+                    %using the SCPI commands it automatically sets it to
+                    %the closest value.
+%                     avgTime = invoke(self.GroupObj.Powermetermodules, 'getpwmaveragingtimeq',...
+%                         self.PWMSlots(1,ii),1); %The averaging time cannot be set for the slave channel
+                    disp(sprintf('Averaging time of Detectors in slot %u set to %f [ms]',ii,AvgTime*1000));
+                end
+                
+            catch ME
+                [InstrumentErrorCode, ErrorMessage]=invoke(this.GroupObj.Utility,'errorquery');
+                disp(sprintf('Error returned from Mainframe:\n \t\t%s',ErrorMessage));
+                rethrow(ME);
+           end         
+            
+        
+             
+        end
+        
+        
+                %maybe not necessary; stop logging functions
+        function pwm_func_stop(self, DetectorNumber)
+            [slot, channel]=self.switchDetector(DetectorNumber);
+            invoke(self.GroupObj.Pwmdataaquisition,'pwmfunctionstop',...
+                slot, channel);
         end
         
         
@@ -391,6 +442,8 @@ classdef Detector_Agilent8163A_81531A < InstrClass
                 end
             end
             self.Slots=self.PWMSlots(2,:);  %legacy -> hack so it works
+            
+            self.SelectedDetectors = ones(1,self.NumOfDetectors); 
             
             disp(['Number of detectors found (# of channels): ', num2str(self.NumOfDetectors)]); 
             %As a return, Slot Information returns a one dimensional array.

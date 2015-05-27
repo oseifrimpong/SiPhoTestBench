@@ -199,8 +199,7 @@ for i = 1:numOfDetectors
     
     % include detector
     % enable by default (Value = true)
-    parentStruct
-    panelIndex
+
     obj.gui.(parentStruct)(panelIndex).detectorUI.includeDetector(i) = uicontrol(...
         'Parent', obj.gui.(parentStruct)(panelIndex).detectorUI.mainPanel, ...
         'Style', 'checkbox', ...

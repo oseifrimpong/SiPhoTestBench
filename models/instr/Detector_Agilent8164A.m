@@ -145,6 +145,7 @@ classdef Detector_Agilent8164A < InstrClass
                 self.GroupObj.Pwmdataaquisition = get(self.Obj, 'Pwmdataacquisition');
                 self.GroupObj.Powermetermodules = get(self.Obj, 'Powermetermodules');
                 self.GroupObj.Utility = get(self.Obj, 'Utility');
+
                 self.unlock();
             end
             

@@ -23,24 +23,75 @@ stitchNum = obj.AppSettings.SweepParams.StitchNum; % get # of stitches specified
 startWvl_init = obj.AppSettings.SweepParams.StartWvl;
 stopWvl_init = obj.AppSettings.SweepParams.StopWvl;
 stepWvl = obj.AppSettings.SweepParams.StepWvl;
+speed = obj.AppSettings.SweepParams.SweepSpeed; 
+
+if strcmp(laserType,'Santec TSL510')
+    points = floor((stopWvl_init-startWvl_init)/stepWvl);
+    if points > obj.instr.detector.getProp('MaxDataPoints')
+        obj.msg('Too many points required');
+        obj.msg(['Limit is: ', num2str(obj.instr.detector.getProp('MaxDataPoints')), ' points']);
+        obj.msg(['Requested: ', num2str(points), ' points']);
+        obj.msg('Adjust step size'); 
+        delete(waitbar_handle);
+        return
+    end
+    
+
+    %Calculate required detector averaging time based on speed and step:
+    required_avg = stepWvl/speed; %time spend on one point
+    %try to set it to detector
+    try
+        obj.instr.detector.setAvgTime(required_avg); 
+    catch ME
+        obj.msg(['required Averaging time not allowed']);
+        obj.msg(['T_avg = ',num2str(required_avg)]); 
+        delete(waitbar_handle);
+        rethrow(ME)
+       return 
+    end
+    obj.msg(['Detector Averaging time requested: ',num2str(required_avg)]);
+    returned_avg = obj.instr.detector.getAvgTime(); %work around, can only set value out of list
+    obj.instr.detector.setParam('AveragingTime', returned_avg); %work around to update class param
+    
+    required_speed = stepWvl/returned_avg; 
+    
+    obj.msg(['Detector Averaging time returned: ',num2str(returned_avg)]);
+    obj.msg(['Laser speed requested: ',num2str(speed)]);
+    obj.msg(['Laser speed adjusted: ',num2str(required_speed)]);
+    if required_speed >100 || required_speed<1 %hard coded limits for Santec Laser should query what limit is
+        obj.msg('Adjust sweep speed or step wvl; Averaging time for detector can only take certain levels');
+        delete(waitbar_handle);
+        return
+    end
+  
+    
+    
+end
+
+
+
 % set sweep properties valid for all segments
 %Laser
-obj.instr.laser.setProp('NumberOfScans', obj.AppSettings.SweepParams.NumberOfScans);
-obj.instr.laser.setProp('SweepSpeed', obj.AppSettings.SweepParams.SweepSpeed);
-obj.instr.laser.setProp('StepWvl', obj.AppSettings.SweepParams.StepWvl);
-obj.instr.laser.setParam('LowSSE', obj.AppSettings.SweepParams.LowSSE);
+obj.msg('Preparing Laser for sweep');
+%obj.instr.laser.setProp('NumberOfScans', obj.AppSettings.SweepParams.NumberOfScans);
+%obj.instr.laser.setProp('SweepSpeed', obj.AppSettings.SweepParams.SweepSpeed);
+obj.instr.laser.setSweepSpeed(required_speed);
+obj.instr.laser.setStartWvl( obj.AppSettings.SweepParams.StartWvl);
+obj.instr.laser.setStopWvl( obj.AppSettings.SweepParams.StopWvl);
+%obj.instr.laser.setParam('LowSSE', obj.AppSettings.SweepParams.LowSSE);
 obj.instr.laser.setParam('PowerUnit', 0 ); %set this to dB without being an option
 obj.instr.laser.setParam('PowerLevel', obj.AppSettings.SweepParams.PowerLevel);
 %Switch laser on
 obj.instr.laser.on();
 waitbar(0.2, waitbar_handle);
 %Detectors
-obj.instr.detector.setParam('PWMWvl', 1550); %not sure if this is necessary,
-obj.instr.detector.setParam('RangeMode', 0); %not sure if necessary; make it auto.
+obj.msg('Preparing Detector for sweep');
+obj.instr.detector.setParam('PWMWvl', 1310); %not sure if this is necessary,
+obj.instr.detector.setParam('RangeMode', 1); %not sure if necessary; make it manual.
 obj.instr.detector.setParam('PowerRange',obj.AppSettings.SweepParams.InitRange);
 obj.instr.detector.setProp('Clipping', obj.AppSettings.SweepParams.Clipping);
 obj.instr.detector.setProp('ClipLimit', obj.AppSettings.SweepParams.ClipLimit);
-obj.instr.detector.setProp('RangeDecrement', obj.AppSettings.SweepParams.RangeDecrement);
+%obj.instr.detector.setProp('RangeDecrement', obj.AppSettings.SweepParams.RangeDecrement);
 waitbar(0.3, waitbar_handle);
 
 
@@ -50,7 +101,7 @@ wvlData = [];
 
 % determine sweep range based on total wvl range and number of sweeps
 if stitchNum == 0
-    points = (stopWvl_init-startWvl_init)/stepWvl;
+    points = floor((stopWvl_init-startWvl_init)/stepWvl);
     if points > obj.instr.detector.getProp('MaxDataPoints')
         ex = MException('Sweep:TooManyPoint','Max points allowd exceeded');
         throw(ex);
@@ -59,10 +110,17 @@ if stitchNum == 0
     stopWvl = stopWvl_init;
     wvlRange = 0;
 elseif stitchNum > 0
+    
+    if strcmp(laserType,'Santec TSL510')
+        obj.msg(['For laser ',laserType, 'stichting is not implemented']);
+        delete(waitbar_handle);
+        return
+    end
+    
     wvlRange = (stopWvl_init - startWvl_init)/(stitchNum+1);
     startWvl = startWvl_init;
     stopWvl = startWvl + wvlRange;
-    points = (stopWvl-startWvl)/stepWvl;
+    points = floor((stopWvl-startWvl)/stepWvl);
     if points > obj.instr.detector.getProp('MaxDataPoints')
         ex = MException('Sweep:TooManyPoint','Max points allowd exceeded');
         throw(ex);
@@ -72,8 +130,15 @@ end
 for kk = 1:(stitchNum+1)
 %    waitbar(0.2+kk/(stitchNum+1)/10*0.6, waitbar_handle);
     % set the wvl range of the section in the laser object
-    obj.instr.laser.setProp('StartWvl',startWvl);
-    obj.instr.laser.setProp('StopWvl',stopWvl);
+
+ if strcmp(laserType,'Santec TSL510')   
+    obj.instr.laser.setStartWvl( obj.AppSettings.SweepParams.StartWvl);
+    obj.instr.laser.setStopWvl( obj.AppSettings.SweepParams.StopWvl);
+ else
+     obj.instr.laser.setProp('StartWvl',startWvl);
+    obj.instr.laser.setProp('StopWvl',stopWvl);    
+ end
+    
     % setupSweep uses the wvl range stored in the laser object
 %    obj.msg('Setup Sweep.');
     [dataPoints, ~] = obj.instr.laser.setupSweep();
@@ -108,8 +173,35 @@ for kk = 1:(stitchNum+1)
                 fprintf('\nwvl = %4.3f \tpwr = [%s]', currentWvl, num2str(pwr(end, :)));
             end
             
-        case 'Laser SRS LDC501'
+        case 'Santec TSL510'
             % Add code here
+            obj.msg('Santec TSL510 laser sweep init ...');
+            %has to be done for each channel independently 
+            selDet = obj.instr.detector.getProp('SelectedDetectors');
+            for ii=1:obj.instr.detector.getProp('NumOfDetectors') 
+                pwr(:,ii) = zeros(1, points);
+                wvl(:,ii) = zeros(1, points);
+                if selDet(ii)
+                    %setup trigger for wavelength logging in detector
+                    obj.instr.detector.setProp('DataPoints', points);
+                    obj.instr.detector.setup_trigger(2,0, ii); %do it on detector 1
+                    obj.instr.detector.pwm_func_stop(ii); %do it on detector 1
+                    obj.instr.detector.pwm_func_stop(ii); %do it on detector 1
+                    %arm the detector
+                    EstimatedTimeout = obj.instr.detector.start_pwm_logging(ii);
+                    obj.msg(['Estimated Timeout = ',num2str(EstimatedTimeout)]);
+                    obj.instr.laser.sweep();
+                    obj.msg(['Laser sweep finish for detector ',num2str(ii)]);
+                    obj.msg('Get data from detector');
+                    tmp_wvl=startWvl:stepWvl:stopWvl;
+                    wvl(:,ii)=tmp_wvl(1:end-1);
+                    [LoggingStatus, pwr(:,ii)] = obj.instr.detector.get_pwm_logging(...
+                        ii);
+                    obj.msg(['Logging status: ',num2str(LoggingStatus)]);
+                end
+            end
+
+            
             
     end
     pwrData(current_length+1:current_length+length(pwr), :) = pwr;
@@ -125,9 +217,11 @@ if stitchNum == 0
     waitbar(0.9, waitbar_handle);
 end
 
-wvlData = wvlData * 1e9; % Convert into nm and output
-pwrData(pwrData == -200) = -inf; 
-
+if ~strcmp(laserType,'Santec TSL510')
+    
+    wvlData = wvlData * 1e9; % Convert into nm and output
+    pwrData(pwrData == -200) = -inf;
+end
 obj.instr.laser.off();
 obj.instr.detector.setPWMPowerUnit(0);
 

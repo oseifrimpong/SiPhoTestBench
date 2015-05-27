@@ -37,7 +37,7 @@ end
 % panel element size variables
 stringBoxSize = [0.275, 0.15];
 pushButtonSize = [0.2, 0.17];
-editBoxSize = [0.1, 0.16];
+editBoxSize = [0.1, 0.18];
 popupSize = [0.1, 0.12];
 move_button_x = 0.065;
 move_button_y = 0.17;
@@ -105,7 +105,7 @@ obj.gui.(parentStruct)(panelIndex).laserUI.laserSettingsButton = uicontrol(...
     'Units', 'normalized', ...
     'Position', [x_align, y_align, pushButtonSize], ...
     'String', 'Settings', ...
-    'Callback', {@laser_settings_cb, obj});
+    'Callback', {@laser_settings_cb, obj, parentStruct, panelIndex});
 
 x_align = x_start;
 y_align = y_align - stringBoxSize(2) - 0.03;
@@ -446,8 +446,9 @@ end
         obj.instr.laser.setWavelength(newWvl);
     end
 
-    function laser_settings_cb(~, ~, obj)
+    function laser_settings_cb(~, ~, obj, parentStruct, panelIndex)
         obj.instr.laser.settingsWin;
+        updatePanel(obj, parentStruct, panelIndex);
     end
 
     function power_edit_cb(hObject, ~, obj)
@@ -493,7 +494,13 @@ end
     function laser_sweep_cb(~, ~, obj, parentName, axesHandle)
         selectedDetectors = obj.instr.detector.getProp('SelectedDetectors');
         numOfSelected = sum(selectedDetectors);
-        [wvlVals, pwrVals] = sweep(obj); % calls control script sweep
+        try
+            [wvlVals, pwrVals] = sweep(obj); % calls control script sweep
+        catch ME
+            disp('no data returned');
+            rethrow(ME); 
+            return
+        end
         obj.gui.sweepScan{end+1} = [wvlVals, pwrVals];
         [~, numDetectors] = size(pwrVals);
         colors = {'r', 'g', 'b', 'c', 'm', 'k'};
@@ -598,6 +605,8 @@ end
             'String', obj.AppSettings.SweepParams.StepWvl);
         set(obj.gui.(parentStruct)(panelIndex).laserUI.sweepRangeDisplay,...
             'String', obj.AppSettings.SweepParams.InitRange);
+        set(obj.gui.(parentStruct)(panelIndex).laserUI.powerEdit,...
+            'String', obj.instr.laser.getPower);
     end
 
-    
+   

@@ -252,7 +252,7 @@ classdef Laser_SantecTSL510 < InstrClass
             while ~ready  && toc(start_time)< self.timeout
                 self.sendCommand('*OPC?');
                 pause(0.05);
-                ready= str2num(self.readResponse())
+                ready= str2num(self.readResponse());
             end
             if toc(start_time) >= self.timeout
                 disp('WaitforCompletion timed out ');
@@ -393,6 +393,7 @@ classdef Laser_SantecTSL510 < InstrClass
                     'Laser Shutter did not close properly'); 
                 disp('Laser:Shutter',err); 
             end
+            self.Lasing = 0; 
             self.Busy = 0;
         end
         
@@ -410,6 +411,7 @@ classdef Laser_SantecTSL510 < InstrClass
                     'Laser Shutter did not close properly'); 
                 disp('Laser:Shutter',err); 
             end 
+            self.Lasing = 1; 
             self.Busy = 0;
         end
         
@@ -669,28 +671,66 @@ classdef Laser_SantecTSL510 < InstrClass
             end
         end
         
-
+                %% get sweep range: stop wvl
+        function setSweepSpeed(self, speed)
+            self.Busy = 1;
+            speed = round(speed*10)/10; %resolution limit to 100pm/s.
+            if (speed<=1) && (speed>=100)
+                ex = MException('Laser:setSweepSpeed',...
+                    strcat('setSweepSpeed out of range'));
+                disp('setSweepSpeed Error');
+                throw(ex);
+            else
+                self.sendCommand([':WAV:SWE:SPE ', num2str(speed)]);
+            end
+            in = self.getSweepSpeed;
+            
+            disp(['sweep speed set to ', num2str(in),'nm/s']);
+            
+            self.Busy = 0;
+            
+        end
         
+        %% get sweep range: stop wvl
+        function speed = getSweepSpeed(self)
+            speed = 1;
+            self.sendCommand(':WAV:SWE:SPE?');
+            speed = str2num(self.readResponse());
+            if (speed>100) || (speed<1)
+                ex = MException('Laser:setSweepSpeed',...
+                    strcat('setSweepSpeed out of range'));
+                disp('setSweepSpeed Error');
+                throw(ex);
+            end
+        end        
         
         %% Sweep
-        function [datapoints, channels] = setupSweep(self)
+        function [dataPoints, something] = setupSweep(self)
             self.Busy = 1;
+            dataPoints = 0; %not used
+            something = 0; %not used
             disp('Setting Sweep Parameters ...');
             
             %Fixed sweep parameters
             % numbers of sweep cycles
             self.sendCommand(':WAV:SWE:CYCL 1');
             %sets the delay between sweep cycles
-            self.sendCommand(':WAV:SWE:DEL 0.1'); %range: 0-999.9 s; step 0.1
+            self.sendCommand(':WAV:SWE:DEL 0'); %range: 0-999.9 s; step 0.1
             self.sendCommand(':WAV:SWE:MOD 1');
             %0: Step operation one way
             %1: continuous operation, one way
             %2: step operation, two way
             %3: continuous operation, two way
             
-            self.setStartWvl(start);
-            self.setStopWvl(stop);
-            self.setSweepSpeed(speed); 
+            %set up trigger
+            self.sendCommand(':TRIG:OUTP 2'); 
+            self.sendCommand(':TRIG:OUTP?');
+            self.readResponse();
+            %0: None
+            %1: Stop
+            %2: Start
+            %3: Step
+            disp('ready to sweep'); 
             self.Busy = 0;
             self.ReadyForSweep = 1;
 %             disp('laser.setupSweep complete');
@@ -705,15 +745,31 @@ classdef Laser_SantecTSL510 < InstrClass
         
         % execute sweep
         function resp = sweep(self)
-%             disp('starting laser.sweep');
+            disp('starting laser.sweep');
             % returns array with wavelength value for each sample in (m)
             self.Busy = 1;
             if self.ReadyForSweep
                 self.sendCommand(':WAV:SWE 1');
-                self.waitForCompletion;
+                pause(1);
+
+            self.sendCommand(':WAV:SWE?');
+            ready= str2num(self.readResponse());
+            
+            start_time = tic;  TimeOUT=40; 
+            while (ready==1 || ready ==4)  && toc(start_time)< TimeOUT  %time out to 20s
+                self.sendCommand(':WAV:SWE?');
+                pause(0.05);
+                ready = str2num(self.readResponse());
+            end
+            if toc(start_time) >=  TimeOUT
+                disp('Wavelength Sweep timed out timed out ');
+            end
+                
+                
+                
             end
             self.Busy = 0;
-            self.ReadyForSweep = 0;
+%             self.ReadyForSweep = 0;
             %             disp('laser.sweep complete');
         end
         
@@ -758,10 +814,9 @@ classdef Laser_SantecTSL510 < InstrClass
         end
         
         function [triggerIn, triggerOut] = getTriggerSetup(self)
-            [triggerIn, triggerOut] = invoke(...
-                self.GroupObj.Tunablelasersources, ...
-                'gettlstriggerconfiguration', ...
-                self.Param.TunableLaserSlot);
+            self.sendCommand(':TRIG:OUTP?'); 
+            triggerOut = str2num(self.readResponse());
+            triggerIn = 0; 
             disp('trigger values from Laser_Agilent8164A.getTriggerSetup func:')
             disp(triggerIn);
             disp(triggerOut);
