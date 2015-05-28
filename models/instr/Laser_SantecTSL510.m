@@ -832,6 +832,9 @@ classdef Laser_SantecTSL510 < InstrClass
             %1: Stop
             %2: Start
             %3: Step
+            %set the trigger out to 0 = 'none' the stage has to trigger the
+            %detector but the detector is also connected to the laser
+            %output trigger. 
             self.sendCommand([':TRIG:OUTP ',num2str(0)]);
         end
     end

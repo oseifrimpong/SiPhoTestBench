@@ -27,8 +27,8 @@ obj.instr.opticalStage.set_trigger_config(1);
 obj.instr.detector.switchDetector(obj.AppSettings.MappingParams.Detector);
 obj.instr.detector.pwm_func_stop(obj.AppSettings.MappingParams.Detector);
 powerUnit = obj.instr.detector.getPWMPowerUnit();
-if powerUnit == 0
-    obj.instr.detector.setPWMPowerUnit(1);
+if powerUnit == 1
+    obj.instr.detector.setPWMPowerUnit(0);
 end
 obj.instr.detector.setParam('RangeMode',0);
 obj.instr.detector.setParam('AveragingTime',obj.AppSettings.MappingParams.AvgTime);
@@ -39,15 +39,23 @@ obj.instr.detector.setup_trigger(2,0, obj.AppSettings.MappingParams.Detector);
 
 
 %Prepare laser
+try
 obj.instr.laser.setParam('Wavelength',obj.AppSettings.MappingParams.Wvl);
 obj.instr.laser.setParam('PowerUnit',0);  %this won't probably work yet.
 obj.instr.laser.setParam('PowerLevel',obj.AppSettings.MappingParams.Power);
-obj.instr.laser.setParam('LowSSE',obj.AppSettings.MappingParams.LowSSE);
+catch ME
+    rethrow(ME); 
+end
+%obj.instr.laser.setParam('LowSSE',obj.AppSettings.MappingParams.LowSSE);
 % for n7744 detectors
 if strcmp(obj.instr.detector.Name, 'Agilent Detector N7744A')
     % set the laser trigger to pass-thru
     disp('Setting up trigger for Agilent Detector N7744A.')
     obj.instr.laser.setTriggerPassThru(); % will print debug to console
+end
+if strcmp(obj.instr.laser.Name, 'Santec TSL510')
+    disp('Switching Laser Trigger off (pass through)')
+    obj.instr.laser.setTriggerPassThru(); % will print debug to console    
 end
 %Switch laser on
 obj.instr.laser.on();

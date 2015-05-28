@@ -81,9 +81,13 @@ classdef TEC_ILXLightwave_LDT_5910B < InstrClass
             %self.Param.TargetCurrent = 1; in Amperes
             %self.Param.TargetResistance = 10; in kOhms
             
-            self.C1 = 1;
-            self.C2 = 2.333;
-            self.C3 = 0.5;
+% shons 24/5/2015 old values
+%             self.C1 = 1;
+%             self.C2 = 2.333;
+%             self.C3 = 0.5;
+            self.C1 = 1.280371619;
+            self.C2 = 2.369620414;
+            self.C3 = 0.897542961;
             self.PGain = -3.031296; % A/°C
             self.IGain = 0.1723280; % /s
             self.DGain = 1.450723;  % s

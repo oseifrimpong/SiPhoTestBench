@@ -109,7 +109,7 @@ classdef Detector_Agilent8163A_81531A < InstrClass
             self.Param.RangeMode = 0; %1=auto, 0=manual, use Range val
             self.Param.PowerRange = -20; % dB
             self.Param.PowerUnit = 0; % dB=0, W=1
-            self.Param.UpdatePeriod = 0.5; % update reading timer: 0.5s
+            self.Param.UpdatePeriod = 1; % update reading timer: 0.5s
             self.Param.PWMWvl = 1550;
             self.Param.WaitForCompletion = 0;
             self.Param.InternalTrigger = 1; % not sure what this does
