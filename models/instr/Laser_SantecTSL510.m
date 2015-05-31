@@ -82,8 +82,8 @@ classdef Laser_SantecTSL510 < InstrClass
             self.Connected = 0; % not connected
             
             
-            self.wvlMin = 1270; %[nm]
-            self.wvlMax = 1350; %[nm]
+            self.wvlMin = 1000; %[nm]
+            self.wvlMax = 1800; %[nm]
             self.freqMin = 230; %[THz]
             self.freqMax = 250; %[THz]
             self.pwrMin = -10; %[dBm]
@@ -104,7 +104,7 @@ classdef Laser_SantecTSL510 < InstrClass
             self.NumberOfScans = 0; % number of scans for sweep
             
             % instrument parameters
-            self.Param.Wavelength = 1310; % wavelength (nm), needs to be set through a method so we know it changes
+            self.Param.Wavelength = 1550; % wavelength (nm), needs to be set through a method so we know it changes
             
             self.Param.PowerLevel = 0; % initialize currenet power level
             self.Param.COMPort = 1; %  GPIB port #
@@ -488,7 +488,7 @@ classdef Laser_SantecTSL510 < InstrClass
             wvl = 1; 
             self.sendCommand(':WAV?');
             wvl = str2num(self.readResponse());
-            if (wvl>=self.wvlMax) || (wvl<=self.wvlMin)
+            if (wvl>self.wvlMax) || (wvl<self.wvlMin)
                 ex = MException('Laser:getWavelength',...
                     strcat('getWavelength returned wvl out of range'));
                 disp('getWavelength Error');

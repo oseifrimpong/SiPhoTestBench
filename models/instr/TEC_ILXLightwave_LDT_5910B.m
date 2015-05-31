@@ -62,7 +62,7 @@ classdef TEC_ILXLightwave_LDT_5910B < InstrClass
             
             self.MinTemp = 10;  % degrees C   10 degree
             self.MaxTemp = 80;  % degrees C   120 degree
-            self.MaxCurrent = 1.4; % in amps, given by peltier cooler manufacturer  1.4 A
+            self.MaxCurrent = 3; % in amps, given by peltier cooler manufacturer  1.4 A
             self.MaxVolt = 8.5;     % in volts  8.5V
             self.MaxR = 20e3;     % upper resitance limit in kilo ohm
             self.MinR = 100;     % lower resistance limit in kilo ohm
@@ -70,13 +70,13 @@ classdef TEC_ILXLightwave_LDT_5910B < InstrClass
             % serial port connection parameters
             self.Obj = ' ';  % becomes serial port object
             self.Param.COMPort = 7; % GPIB address
-            self.Param.BaudRate = 9600;
-            self.Param.DataBits = 8;
-            self.Param.StopBits = 1;
-            self.Param.Terminator = 'LF';
-            self.Param.Parity = 'none';
-            self.Param.UpdatePeriod = 10; % (s) update reading timer
-            self.Param.TargetTemp= 25;
+%             self.Param.BaudRate = 9600;
+%             self.Param.DataBits = 8;
+%             self.Param.StopBits = 1;
+%             self.Param.Terminator = 'LF';
+%             self.Param.Parity = 'none';
+%             self.Param.UpdatePeriod = 10; % (s) update reading timer
+%             self.Param.TargetTemp= 25;
             %The following are needed for current or resistance control
             %self.Param.TargetCurrent = 1; in Amperes
             %self.Param.TargetResistance = 10; in kOhms
@@ -122,17 +122,19 @@ classdef TEC_ILXLightwave_LDT_5910B < InstrClass
 %                 self.setMaxR(self.MaxR);
 %                 self.setMinR(self.MinR);
                 
-                self.setThermoSensorType(self.ThermoSensorType);
-                
-                self.set_TripOffThermometer(self.TripOffThermometer);
-                self.set_TripOffMaxTemp(self.TripOffMaxTemp);
-                self.set_TripOffMinTemp(self.TripOffMinTemp);
-                self.set_TripOffMaxCurrent(self.TripOffMaxCurrent);
-                self.set_TripOffMaxVoltage(self.TripOffMaxVoltage);
+%                 self.setThermoSensorType(self.ThermoSensorType);
+%                 
+%                 self.set_TripOffThermometer(self.TripOffThermometer);
+%                 self.set_TripOffMaxTemp(self.TripOffMaxTemp);
+%                 self.set_TripOffMinTemp(self.TripOffMinTemp);
+%                 self.set_TripOffMaxCurrent(self.TripOffMaxCurrent);
+%                 self.set_TripOffMaxVoltage(self.TripOffMaxVoltage);
                 
                 self.setThermistorModel(self.C1, self.C2, self.C3); % A, B, C
                 % Vince will add it back
                 %                 self.PID_calibration(0, self.PGain, self.IGain, self.DGain); % P, I, D
+% 
+
             catch ME
                 rethrow(ME);
             end
@@ -142,8 +144,13 @@ classdef TEC_ILXLightwave_LDT_5910B < InstrClass
             if strcmp(self.Obj.Status, 'open')
                 self.Connected = 1;
                 msg = strcat(self.Name, ' connected');
-%                disp(msg);
+                %                disp(msg);
             end
+            %note : jf hack to read the temperature while it is
+            %changing
+            self.send_command('TOL 10,0.001');
+            self.send_command('TOL?');
+            re = self.read_response();
         end
         
         function self = disconnect(self)
@@ -239,6 +246,8 @@ classdef TEC_ILXLightwave_LDT_5910B < InstrClass
             set_temp = strcat(['T ', num2str(self.Param.TargetTemp)]);
             self.send_command(set_temp);
             msg = strcat(self.Name, ': setting temp to ', num2str(self.Param.TargetTemp));
+            self.waitForTemp;
+            
         end
         
         function msg = getSetTemp(self)
@@ -248,24 +257,24 @@ classdef TEC_ILXLightwave_LDT_5910B < InstrClass
             msg = sprintf('Set temp is : %.1f', temp);
         end
         
-        function msg = setTargetCurrent(self, current)
-            %set the current of the controller
-            self.Param.TargetCurrent = current;
-            set_current = strcat(['ITE ', num2str(current)]);
-            self.send_command(set_current);
-            msg = strcat(self.Name, ': setting current to ', num2str(self.Param.TargetTemp));
-        end
-        
-        function msg = setTargetR(self, resistance)
-            %set the TEC resistance setpint in kilo ohm
-            self.TargetResistance = resistance;
-            set_R = strcat(['R ',num2str(resistance)]);
-            self.send_command(set_R);
-            msg = strcat(self.Name, ': setting resistance to ', num2str(self.Param.TargetTemp));
-        end
+%         function msg = setTargetCurrent(self, current)
+%             %set the current of the controller
+%             self.Param.TargetCurrent = current;
+%             set_current = strcat(['ITE ', num2str(current)]);
+%             self.send_command(set_current);
+%             msg = strcat(self.Name, ': setting current to ', num2str(self.Param.TargetTemp));
+%         end
+%         
+%         function msg = setTargetR(self, resistance)
+%             %set the TEC resistance setpint in kilo ohm
+%             self.TargetResistance = resistance;
+%             set_R = strcat(['R ',num2str(resistance)]);
+%             self.send_command(set_R);
+%             msg = strcat(self.Name, ': setting resistance to ', num2str(self.Param.TargetTemp));
+%         end
         
         %%%---------------------TEC monitor ---------------------------------
-        
+%         
         function temp = currentTemp(self)
             % query the sensor temperature in ï¿½C
             check_temp = 'T?';
@@ -274,51 +283,51 @@ classdef TEC_ILXLightwave_LDT_5910B < InstrClass
             %             temp = self.read_response();
             %disp(['Current temp is ', temp,'°C']);
         end
+%         
+%         function current = currentCurrent(self)
+%             % qurey the TEC operating current in ampere
+%             check_current = 'ITE?';
+%             self.send_command(check_current);
+%             current = self.read_response();
+%             disp(['Current current is ', current,'A']);
+%         end
+%         
+%         function voltage = currentVolt(self)
+%             % query the TEC voltage in volts
+%             check_voltage = 'TVRD?';
+%             self.send_command(check_voltage);
+%             voltage=self.read_response();
+%             disp(['Current voltage is ', voltage, 'V']);
+%         end
         
-        function current = currentCurrent(self)
-            % qurey the TEC operating current in ampere
-            check_current = 'ITE?';
-            self.send_command(check_current);
-            current = self.read_response();
-            disp(['Current current is ', current,'A']);
-        end
-        
-        function voltage = currentVolt(self)
-            % query the TEC voltage in volts
-            check_voltage = 'TVRD?';
-            self.send_command(check_voltage);
-            voltage=self.read_response();
-            disp(['Current voltage is ', voltage, 'V']);
-        end
-        
-        function checkRawThermometer(self)
-            %query the raw sensor value in kilo ohm,voltes or micro ampere
-            check_thermometer = 'TRAW?';
-            self.send_command(check_thermometer);
-            thermometer=self.read_response;
-            disp(['Current thermometer is ',thermometer]);
-        end
-        
-        function checkTemSensorStatus(self)
-            % query the sensor status. Return OK=1 or Fault=0, based on
-            % whether the sensor reading is within hardware bounds
-            check_status = 'TSNS?';
-            self.send_command(check_status);
-            temperature_SensorStatus=fscanf([self.Obj]);
-            if temperature_SensorStatus==0
-                disp('Currrent temperature sensor status is fault');
-            else
-                disp('Currrent temperature sensor status is OK');
-            end
-        end
-        
-        
-        function status = checkAutoTune(self)
-            autotune = 'TUNE?';
-            self.send_command(autotune);
-            % Status: 0 - Off; 1 - On; 2 - Unstable; 3 - Success; 4 - Failed;
-            status = fscanf(self.Obj);
-        end
+%         function checkRawThermometer(self)
+%             %query the raw sensor value in kilo ohm,voltes or micro ampere
+%             check_thermometer = 'TRAW?';
+%             self.send_command(check_thermometer);
+%             thermometer=self.read_response;
+%             disp(['Current thermometer is ',thermometer]);
+%         end
+%         
+%         function checkTemSensorStatus(self)
+%             % query the sensor status. Return OK=1 or Fault=0, based on
+%             % whether the sensor reading is within hardware bounds
+%             check_status = 'TSNS?';
+%             self.send_command(check_status);
+%             temperature_SensorStatus=fscanf([self.Obj]);
+%             if temperature_SensorStatus==0
+%                 disp('Currrent temperature sensor status is fault');
+%             else
+%                 disp('Currrent temperature sensor status is OK');
+%             end
+%         end
+%         
+%         
+%         function status = checkAutoTune(self)
+%             autotune = 'TUNE?';
+%             self.send_command(autotune);
+%             % Status: 0 - Off; 1 - On; 2 - Unstable; 3 - Success; 4 - Failed;
+%             status = fscanf(self.Obj);
+%         end
         
         
         
@@ -342,39 +351,44 @@ classdef TEC_ILXLightwave_LDT_5910B < InstrClass
             setPGain=strcat(['TPGN ', num2str(P)]);
             self.send_command(setPGain);
             self.PGain = P;
+            
+            % command: 'GAIN 300'
+            
+%             An <nrf value> between 1 - 300, the value will be stored to the
+%             nearest of: 1, 3, 10, 30, 100, or 300.
         end
         
-        function PGain = getPGain(self)
-            command = 'TPGN?';
-            self.send_command(command);
-            PGain = fscanf(self.Obj);
-        end
-        
-        function setIGain(self, I)
-            % set the temperature control loop integral gain in /s
-            setIGain=strcat(['TIGN ', num2str(I)]);
-            self.send_command(setIGain);
-            self.IGain = I;
-        end
-        
-        function IGain = getIGain(self)
-            command = 'TIGN?';
-            self.send_command(command);
-            IGain = fscanf(self.Obj);
-        end
-        
-        function setDGain(self, D)
-            % set the temperature control loop derivative gain in s
-            setDGain=strcat(['TDGN ', num2str(D)]);
-            self.send_command(setDGain);
-            self.DGain = D;
-        end
-        
-        function DGain = getDGain(self)
-            command = 'TDGN?';
-            self.send_command(command);
-            DGain = fscanf(self.Obj);
-        end
+%         function PGain = getPGain(self)
+%             command = 'TPGN?';
+%             self.send_command(command);
+%             PGain = fscanf(self.Obj);
+%         end
+%         
+%         function setIGain(self, I)
+%             % set the temperature control loop integral gain in /s
+%             setIGain=strcat(['TIGN ', num2str(I)]);
+%             self.send_command(setIGain);
+%             self.IGain = I;
+%         end
+%         
+%         function IGain = getIGain(self)
+%             command = 'TIGN?';
+%             self.send_command(command);
+%             IGain = fscanf(self.Obj);
+%         end
+%         
+%         function setDGain(self, D)
+%             % set the temperature control loop derivative gain in s
+%             setDGain=strcat(['TDGN ', num2str(D)]);
+%             self.send_command(setDGain);
+%             self.DGain = D;
+%         end
+%         
+%         function DGain = getDGain(self)
+%             command = 'TDGN?';
+%             self.send_command(command);
+%             DGain = fscanf(self.Obj);
+%         end
         %%%---------------------TEC  sensor commands---------------------------
         
         function setThermoSensorType(self, type)
@@ -392,42 +406,42 @@ classdef TEC_ILXLightwave_LDT_5910B < InstrClass
         end
         
         
-        %%%-------------------TEC trip-off-----------------------------------
-        
-        function set_TripOffThermometer(self, status)
-            % set the TEC trip off upon thermometer fault (No=0,Yes=1)
-            self.TripOffThermometer = status;
-            set_TripOffThermometer = strcat(['TTSF ', num2str(status)]);
-            self.send_command(set_TripOffThermometer);
-        end
-        
-        function set_TripOffMaxTemp(self, status)
-            % set the TEC trip off upon exceeding max Temp (No=0,Yes=1)
-            self.TripOffMaxTemp = status;
-            set_TripOffMaxTemp = strcat(['TTMX ', num2str(self.TripOffMaxTemp)]);
-            self.send_command(set_TripOffMaxTemp);
-        end
-        
-        function set_TripOffMinTemp(self, status)
-            % set the TEC trip off upon exceeding min Temp (No=0,Yes=1)
-            self.TripOffMinTemp = status;
-            set_TripOffMinTemp = strcat(['TTMN ', num2str(self.TripOffMinTemp)]);
-            self.send_command(set_TripOffMinTemp);
-        end
-        
-        function set_TripOffMaxCurrent(self, status)
-            % set the TEC trip off upon exceeding current limit (No=0,Yes=1)
-            self.TripOffMaxCurrent = status;
-            set_TripOffMaxCurrent=strcat(['TTIL ', num2str(self.TripOffMaxCurrent)]);
-            self.send_command(set_TripOffMaxCurrent);
-        end
-        
-        function set_TripOffMaxVoltage(self, status)
-            % set the TEC trip off upon exceeding voltage limit (No=0,Yes=1)
-            self.TripOffMaxVoltage = status;
-            set_TripOffMaxVoltage = strcat(['TTVL ', num2str(self.TripOffMaxVoltage)]);
-            self.send_command(set_TripOffMaxVoltage);
-        end
+%         %%%-------------------TEC trip-off-----------------------------------
+%         
+%         function set_TripOffThermometer(self, status)
+%             % set the TEC trip off upon thermometer fault (No=0,Yes=1)
+%             self.TripOffThermometer = status;
+%             set_TripOffThermometer = strcat(['TTSF ', num2str(status)]);
+%             self.send_command(set_TripOffThermometer);
+%         end
+%         
+%         function set_TripOffMaxTemp(self, status)
+%             % set the TEC trip off upon exceeding max Temp (No=0,Yes=1)
+%             self.TripOffMaxTemp = status;
+%             set_TripOffMaxTemp = strcat(['TTMX ', num2str(self.TripOffMaxTemp)]);
+%             self.send_command(set_TripOffMaxTemp);
+%         end
+%         
+%         function set_TripOffMinTemp(self, status)
+%             % set the TEC trip off upon exceeding min Temp (No=0,Yes=1)
+%             self.TripOffMinTemp = status;
+%             set_TripOffMinTemp = strcat(['TTMN ', num2str(self.TripOffMinTemp)]);
+%             self.send_command(set_TripOffMinTemp);
+%         end
+%         
+%         function set_TripOffMaxCurrent(self, status)
+%             % set the TEC trip off upon exceeding current limit (No=0,Yes=1)
+%             self.TripOffMaxCurrent = status;
+%             set_TripOffMaxCurrent=strcat(['TTIL ', num2str(self.TripOffMaxCurrent)]);
+%             self.send_command(set_TripOffMaxCurrent);
+%         end
+%         
+%         function set_TripOffMaxVoltage(self, status)
+%             % set the TEC trip off upon exceeding voltage limit (No=0,Yes=1)
+%             self.TripOffMaxVoltage = status;
+%             set_TripOffMaxVoltage = strcat(['TTVL ', num2str(self.TripOffMaxVoltage)]);
+%             self.send_command(set_TripOffMaxVoltage);
+%         end
         
         
         
@@ -435,10 +449,7 @@ classdef TEC_ILXLightwave_LDT_5910B < InstrClass
         
         
         function self = send_command(self, command)
-            if self.Obj.BytesAvailable > 0
-                fscanf(self.Obj, '%s', self.Obj.BytesAvailable);
-            end
-            
+            disp(['Sending command : ', command]); 
             if strcmp(self.Obj.Status,'open')  %if connection is open
                 fprintf(self.Obj, command);
             else
@@ -449,42 +460,78 @@ classdef TEC_ILXLightwave_LDT_5910B < InstrClass
         end
         
         function response = read_response(self)
-            response = '0';
+            response = '';
             if ~self.Connected
                 error(strcat(self.Name,':Read'),...
                     'temperature controller status: closed');
             end
             start_time = tic;
-            while toc(start_time) < self.Timeout
-                if self.Obj.BytesAvailable >0
-                    response = fscanf(self.Obj);
-                    return
-                else
-                    pause(self.PauseTime);
-                end
+            while isempty(response) && toc(start_time) < self.Timeout
+                %disp(['read transfer status: ', num2str(self.Obj.TransferStatus)]);
+                response = fscanf(self.Obj);
+                pause(self.PauseTime);
             end
             if toc(start_time) >= self.Timeout
                 error(strcat(self.Name,':ReadTimeOut'),...
-                    'temprature controller timed out');
+                    'temprature controller timed out');      
             end
         end
         
+        
+        function waitForTemp(self)
+            ready = 0
+            startTime = tic; 
+            count = 0; 
+            while (count ==2) && toc(startTime)<self.Timeout 
+                self.send_command('EVE?');
+                if bitget(str2num(self.read_response),10)  %bit 10 of SER is switched if temp is in tolerance intervall
+                    count = count +1; %bit is set twice once it leaves the tolerance intervall and once it enters again 
+                end  %toleracne is set when .connect to large 10 degree intervall and short time.
+                pause(0.1);
+            end
+        end
+        
+        %% wait for completion
+        function waitForCompletion(self)
+            ready = 0;
+            disp('wait for command to complete...');
+            self.send_command('*OPC?');
+            if str2num(self.read_response());  %OPC returns 1 when finished
+                return
+            end
+                
+            start_time = tic;
+            while ready  && toc(start_time)< self.Timeout
+                self.sendCommand('*OPC?');
+                pause(0.05);
+                ready= str2num(self.readResponse())
+            end
+            if toc(start_time) >= self.Timeout
+                disp('WaitforCompletion timed out ');
+            end
+            disp('command complete, ready for next command');            
+        end        
+        
+        
+        
         function msg = start(self)
             %Todo; error handling
-            cmd=strcat('TEON 1');
+            cmd=strcat('OUT 1');
             self.send_command(cmd);
             %      self.Control = 1; % (shons note) this is a protected property - need to write method to report on status or use busy
             self.Busy = 1;
             msg = strcat(self.Name, ': turning TEC on');
+            disp(msg);
         end
         
         function msg = stop(self)
             %TODO: error handling
-            cmd = ('TEON 0');
+            cmd = ('OUT 0');
             self.send_command(cmd);
             %      self.Control = 0; % (shons note) this is a protected property - need to write method to report on status or use busy
             self.Busy = 0;
             msg = strcat(self.Name, ': turning TEC off');
+            disp(mgs);
         end
     end
 end
