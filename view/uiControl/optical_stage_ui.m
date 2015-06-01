@@ -405,14 +405,14 @@ end
 %% Callback Functions
 function dXLeftButtonOC_cb(~, ~, obj, parentStruct, panelIndex)
 distance = str2double(get(obj.gui.(parentStruct)(panelIndex).opticalStageUI.dXStepSizeOC, 'String'));
-obj.instr.opticalStage.move_x(distance);
+obj.instr.opticalStage.move_x(-distance);
 msg = strcat([obj.instr.opticalStage.Name,':moved ',num2str(distance),' um to the left']);
 obj.msg(msg);
 end
 
 function dXRightButtonOC_cb(~, ~, obj, parentStruct, panelIndex)
 distance = str2double(get(obj.gui.(parentStruct)(panelIndex).opticalStageUI.dXStepSizeOC, 'String'));
-obj.instr.opticalStage.move_x(-distance);
+obj.instr.opticalStage.move_x(distance);
 msg = strcat([obj.instr.opticalStage.Name,':moved ',num2str(distance),' um to the right']);
 obj.msg(msg);
 end

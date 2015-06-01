@@ -39,13 +39,14 @@ if button == 1 % left
     %move in y-direction
     %below if heat map is not rotated
     %opticalStage.move_y(x-xdata(ceil(length(xdata)/2))-20); %not sure where the 20um offset is coming from
-    opticalStage.move_y(y-ydata(ceil(length(ydata)/2))-20); %not sure where the 20um offset is coming from
-   
+    %opticalStage.move_y(y-ydata(ceil(length(ydata)/2))-20); %not sure where the 20um offset is coming from
+    opticalStage.move_y(y);
     %move in x-direction
     %opticalStage.move_x(ydata(ceil(length(ydata)/2))-(y)+10); %not sure where the 10um offset is coming from
-    opticalStage.move_x(xdata(ceil(length(xdata)/2))-x+10); %not sure where the 10um offset is coming from
+    %opticalStage.move_x(xdata(ceil(length(xdata)/2))-x+10); %not sure where the 10um offset is coming from
+    opticalStage.move_x(-x);
 
-
+    
     %replotting the heat map: for later so, you can use snap GC again.
     % cla(hmap,'reset');
     % axes(hmap)

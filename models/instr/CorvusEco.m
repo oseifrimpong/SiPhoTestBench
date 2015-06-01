@@ -290,8 +290,8 @@ classdef CorvusEco < InstrClass & CoordSysClass
             if self.Connected
                 %                 if self.Calibrated
                 self.Busy = 1;
-                %move_cmd = [num2str(distance/1000), ' 0 0 r'];
-                move_cmd = ['0 ', num2str(distance/1000), ' 0 r'];
+                move_cmd = [num2str(distance/1000), ' 0 0 r'];
+                %move_cmd = ['0 ', num2str(distance/1000), ' 0 r'];
                 end_cmd = '0 0 0 r';  % 'x y z r' r: relative move
                 stop_cmd = 'st';  %status request
                 self.send_command(move_cmd);
@@ -321,8 +321,8 @@ classdef CorvusEco < InstrClass & CoordSysClass
             if self.Connected
                 %                 if self.Calibrated
                 self.Busy = 1;
-                %move_cmd = ['0 ', num2str(distance/1000), ' 0 r'];  %stage takes mm. the classes have um.
-                move_cmd = [num2str(distance/1000), ' 0 0 r'];
+                move_cmd = ['0 ', num2str(distance/1000), ' 0 r'];  %stage takes mm. the classes have um.
+                %move_cmd = [num2str(distance/1000), ' 0 0 r'];
                 end_cmd = '0 0 0 r';
                 stop_cmd = 'st';
                 self.send_command(move_cmd);
@@ -375,7 +375,7 @@ classdef CorvusEco < InstrClass & CoordSysClass
             %status: not use here
             if self.Connected
                 % Set output port
-                self.send_command('1 setout');
+                self.send_command('0 setout');
             else
                 err = MException(strcat(self.Name,':set_trigger_config'),...
                     'optical stage not connected');

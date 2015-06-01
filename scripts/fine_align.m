@@ -1,5 +1,5 @@
 function success = fine_align(obj, parentStruct, panelIndex)
-DEBUG=0;  %flag for debuggin plots cross hair pwr and displays variables to the terminal
+DEBUG=1;  %flag for debuggin plots cross hair pwr and displays variables to the terminal
 waitbar_handle = waitbar(0.1,'Fine Align');
 peakflag = 0;  %set to 1 if found peak (max output)
 success = false;

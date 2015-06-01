@@ -8,7 +8,7 @@ initial_vel = obj.instr.opticalStage.getParam('Velocity'); % for resetting to in
 initial_accel = obj.instr.opticalStage.getParam('Acceleration'); % for resetting to initial value
 
 %Read scan area from map settings:
-width_x = obj.AppSettings.MappingParams.width_x;
+width_x = obj.AppSettings.MappingParams.width_x;  %map x to y: scan line is along x. otherwise i have to change too many places
 width_y = obj.AppSettings.MappingParams.width_y;
 delta_x = obj.AppSettings.MappingParams.step;
 
@@ -57,7 +57,7 @@ obj.instr.laser.on();
 %set(obj.gui.(parentStruct)(panelIndex).laserUI.lasingIndicator, 'BackGroundColor', [0 1 0]);
 
 %Define scan window:
-scan_line_length = width_y - 2*obj.instr.opticalStage.getProp('Overshoot');
+scan_line_length = width_x - 2*obj.instr.opticalStage.getProp('Overshoot');
 %this calculation is for debug purposes
 %numPoints = ceil(scan_line_length/1000/obj.AppSettings.MappingParams.Velocity/obj.AppSettings.MappingParams.AvgTime);
 numPoints = ceil(scan_line_length/1000/obj.AppSettings.MappingParams.Velocity/obj.instr.detector.getAvgTime);
@@ -81,30 +81,30 @@ obj.instr.detector.setProp('DataPoints', numPoints); %Allocate mainframe buffer
 tmp_avgTime = obj.instr.detector.getAvgTime();
 obj.msg(['Averaging time set for line scan: ',num2str(tmp_avgTime)]);
 
-num_scans = ceil(width_x/delta_x);
+num_scans = ceil(width_y/delta_x);
 %Init output vector
 %pwr = zeros(1,obj.AppSettings.MappingParams.DataPoints);
 pwr = []; 
 
 %Get init position
 [init_x, init_y, init_z] = obj.instr.opticalStage.getPosition();
-%position_str = strcat(['Init motor pos: ',num2str(init_x),' y= ',num2str(init_y),' z= ',num2str(init_z)]);
-%disp(position_str);
-obj.instr.opticalStage.move_x(1*width_x/2);
-obj.instr.opticalStage.move_y(-1*width_y/2);
+position_str = strcat(['Init motor pos: ',num2str(init_x),' y= ',num2str(init_y),' z= ',num2str(init_z)]);
+disp(position_str);
+obj.instr.opticalStage.move_x(-1*width_x/2);
+obj.instr.opticalStage.move_y(1*width_y/2);
 
 %DEBUG:
-%disp(['Data points: ' num2str(obj.instr.detector.getProp('DataPoints'))]);
+disp(['Data points: ' num2str(obj.instr.detector.getProp('DataPoints'))]);
 [cur_x, cur_y, cur_z] = obj.instr.opticalStage.getPosition();
-%disp(['start motor pos: x=' num2str(cur_x) ' y= ' num2str(cur_y) ' z= ' num2str(cur_z)]);
-left_trigger = cur_y + obj.instr.opticalStage.getProp('Overshoot');
-%disp(['left trigger: ' num2str(left_trigger)]);
-right_trigger = cur_y + obj.instr.opticalStage.getProp('Overshoot') + scan_line_length;
-%disp(['right trigger: ' num2str(right_trigger)]);
+disp(['start motor pos: x=' num2str(cur_x) ' y= ' num2str(cur_y) ' z= ' num2str(cur_z)]);
+left_trigger = cur_x + obj.instr.opticalStage.getProp('Overshoot');
+disp(['left trigger: ' num2str(left_trigger)]);
+right_trigger = cur_x + obj.instr.opticalStage.getProp('Overshoot') + scan_line_length;
+disp(['right trigger: ' num2str(right_trigger)]);
 
 
-current_pos_x = 0;
-while current_pos_x <= width_x
+current_pos_y = 0;
+while current_pos_y <= width_y
     %check Abort button
     if (get(obj.gui.(parentStruct)(panelIndex).alignUI.mapGC_abort_button, 'UserData'))
         obj.msg('Abort mapping...');
@@ -115,7 +115,7 @@ while current_pos_x <= width_x
     %Arm the detector trigger
     EstimatedTimeout = obj.instr.detector.start_pwm_logging(obj.AppSettings.MappingParams.Detector);
     try
-        obj.instr.opticalStage.triggered_move('right', width_y,left_trigger);
+        obj.instr.opticalStage.triggered_move('right', width_x,left_trigger);
     catch ME
         rethrow(ME)
     end
@@ -132,12 +132,12 @@ while current_pos_x <= width_x
         end
     end
     
-    current_pos_x = current_pos_x + delta_x;
-    percent_finished = current_pos_x/width_x;
+    current_pos_y = current_pos_y + delta_x;
+    percent_finished = current_pos_y/width_y;
     waitbar(percent_finished, waitbar_handle);
     %move back and down
-    obj.instr.opticalStage.move_y(-width_y);
-    obj.instr.opticalStage.move_x(-delta_x);
+    obj.instr.opticalStage.move_y(-delta_x);
+    obj.instr.opticalStage.move_x(-width_x);
 end
 
     if (get(obj.gui.(parentStruct)(panelIndex).alignUI.mapGC_abort_button, 'UserData'))
@@ -159,7 +159,7 @@ end
 obj.instr.opticalStage.move_x(1*width_x/2); %this needs to be changed as well to paramters.
 obj.instr.opticalStage.move_y(1*width_y/2);
 [cur_x, cur_y, cur_z] = obj.instr.opticalStage.getPosition();
-%disp(['End motor pos: ' num2str(cur_x) ' y= ' num2str(cur_y) ' z= ' num2str(cur_z)]);
+disp(['End motor pos: ' num2str(cur_x) ' y= ' num2str(cur_y) ' z= ' num2str(cur_z)]);
 
 
 try
@@ -184,8 +184,20 @@ cla(heatMapHandle,'reset');
 axes(heatMapHandle);
 set(heatMapHandle,'DataAspectRatio',[1 1 1]);
 [m, n]=size(pwr);
-surface([0:m-1]*delta_x,obj.AppSettings.MappingParams.AvgTime*1e3*obj.AppSettings.MappingParams.Velocity*[0:n-1],pwr');
-set(heatMapHandle,'XDir','reverse');
+%surface([0:m-1]*delta_x,obj.AppSettings.MappingParams.AvgTime*1e3*obj.AppSettings.MappingParams.Velocity*[0:n-1],pwr');
+if mod(n,2)==0
+    xaxis = obj.AppSettings.MappingParams.AvgTime*1e3*obj.AppSettings.MappingParams.Velocity.*[n/2-1:-1:-n/2];
+else
+    xaxis = obj.AppSettings.MappingParams.AvgTime*1e3*obj.AppSettings.MappingParams.Velocity.*[floor(n/2):-1:-floor(n/2)];
+end
+if mod(m,n) ==0
+   yaxis = [m/2-1:-1:-m/2].*delta_x;
+else
+    yaxis = [floor(m/2):-1:-floor(m/2)].*delta_x; 
+end
+surface(xaxis,yaxis,pwr);
+
+%set(heatMapHandle,'XDir','reverse');
 %fliplr mirrors the matrix vertically becuase the transpose doesn't
 %just rotes the matrix but also flips it.
 xlabel('x [um]');

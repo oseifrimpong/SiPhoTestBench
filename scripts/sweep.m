@@ -225,6 +225,11 @@ end
 obj.instr.laser.off();
 obj.instr.detector.setPWMPowerUnit(0);
 
+for ii=1:obj.instr.detector.getProp('NumOfDetectors')
+    if selDet(ii)
+        obj.instr.detector.setup_trigger(0,0, ii); %do it on detector 1
+    end
+end
 obj.manageTimer('resume', active_timers);
 
 waitbar(1, waitbar_handle);

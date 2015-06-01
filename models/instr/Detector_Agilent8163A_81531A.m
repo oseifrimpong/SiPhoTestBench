@@ -84,7 +84,7 @@ classdef Detector_Agilent8163A_81531A < InstrClass
             self.PWMSlots = 0; %new %array with slot numbers used
             self.SelectedDetectors = 1;
             self.TotalNumOfDetectors = 0;
-            self.MaxDataPoints = 4000; %hard coded for now, needs to be queried
+            self.MaxDataPoints = 19800; %hard coded for now, needs to be queried
             
             self.SlotNumber = 1; % channel # in slot
             self.ChannelNumber = 1;% Sofware label number of detecto
@@ -342,10 +342,10 @@ classdef Detector_Agilent8163A_81531A < InstrClass
             % Get data from scanning to the right
             [slot, channel ] = self.switchDetector(DetectorNumber);
             LoggingResult = zeros(1, self.DataPoints);
-            self.Param.PowerUnit=0; %fixed to dBm
+            PowerUnit=0; %fixed to dBm
             [LoggingStatus, LoggingResult] = invoke(self.GroupObj.Pwmdataaquisition,...
                 'getpwmloggingresultsq', slot, channel, self.Param.WaitForCompletion,...
-                self.Param.PowerUnit, LoggingResult);
+                PowerUnit, LoggingResult);
         end
         
         function setup_trigger(self, TriggerIn, TriggerOut, DetectorNumber)
@@ -396,7 +396,7 @@ classdef Detector_Agilent8163A_81531A < InstrClass
                 end
                 
             catch ME
-                [InstrumentErrorCode, ErrorMessage]=invoke(this.GroupObj.Utility,'errorquery');
+                [InstrumentErrorCode, ErrorMessage]=invoke(self.GroupObj.Utility,'errorquery');
                 disp(sprintf('Error returned from Mainframe:\n \t\t%s',ErrorMessage));
                 rethrow(ME);
            end         
