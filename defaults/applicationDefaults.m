@@ -18,19 +18,11 @@ function defaultStruct = applicationDefaults()
 %% Instruments Defaults
 % the strings should be the name of the instrumnet class
 ds.instrDefaults.laser = {Laser, Laser_SantecTSL510};
-% ds.instrDefaults.laser = {Laser, Laser_Agilent8164A, Laser_SantecTSL510, Laser_Agilent_FastIL,...
-%     Laser_Santur1550, Laser_SRS_LDC501, Laser_Tunable81689A};
-ds.instrDefaults.detector = {Detector, Detector_Agilent8164A,...
+ds.instrDefaults.detector = {Detector,...
     Detector_AgilentN7700A, Detector_Agilent8163A_81531A};
-% ds.instrDefaults.opticalStage = {OpticalStage, CorvusEco, NanoPZ,...
-%     ThorlabsBBD203};
 ds.instrDefaults.opticalStage = {OpticalStage, CorvusEco};
 ds.instrDefaults.fiberStage = {FiberStage, NewFocus8742};
-% ds.instrDefaults.fluidicStage = {FluidicStage, VelmexXSlide};
-% ds.instrDefaults.pump = {Pump, Nexus3000, Masterflex};
-ds.instrDefaults.thermalControl = {TEC, TECNewport3040, TEC_SRS_LDC501, TEC_ILXLightwave_LDT_5910B};
-% ds.instrDefaults.camera = {Camera, LumeneraLw575C};
-% ds.instrDefaults.powerSupply = {PowerSupply, Power_Supply_AgilentE3634A};
+ds.instrDefaults.thermalControl = {TEC, TEC_ILXLightwave_LDT_5910B};
 
 %% Default Application Settings
 %script settings are written directly to the AppSettings.
