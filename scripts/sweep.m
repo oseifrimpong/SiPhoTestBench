@@ -86,7 +86,7 @@ obj.instr.laser.on();
 waitbar(0.2, waitbar_handle);
 %Detectors
 obj.msg('Preparing Detector for sweep');
-obj.instr.detector.setParam('PWMWvl', 1310); %not sure if this is necessary,
+%obj.instr.detector.setParam('PWMWvl', 1310); %not sure if this is necessary,
 obj.instr.detector.setParam('RangeMode', 1); %not sure if necessary; make it manual.
 obj.instr.detector.setParam('PowerRange',obj.AppSettings.SweepParams.InitRange);
 obj.instr.detector.setProp('Clipping', obj.AppSettings.SweepParams.Clipping);

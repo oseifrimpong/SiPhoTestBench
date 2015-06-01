@@ -35,6 +35,7 @@ classdef CoordSysClass < handle
         offset;
         lambda; 
         
+        debug; 
         Param; % parameters for settings window
     end
     
@@ -62,7 +63,7 @@ classdef CoordSysClass < handle
             self.offset = 0;
             self.lambda = 0; %shearing
             
-
+            self.debug = 0; 
         end
                 
         %% coordSysIsValid
@@ -116,12 +117,14 @@ classdef CoordSysClass < handle
                 disp('compute Transformation matrix');
             end
             disp(strcat('number of coord pairs (after adding): ', num2str(self.CoordNum)));
-            self.MotorPosPairs.coord
-            self.MotorPosPairs.index
-            self.GDSCoordPairs.coord
-            self.GDSCoordPairs.index
-            self.DeviceNames.name
-            self.DeviceNames.index
+            if self.debug==1
+                self.MotorPosPairs.coord
+                self.MotorPosPairs.index
+                self.GDSCoordPairs.coord
+                self.GDSCoordPairs.index
+                self.DeviceNames.name
+                self.DeviceNames.index
+            end
         end
         
         function self = removeCoordPair(self,index)  %index location in the table: not necessarily in order
@@ -143,13 +146,14 @@ classdef CoordSysClass < handle
             
             self.CoordNum = self.CoordNum - 1;
             disp(strcat('number of coord pairs (after removing): ', num2str(self.CoordNum)));
-            self.MotorPosPairs.coord
-            self.MotorPosPairs.index
-            self.GDSCoordPairs.coord
-            self.GDSCoordPairs.index
-            self.DeviceNames.name
-            self.DeviceNames.index
-            
+            if self.debug == 1
+                self.MotorPosPairs.coord
+                self.MotorPosPairs.index
+                self.GDSCoordPairs.coord
+                self.GDSCoordPairs.index
+                self.DeviceNames.name
+                self.DeviceNames.index
+            end
             if self.CoordNum >= self.Param.MinNumOfCoordPairs % try for a coordinate system
                 self.computeTransferMatrix();
                 disp('compute Transformation matrix');
@@ -264,13 +268,6 @@ classdef CoordSysClass < handle
             %division by 1000 is for numerical reasons, paramters should be
             %same order of magnitud
             
-            %                 F(1) = sx*cos(theta)*GDS_coord(1,1)-sx*sin(theta)*GDS_coord(1,2)-mot_pos(1,1)+d1;
-            %                 F(2) = sy*sin(theta)*GDS_coord(1,1)+sy*cos(theta)*GDS_coord(1,2)-mot_pos(1,2)+d2;
-            %                 F(3) = sx*cos(theta)*GDS_coord(2,1)-sx*sin(theta)*GDS_coord(2,2)-mot_pos(2,1)+d1;
-            %                 F(4) = sy*sin(theta)*GDS_coord(2,1)+sy*cos(theta)*GDS_coord(2,2)-mot_pos(2,2)+d2;
-            %                 F(5) = sx*cos(theta)*GDS_coord(3,1)-sx*sin(theta)*GDS_coord(3,2)-mot_pos(3,1)+d1;
-            %                 F(6) = sy*sin(theta)*GDS_coord(3,1)+sy*cos(theta)*GDS_coord(3,2)-mot_pos(3,2)+d2;
-            %
             %A=[sx*cos(theta), -sx*sin(theta), -1 0; sy*sin(theta), sy*cos(theta), 0, -1];
             %d=[d1; d2];
             

@@ -1,19 +1,13 @@
 function map_gc(obj, parentStruct, panelIndex, heatMapHandle)
 
 waitbar_handle = waitbar(0,'Mapping Grating Couplers');
-
-% running_timers = timerfindall('Running', 'on');
-% [numOfTimers n] = size(running_timers);
-% for ii=1:numOfTimers
-%    stop(running_timers(ii));
-% end
-
 active_timers = obj.manageTimer('pause');
 
 %Save the intial value : revert back at the end.
 initial_vel = obj.instr.opticalStage.getParam('Velocity'); % for resetting to initial value
 initial_accel = obj.instr.opticalStage.getParam('Acceleration'); % for resetting to initial value
 
+%Read scan area from map settings:
 width_x = obj.AppSettings.MappingParams.width_x;
 width_y = obj.AppSettings.MappingParams.width_y;
 delta_x = obj.AppSettings.MappingParams.step;
@@ -65,10 +59,16 @@ obj.instr.laser.on();
 %Define scan window:
 scan_line_length = width_y - 2*obj.instr.opticalStage.getProp('Overshoot');
 %this calculation is for debug purposes
-obj.AppSettings.MappingParams.DataPoints = ...
-    ceil(scan_line_length/1000/obj.AppSettings.MappingParams.Velocity/obj.AppSettings.MappingParams.AvgTime);
-if obj.AppSettings.MappingParams.DataPoints<10
-    err = MException(strcat('MappGC:DataPoints','Not enough data points for scan (<)'));
+%numPoints = ceil(scan_line_length/1000/obj.AppSettings.MappingParams.Velocity/obj.AppSettings.MappingParams.AvgTime);
+numPoints = ceil(scan_line_length/1000/obj.AppSettings.MappingParams.Velocity/obj.instr.detector.getAvgTime);
+
+
+% obj.AppSettings.MappingParams.DataPoints = ...
+%     ceil(scan_line_length/1000/obj.AppSettings.MappingParams.Velocity/obj.AppSettings.MappingParams.AvgTime);
+if numPoints<20 || numPoints > obj.instr.detector.getProp('MaxDataPoints');
+    err = MException(strcat('MappGC:DataPoints'),...
+        strcat('Number of required data points (',num2str(numPoints),...
+        ') is out of range [',num2str(20),num2str(obj.instr.detector.getProp('MaxDataPoints')),']'));
     %Set the detector back to orig state
     obj.instr.detector.setup_trigger(0,0, obj.AppSettings.MappingParams.Detector); %Disable trigger
     obj.instr.detector.setParam('RangeMode',1);  %set to auto range
@@ -76,7 +76,11 @@ if obj.AppSettings.MappingParams.DataPoints<10
     obj.manageTimer('resume', active_timers);
     throw(err);
 end
-obj.instr.detector.setProp('DataPoints', obj.AppSettings.MappingParams.DataPoints);
+obj.msg(['Data points per line scan: ', num2str(numPoints)]);
+obj.instr.detector.setProp('DataPoints', numPoints); %Allocate mainframe buffer
+tmp_avgTime = obj.instr.detector.getAvgTime();
+obj.msg(['Averaging time set for line scan: ',num2str(tmp_avgTime)]);
+
 num_scans = ceil(width_x/delta_x);
 %Init output vector
 %pwr = zeros(1,obj.AppSettings.MappingParams.DataPoints);

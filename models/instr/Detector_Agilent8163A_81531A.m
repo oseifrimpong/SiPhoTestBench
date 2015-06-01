@@ -485,6 +485,7 @@ classdef Detector_Agilent8163A_81531A < InstrClass
             try
                 for i = 1:self.NumOfDetectors
                     [slot, channel] = self.switchDetector(i);
+                    internalTrigger = 1; 
                     % need to invoke all methods to write existing params
                     invoke(self.GroupObj.Powermetermodules, 'setpwmparameters', ...
                         slot,...
@@ -499,6 +500,8 @@ classdef Detector_Agilent8163A_81531A < InstrClass
                     %   self.Param.Threshold = 0; %
                     %   self.Param.Clipping = 1; % 0=no, 1=yes
                     %   self.Param.ClipLimit = -100;
+                    
+                    
                 end
             catch ME
                 rethrow(ME);

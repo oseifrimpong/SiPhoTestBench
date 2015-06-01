@@ -233,7 +233,7 @@ classdef CorvusEco < InstrClass & CoordSysClass
         %% Closed loop configuration commands
         function [a1, a2] = set_closed_loop(self, enable)
            %enables the closed loop control for axis 1 and 2; 
-           %if enable=1: enable closed loop if enable=0: disabled
+           %if enable=1: closed loop enabled ;  if enable=0: disabled
            % returns setting in stage controller for axis 1 and 2; s
            if self.Connected
                self.Busy = 1;
@@ -290,7 +290,8 @@ classdef CorvusEco < InstrClass & CoordSysClass
             if self.Connected
                 %                 if self.Calibrated
                 self.Busy = 1;
-                move_cmd = [num2str(distance/1000), ' 0 0 r'];
+                %move_cmd = [num2str(distance/1000), ' 0 0 r'];
+                move_cmd = ['0 ', num2str(distance/1000), ' 0 r'];
                 end_cmd = '0 0 0 r';  % 'x y z r' r: relative move
                 stop_cmd = 'st';  %status request
                 self.send_command(move_cmd);
@@ -320,7 +321,8 @@ classdef CorvusEco < InstrClass & CoordSysClass
             if self.Connected
                 %                 if self.Calibrated
                 self.Busy = 1;
-                move_cmd = ['0 ', num2str(distance/1000), ' 0 r'];  %stage takes mm. the classes have um.
+                %move_cmd = ['0 ', num2str(distance/1000), ' 0 r'];  %stage takes mm. the classes have um.
+                move_cmd = [num2str(distance/1000), ' 0 0 r'];
                 end_cmd = '0 0 0 r';
                 stop_cmd = 'st';
                 self.send_command(move_cmd);
@@ -399,11 +401,12 @@ classdef CorvusEco < InstrClass & CoordSysClass
             pol = 0; %0: active low, 1: active high
             output = 1; %1,2,3 Equivalent I/O interface ouputs (pull up is soldered to 1)
             time = 5; %0-1000ms
-            axis = 1;
+            axis = 2;
             
             %move first, because wpot will block all incoming messages
             % relative movement comand 'x 0 0 rmove',
-            move_cmd = [num2str(move_distance/1000), ' 0 0 rmove'];
+            %move_cmd = [num2str(move_distance/1000), ' 0 0 rmove'];
+            move_cmd = ['0 ', num2str(move_distance/1000), ' 0 r'];
             end_cmd = '0 0 0 r';
             stop_cmd = 'st';
             trig_cmd = [num2str(trigger_pos/1000), ' ', num2str(dir), ' ',num2str(axis),' ',num2str(time),' ',num2str(pol),' ',num2str(output),' wpot'];
@@ -521,6 +524,13 @@ classdef CorvusEco < InstrClass & CoordSysClass
                                 if self.Obj.BytesAvailable > 0  %empty buffer
                                     fscanf(self.Obj, '%s', self.Obj.BytesAvailable);
                                 end
+                                self.send_command('ge');
+                                incoming = self.read_response();
+                                disp(['Returned system errors : ', incoming]);
+                                self.send_command('gme'); 
+                                incoming = self.read_response();
+                                disp(['Returned hardware errors : ', incoming]); 
+                                
                                 pause(0.2);
                             catch ME
                                 disp('CovusEco Class problem: position is not returned properly');
