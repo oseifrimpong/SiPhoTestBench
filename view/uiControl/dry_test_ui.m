@@ -204,14 +204,29 @@ end
 function reset_button_cb(~, ~, obj, parentStruct, panelIndex)
 % reset device scan number back to 1
 % reset rate device result in panel
+
+% Preallocate data cell for the table.  
+numSelectedDetectors=sum(obj.instr.detector.getProp('SelectedDetectors'));
+
+numDevices = 0;
+
 deviceNames = fieldnames(obj.devices);
+for j = 1:obj.AppSettings.dryTest.Iterations % this will be a bug, if the user changes after table is built
+    for i = 1:length(deviceNames)
+        if obj.devices.(deviceNames{i}).getProp('Selected')
+            numDevices = numDevices + 1;
+        end
+    end
+end
+obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable = cell(numDevices,numSelectedDetectors+2);
+
+
 for ii = 1:length(deviceNames)
     if obj.devices.(deviceNames{ii}).getProp('Selected')
         obj.devices.(deviceNames{ii}).resetScanNumber();
         obj.devices.(deviceNames{ii}).resetRating();
     end
 end
-numSelectedDetectors=sum(obj.instr.detector.getProp('SelectedDetectors'));
 
 % redraw table
 table_index = 0;
