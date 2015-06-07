@@ -176,7 +176,10 @@ for j = 1:obj.AppSettings.dryTest.Iterations % this will be a bug, if the user c
             dataRow{1}=obj.devices.(deviceName{i}).Name;
             dataRow(2:end-1)=repmat({getCellColor(obj.devices.(deviceName{i}).getProp('Rating'))},1,numSelectedDetectors);
             dataRow{end} = obj.devices.(deviceName{i}).Comment;
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable(table_index,:)=dataRow;            
+            numSelectedDetectors=sum(obj.instr.detector.getProp('SelectedDetectors'));
+            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable(table_index,) = dataRow;
+            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable(table_index,:)=[dataRow(:);
+            
         end
     end
 end
