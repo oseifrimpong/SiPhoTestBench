@@ -86,8 +86,9 @@ if panelIndex < length(obj.gui.panelFrame)
     nextTab = obj.gui.tab(tabIndex + 1);
     set(nextPanel, 'Visible', 'on');
     set(nextTab, 'BackgroundColor', [0.9 0.9 0.9]);
-elseif (panelIndex + 1) == length(obj.gui.panelFrame)
-    set(obj.gui.nextButton, 'Visible', 'on', 'Enable', 'off', 'String', 'Done');
+end
+if (panelIndex + 1) == length(obj.gui.panelFrame)
+    set(obj.gui.nextButton, 'Visible', 'off');%, 'Enable', 'off', 'String', 'Done');
 end
 
 % ---------------- Update current User parameters ----------------
