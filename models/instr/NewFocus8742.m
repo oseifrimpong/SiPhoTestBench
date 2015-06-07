@@ -19,8 +19,8 @@ classdef NewFocus8742 < InstrClass
         x;  % stage x position
         y;  % stage y position
         z;  % stage z position
-        xTheta; % rotation about x axis
-        zTheta; % rotation about z axis
+        xRotation; % rotation about x axis
+        zRotation; % rotation about z axis
         
 %        fullDistance;
 %        calibrated;  % stage calibrated
@@ -49,6 +49,7 @@ classdef NewFocus8742 < InstrClass
             % motor settings shared by Corvus Eco
             self.Param.Acceleration = 0;
             self.Param.Velocity = 0;
+            self.Param.StepResolution = 0;            
 %             self.pauseTime = 0.08;
 %             self.timeout = 10; % s
 %             self.overshoot = 0.02; % copied from Corvus Eco
@@ -56,18 +57,11 @@ classdef NewFocus8742 < InstrClass
             self.x = nan;
             self.y = nan;
             self.z = nan;
-            self.xTheta = nan;
-            self.zTheta = nan;
+            self.xRotation = nan;
+            self.zRotation = nan;
             % Stage Params
 %            self.fullDistance = 12.5*1000;
-%            self.pauseTime = 0.5; % 0.5 sec
-            
-     
-            self.Param.Acceleration = 0;
-            self.Param.StepResolution = 0;
-            self.Param.Acceleration = 0;
-            self.Param.Acceleration = 0;
-            
+%            self.pauseTime = 0.5; % 0.5 sec     
         end
     end
     
@@ -80,6 +74,7 @@ classdef NewFocus8742 < InstrClass
             end
             
             % load .NET assembly
+            disp('Loading NewFocus8742 .NET assembly. Please wait.');
             try
                 NET.addAssembly('C:\Program Files (x86)\New Focus\New Focus Picomotor Application\Samples\CmdLib.dll');
                 disp('NewFocus8742 .NET assembly loaded.');
@@ -95,7 +90,7 @@ classdef NewFocus8742 < InstrClass
             
             % Get device keys; returns System.String[]
             self.strDeviceKeys = self.CmdLib8742.GetDeviceKeys;
-            disp(self.strDeviceKeys);
+%            disp(self.strDeviceKeys);
             
             if isempty(self.strDeviceKeys)
                 disp('8742 not connected. Aborting.');
@@ -105,23 +100,23 @@ classdef NewFocus8742 < InstrClass
             [~, sellf.masterAddr]= GetIdentification(self.CmdLib8742, self.strDeviceKeys(1),'dummy');
             %[logical scalar RetVal, System.String identificaiton] = ....
             % -> returns: New_Focus 8742 v2.2 08/01/13 12175
-            disp(self.masterAddr);
+%            disp(self.masterAddr);
             
             %get key of master; 
             self.masterDeviceKey = self.CmdLib8742.GetFirstDeviceKey;
-            disp(self.masterDeviceKey);
+%            disp(self.masterDeviceKey);
             % -> returns: 8742 12175
 
             %get all the slave device addresses; saved in a System.int32[] structure
             deviceAddresses = GetDeviceAddresses(self.CmdLib8742, self.masterDeviceKey);
             self.slaveAddr = deviceAddresses(1);
-            disp(self.slaveAddr);
+%            disp(self.slaveAddr);
             
             %get identification of slave
             [~, self.slaveDeviceKey] = GetIdentification(self.CmdLib8742,...
                 self.masterDeviceKey, self.slaveAddr, 'as');
             % -> returns: New_Focus 8742 v2.2 08/01/13 12167    
-            disp(self.slaveDeviceKey);
+%            disp(self.slaveDeviceKey);
             
             % need to somehow very that we're connected
             self.Connected = 1;            
@@ -178,8 +173,7 @@ classdef NewFocus8742 < InstrClass
             self.Connected = 0;
         end
         
-        %% shon started here...
-        % some notes for myself based on current connections
+        %% shon notes for myself based on current connections
 
         % master 1 = C
         % master 2 = B
@@ -191,20 +185,57 @@ classdef NewFocus8742 < InstrClass
         % slave 4 = n/a
         
         % z = +A' +B' or -A' -B'
-        % zTheta = +A -B or +B -A
+        % zRotation = +A -B or +B -A
         % x = +A +B or -A -B
-        % xTheta = +A -B or -A +B
+        % xRotation = +A -B or -A +B
         % y = +C or -C
+        
+
         
         function abortMotion(self)
             % hack = send abort command to both master and slave
             self.CmdLib8742.AbortMotion(self.masterDeviceKey);
-            self.CmdLib8742.AbortMotion(self.slaveDeviceKey);            
+            self.CmdLib8742.AbortMotion(self.masterDeviceKey,self.slaveAddr);            
         end
         
-        function self = move_x(self, distance)
-            % to move + in x = +A and +B
-            % to move - in x = -A and -B
+        % shon: need to verify
+        function velocityStepsPerSec = getVelocity(self, deviceKey, deviceAddress, motorNumber)
+            stepsPerSec = 0;
+            velocityStepsPerSec = self.CmdLib8742.GetVelocity(deviceKey, ...
+                deviceAddress, motorNumber, int32(stepsPerSec));
+        end
+        
+        % shon: need to verify
+        function setVelocity(self, deviceKey, deviceAddress, motorNumber, stepsPerSec)
+            try
+                self.CmdLib8742.SetVelocity(deviceKey, ...
+                    deviceAddress, motorNumber, int32(stepsPerSec));
+            catch ME
+                rethrow(ME);
+            end
+        end
+        
+        % shon: need to verify
+        function velocityStepsPerSec = getAcceleration(self, deviceKey, deviceAddress, motorNumber)
+            stepsPerSec2 = 0;
+            velocityStepsPerSec = self.CmdLib8742.GetAcceleration(deviceKey, ...
+                deviceAddress, motorNumber, int32(stepsPerSec2));
+        end
+        
+        % shon: need to verify
+        function setAcceleration(self, deviceKey, deviceAddress, motorNumber, stepsPerSec2)
+            try
+                self.CmdLib8742.SetAcceleration(deviceKey, ...
+                    deviceAddress, motorNumber, int32(stepsPerSec2));
+            catch ME
+                rethrow(ME);
+            end
+        end
+        
+        %% move functions
+        function self = move_y(self, distance)
+            % to move + in y = +A and +B
+            % to move - in y = -A and -B
             if self.Connected
                 % disable button in GUI
                 
@@ -212,27 +243,33 @@ classdef NewFocus8742 < InstrClass
 %                accurateDistance = self.offsetDistance(distance);
                 
                 % move A (master device motor #3)
+%                disp('moving motor A');
                 self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
                     int32(3), distance);
                 
+                % wait for motor to finish moving before moving other motor
+                isMotionDone = false; % to satisfy .NET function call only
+                isDone = 0;
+                while ~isDone
+                    [~, isDone] = self.CmdLib8742.GetMotionDone(self.masterDeviceKey, ...
+                    int32(3), isMotionDone);
+                   pause(0.1);
+                end
+                
                 % move B (master device motor #2)
+%                disp('moving motor B');
                 self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
                     int32(2), distance);
 
-                % old notes from nano-PZ ... not sure they're relevant
-                %
-                % NANO PC move in micro-step roughly equals to 10nm/step.
-                % tranform distance (in um) into micro-step (X100)
-                % the *100 converts from ustep(default unit) to um
             else
                 msg = strcat(self.Name, ' not connected.');
                 error(msg);
             end
         end
         
-        function self = move_y(self, distance)
-            % to move + in y = C
-            % to move - in y = -C
+        function self = move_x(self, distance)
+            % to move + in x = C
+            % to move - in x = -C
             if self.Connected
                 % disable button in GUI
                 
@@ -240,8 +277,19 @@ classdef NewFocus8742 < InstrClass
 %                accurateDistance = self.offsetDistance(distance);
                 
                 % move A' (master device motor #1)
+%                disp('moving motor Aprime');
                 self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
                     int32(1), distance);
+
+                % wait for motor to finish
+                isMotionDone = false; % to satisfy .NET function call only
+                isDone = 0;
+                while ~isDone
+                    [~, isDone] = self.CmdLib8742.GetMotionDone(self.masterDeviceKey, ...
+                    int32(1), isMotionDone);
+                   pause(0.1);
+                end
+                
             else
                 msg = strcat(self.Name, ' not connected.');
                 error(msg);
@@ -258,8 +306,20 @@ classdef NewFocus8742 < InstrClass
 %                accurateDistance = self.offsetDistance(distance);
                 
                 % move A' (slave device motor #3)
+%                disp('moving motor Aprime');
                 self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
                     self.slaveAddr, int32(3), distance);
+
+                % wait for motor to finish moving before moving other motor
+                isMotionDone = false; % to satisfy .NET function call only
+                isDone = 0;
+                while ~isDone
+                    [~, isDone] = self.CmdLib8742.GetMotionDone(self.masterDeviceKey, ...
+                    self.slaveAddr, int32(3), isMotionDone);
+                   pause(0.1);
+                end
+                
+%                disp('moving motor Bprime');
                 % move B' (slave device motor #2)
                 self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
                     self.slaveAddr, int32(2), distance);
@@ -269,9 +329,9 @@ classdef NewFocus8742 < InstrClass
             end
         end
         
-        function self = move_xTheta(self, degrees)
-            % to move + in xTheta = +A' and -B'
-            % to move - in xTheta = -A' and +B'
+        function self = move_xRotation(self, degrees)
+            % to move + in xRotation = +A' and -B'
+            % to move - in xRotation = -A' and +B'
             if self.Connected
                 % disable button in GUI
                 
@@ -279,8 +339,21 @@ classdef NewFocus8742 < InstrClass
 %                accurateDistance = self.offsetDistance(distance);
                 
                 % move A' (slave device motor #3)
+%                disp('moving motor Aprime');                
                 self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
                     self.slaveAddr, int32(3), degrees);
+                
+                % wait for motor to finish moving before moving other motor
+                isMotionDone = false; % to satisfy .NET function call only
+                isDone = 0;
+                while ~isDone
+                    [~, isDone] = self.CmdLib8742.GetMotionDone(self.masterDeviceKey, ...
+                    self.slaveAddr, int32(3), isMotionDone);
+                   pause(0.1);
+                end
+                
+                % move B (master device motor #2)
+%                disp('moving motor Bprime');                
                 % move B' (slave device motor #2)
                 self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
                     self.slaveAddr, int32(2), -degrees);
@@ -290,9 +363,9 @@ classdef NewFocus8742 < InstrClass
             end
         end
         
-        function self = move_zTheta(self, degrees)
-            % to move + in zTheta = +A and -B
-            % to move - in zTheta = -A and +B
+        function self = move_zRotation(self, degrees)
+            % to move + in zRotation = +A and -B
+            % to move - in zRotation = -A and +B
             if self.Connected
                 % disable button in GUI
                 
@@ -300,9 +373,21 @@ classdef NewFocus8742 < InstrClass
 %                accurateDistance = self.offsetDistance(distance);
                 
                 % move A (master device motor #3)
+%                disp('moving motor B');                
                 self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
                     int32(3), degrees);
                 
+                % wait for motor to finish moving before moving other motor
+                isMotionDone = false; % to satisfy .NET function call only
+                isDone = 0;
+                while ~isDone
+                    [~, isDone] = self.CmdLib8742.GetMotionDone(self.masterDeviceKey, ...
+                    int32(3), isMotionDone);
+                   pause(0.1);
+                end
+                
+                % move B (master device motor #2)
+%                disp('moving motor B');                
                 % move B (master device motor #2)
                 self.CmdLib8742.RelativeMove(self.masterDeviceKey, ...
                     int32(2), -degrees);
@@ -310,48 +395,6 @@ classdef NewFocus8742 < InstrClass
                 msg = strcat(self.Name, ' not connected.');
                 error(msg);
             end
-        end
-        
-%         function eject(self)
-%             self.move_z(-self.fullDistance);
-%             pause(self.pauseTime);
-%             self.move_x(self.fullDistance);
-%             pause(self.pauseTime);
-%             self.move_y(self.fullDistance);
-%             
-%             self.x = 0;
-%             self.y = 0;
-%             self.z = 0;
-%         end
-        
-%         function load(self)
-%             self.move_x(-self.fullDistance/2);
-%             pause(self.pauseTime);
-%             self.move_y(-self.fullDistance/2);
-%             %             pause(self.pauseTime);
-%             %             self.move_z(self.fullDistance/2);
-%         end
-        
-        %         function position = currentPosition(self)
-        %
-        %         end
-    end
-    
-    methods (Static)
-        % Vince edit here: calculate accurate distance for
-        % input distance >= 1.92um (system round up distance >= 192ustep)
-        function accurateDistance = offsetDistance(distance)
-            if distance >= 1.92 % 1.92 um = 192 ustep - System limitation
-                fullSteps = floor(distance*100/16);
-                offsetStep = mod(distance*100, 16);
-                accurateDistance = [fullSteps*16, offsetStep];
-            else
-                accurateDistance = distance*100;
-                % Transform into 1 ustep = 10nm
-            end
-        end
-        function position = currentPosition(self)
-            
         end
     end
 end

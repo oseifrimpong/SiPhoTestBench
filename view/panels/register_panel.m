@@ -116,7 +116,7 @@ end
 
 % Detector ui
 if (obj.instr.detector.Connected)
-    ui_position(2) = ui_position(2) + ui_position(4)
+    ui_position(2) = ui_position(2) + ui_position(4);
     ui_position(4) = 0.95 - ui_position(2);
     obj = detector_ui(...
         obj, ...
