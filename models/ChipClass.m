@@ -61,7 +61,7 @@ classdef ChipClass < handle
             % Store data in self.DeviceData
             
             % Filename
-            fn = fullfile(self.coordinateFilesDir, self.Name, '.txt');
+            fn = fullfile(self.coordinateFilesDir, [self.Name, '.txt']);
 
             % Check to see if file exists, if not throw error
             if exist(fn, 'file')

@@ -220,12 +220,18 @@ for j = 1:obj.AppSettings.dryTest.Iterations % this will be a bug, if the user c
     for i = 1:length(deviceNames)
         if obj.devices.(deviceNames{i}).getProp('Selected')
             table_index = table_index + 1;
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 1} = ...
-                obj.devices.(deviceNames{i}).Name;
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 2:numSelectedDetectors} = ...
-                repmat( {getCellColor(obj.devices.(deviceNames{i}).getProp('Rating'))},1,numselectedDetectors);
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, end} = ...
-                obj.devices.(deviceNames{i}).Comment;
+            dataRow=cell(1,numSelectedDetectors+2);
+            dataRow{1}=obj.devices.(deviceNames{i}).Name;
+            dataRow(2:end-1)=repmat({getCellColor(obj.devices.(deviceNames{i}).getProp('Rating'))},1,numSelectedDetectors);
+            dataRow{end} = obj.devices.(deviceNames{i}).Comment;
+            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable(table_index,:)=dataRow;            
+            
+%             obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 1} = ...
+%                 obj.devices.(deviceNames{i}).Name;
+%             obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 2:     numSelectedDetectors} = ...
+%                 repmat( {getCellColor(obj.devices.(deviceNames{i}).getProp('Rating'))},1,numSelectedDetectors);
+%             obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, end} = ...
+%                 obj.devices.(deviceNames{i}).Comment;
         end
     end
 end

@@ -85,7 +85,16 @@ elseif(strcmpi(laserType,'Virtual Laser'))
     
     %Calculate required detector averaging time based on speed and step:
     required_avg = stepWvl/speed; %time spend on one point  nm/s;
-
+    %try to set it to detector
+    try
+        obj.instr.detector.setAvgTime(required_avg); 
+    catch ME
+        obj.msg(['required Averaging time not allowed']);
+        obj.msg(['T_avg = ',num2str(required_avg)]); 
+        delete(waitbar_handle);
+        rethrow(ME)
+       return 
+    end
     obj.msg(['Detector Averaging time requested: ',num2str(required_avg)]);
     returned_avg = required_avg;
     obj.instr.detector.setParam('AveragingTime', returned_avg); %work around to update class param
@@ -107,28 +116,25 @@ end
 % set sweep properties valid for all segments
 %Laser
 obj.msg('Preparing Laser for sweep');
-if(~strcmpi(laserType,'Virtual Laser'))
-
-    %obj.instr.laser.setProp('NumberOfScans', obj.AppSettings.SweepParams.NumberOfScans);
-    %obj.instr.laser.setProp('SweepSpeed', obj.AppSettings.SweepParams.SweepSpeed);
-    obj.instr.laser.setSweepSpeed(required_speed);
-    obj.instr.laser.setStartWvl( obj.AppSettings.SweepParams.StartWvl);
-    obj.instr.laser.setStopWvl( obj.AppSettings.SweepParams.StopWvl);
-    %obj.instr.laser.setParam('LowSSE', obj.AppSettings.SweepParams.LowSSE);
-    obj.instr.laser.setParam('PowerUnit', 0 ); %set this to dB without being an option
-    obj.instr.laser.setParam('PowerLevel', obj.AppSettings.SweepParams.PowerLevel);
-    %Switch laser on
-    obj.instr.laser.on();
-    waitbar(0.2, waitbar_handle);
-    %Detectors
-    obj.msg('Preparing Detector for sweep');
-    %obj.instr.detector.setParam('PWMWvl', 1310); %not sure if this is necessary,
-    obj.instr.detector.setParam('RangeMode', 1); %not sure if necessary; make it manual.
-    obj.instr.detector.setParam('PowerRange',obj.AppSettings.SweepParams.InitRange);
-    obj.instr.detector.setProp('Clipping', obj.AppSettings.SweepParams.Clipping);
-    obj.instr.detector.setProp('ClipLimit', obj.AppSettings.SweepParams.ClipLimit);
-    %obj.instr.detector.setProp('RangeDecrement', obj.AppSettings.SweepParams.RangeDecrement);
-end
+%obj.instr.laser.setProp('NumberOfScans', obj.AppSettings.SweepParams.NumberOfScans);
+%obj.instr.laser.setProp('SweepSpeed', obj.AppSettings.SweepParams.SweepSpeed);
+obj.instr.laser.setSweepSpeed(required_speed);
+obj.instr.laser.setStartWvl( obj.AppSettings.SweepParams.StartWvl);
+obj.instr.laser.setStopWvl( obj.AppSettings.SweepParams.StopWvl);
+%obj.instr.laser.setParam('LowSSE', obj.AppSettings.SweepParams.LowSSE);
+obj.instr.laser.setParam('PowerUnit', 0 ); %set this to dB without being an option
+obj.instr.laser.setParam('PowerLevel', obj.AppSettings.SweepParams.PowerLevel);
+%Switch laser on
+obj.instr.laser.on();
+waitbar(0.2, waitbar_handle);
+%Detectors
+obj.msg('Preparing Detector for sweep');
+%obj.instr.detector.setParam('PWMWvl', 1310); %not sure if this is necessary,
+obj.instr.detector.setParam('RangeMode', 1); %not sure if necessary; make it manual.
+obj.instr.detector.setParam('PowerRange',obj.AppSettings.SweepParams.InitRange);
+obj.instr.detector.setProp('Clipping', obj.AppSettings.SweepParams.Clipping);
+obj.instr.detector.setProp('ClipLimit', obj.AppSettings.SweepParams.ClipLimit);
+%obj.instr.detector.setProp('RangeDecrement', obj.AppSettings.SweepParams.RangeDecrement);
 waitbar(0.3, waitbar_handle);
 
 
@@ -185,7 +191,6 @@ for kk = 1:(stitchNum+1)
             % ------ General Sweep Function ------
             obj.instr.detector.setupSweep(dataPoints);
             obj.msg('Sweeping.');
-            selDet = obj.instr.detector.getProp('SelectedDetectors');
             obj.instr.laser.sweep();
 %            obj.msg('Finish Sweep.');
             %read data from detectors.
