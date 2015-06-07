@@ -62,18 +62,7 @@ classdef NewFocus8742 < InstrClass
 %            self.fullDistance = 12.5*1000;
 %            self.pauseTime = 0.5; % 0.5 sec
             
-            % load .NET assembly
-            try
-                NET.addAssembly('C:\Program Files (x86)\New Focus\New Focus Picomotor Application\Samples\CmdLib.dll');
-                disp('NewFocus8742 .NET assembly loaded.');
-            catch ME
-                error(ME.message);
-            end            
-            % instantiate object (.NET assembly)
-            self.strDeviceKeys = 'dummy';
-            self.CmdLib8742 = NewFocus.Picomotor.CmdLib8742(true,10000,self.strDeviceKeys);
-            % -> returns CmdLib8742 with no properties
-            
+     
             self.Param.Acceleration = 0;
             self.Param.StepResolution = 0;
             self.Param.Acceleration = 0;
@@ -89,6 +78,20 @@ classdef NewFocus8742 < InstrClass
                 msg = 'Fiber Stage is already connected';
                 error(msg);
             end
+            
+            % load .NET assembly
+            try
+                NET.addAssembly('C:\Program Files (x86)\New Focus\New Focus Picomotor Application\Samples\CmdLib.dll');
+                disp('NewFocus8742 .NET assembly loaded.');
+            catch ME
+                error(ME.message);
+            end
+            % instantiate object (.NET assembly)
+            self.strDeviceKeys = 'dummy';
+            self.CmdLib8742 = NewFocus.Picomotor.CmdLib8742(true,10000,self.strDeviceKeys);
+            % -> returns CmdLib8742 with no properties
+            
+            
             
             % Get device keys; returns System.String[]
             self.strDeviceKeys = self.CmdLib8742.GetDeviceKeys;

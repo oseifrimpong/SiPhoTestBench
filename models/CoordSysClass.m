@@ -224,8 +224,9 @@ classdef CoordSysClass < handle
             if self.ValidCoordinateSystem
                 T1 = [self.scaling(1)*cos(self.rot_angle), -self.scaling(2)*sin(self.rot_angle);
                     self.scaling(1)*sin(self.rot_angle), self.scaling(2)*cos(self.rot_angle)];
-                T2 = [1, self.lambda(1);...
-                    self.lambda(2), 1];
+%                 T2 = [1, self.lambda(1);...
+%                     self.lambda(2), 1];
+                T2=[1,self.lambda(1);0,1]*[1,0;self.lambda(2),1];
                 D = [self.offset(1);self.offset(2)];  %offset
                 
                 motor_pos = T2*T1*GDS_coords + D;
@@ -260,7 +261,8 @@ classdef CoordSysClass < handle
             %Transform matrix 
             T1 = [sx*cos(theta), -sy*sin(theta);
                 sx*sin(theta), sy*cos(theta)];
-            T2 = [1, l1; l2, 1];
+            %T2 = [1, l1; l2, 1];
+            T2 = [1,l1;0,1]*[1,0;l2,1];
             D = [d1;d2];  %offset
             for (ii=1:1:self.CoordNum)
                 F(end+1:end+2)=T2*T1*self.GDSCoordPairs.coord(ii,:)'/1000 + D - self.MotorPosPairs.coord(ii,:)'/1000;

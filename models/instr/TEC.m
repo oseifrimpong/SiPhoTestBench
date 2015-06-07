@@ -13,7 +13,7 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-classdef TEC < InstrClass & TEC_SRS_LDC501
+classdef TEC < InstrClass
     
     % generic thermoelectric controller
     
@@ -22,6 +22,7 @@ classdef TEC < InstrClass & TEC_SRS_LDC501
         % temperature limits given by manufacturer
         MIN_TEMP;  % degrees C
         MAX_TEMP;  % degrees C
+
     end
     
     methods

@@ -1,5 +1,17 @@
 function map_gc(obj, parentStruct, panelIndex, heatMapHandle)
+%map_gc scans the area (width_x x width_y) with x the direction of the scan
+%Detector number determines which detector is used. 
+%Wvl : Laser wavelength
+%PowerRange: upper limit of dynamic range (detector is set to manual)
+%AvgTime: Averaging time of detector
+%width_x : scan line length
+%width_y : scan are in y
+%setp: steps in y (spacing of scan lines)
+%Velocity: stage velocity
+%acceleration: stage acceleration
 
+DEBUG = 1; 
+%create waitbar
 waitbar_handle = waitbar(0,'Mapping Grating Couplers');
 active_timers = obj.manageTimer('pause');
 
@@ -12,17 +24,17 @@ width_x = obj.AppSettings.MappingParams.width_x;  %map x to y: scan line is alon
 width_y = obj.AppSettings.MappingParams.width_y;
 delta_x = obj.AppSettings.MappingParams.step;
 
-
+%Apply settings to stage. 
 obj.instr.opticalStage.setParam('Velocity', obj.AppSettings.MappingParams.Velocity);
 obj.instr.opticalStage.setParam('Acceleration', obj.AppSettings.MappingParams.Acceleration);
-obj.instr.opticalStage.set_trigger_config(1);
+obj.instr.opticalStage.set_trigger_config(1); %enable digital I/O of stage controller
 
 %Prepare detector
 obj.instr.detector.switchDetector(obj.AppSettings.MappingParams.Detector);
-obj.instr.detector.pwm_func_stop(obj.AppSettings.MappingParams.Detector);
+obj.instr.detector.pwm_func_stop(obj.AppSettings.MappingParams.Detector); %probably not necessary
 powerUnit = obj.instr.detector.getPWMPowerUnit();
 if powerUnit == 1
-    obj.instr.detector.setPWMPowerUnit(0);
+    obj.instr.detector.setPWMPowerUnit(0); %set to dBm
 end
 obj.instr.detector.setParam('RangeMode',0);
 obj.instr.detector.setParam('AveragingTime',obj.AppSettings.MappingParams.AvgTime);
@@ -35,7 +47,7 @@ obj.instr.detector.setup_trigger(2,0, obj.AppSettings.MappingParams.Detector);
 %Prepare laser
 try
 obj.instr.laser.setParam('Wavelength',obj.AppSettings.MappingParams.Wvl);
-obj.instr.laser.setParam('PowerUnit',0);  %this won't probably work yet.
+obj.instr.laser.setParam('PowerUnit',0); 
 obj.instr.laser.setParam('PowerLevel',obj.AppSettings.MappingParams.Power);
 catch ME
     rethrow(ME); 
@@ -90,18 +102,20 @@ pwr = [];
 [init_x, init_y, init_z] = obj.instr.opticalStage.getPosition();
 position_str = strcat(['Init motor pos: ',num2str(init_x),' y= ',num2str(init_y),' z= ',num2str(init_z)]);
 disp(position_str);
+%Go to init position
 obj.instr.opticalStage.move_x(-1*width_x/2);
 obj.instr.opticalStage.move_y(1*width_y/2);
 
 %DEBUG:
-disp(['Data points: ' num2str(obj.instr.detector.getProp('DataPoints'))]);
-[cur_x, cur_y, cur_z] = obj.instr.opticalStage.getPosition();
-disp(['start motor pos: x=' num2str(cur_x) ' y= ' num2str(cur_y) ' z= ' num2str(cur_z)]);
-left_trigger = cur_x + obj.instr.opticalStage.getProp('Overshoot');
-disp(['left trigger: ' num2str(left_trigger)]);
-right_trigger = cur_x + obj.instr.opticalStage.getProp('Overshoot') + scan_line_length;
-disp(['right trigger: ' num2str(right_trigger)]);
-
+if DEBUG
+    disp(['Data points: ' num2str(obj.instr.detector.getProp('DataPoints'))]);
+    [cur_x, cur_y, cur_z] = obj.instr.opticalStage.getPosition();
+    disp(['start motor pos: x=' num2str(cur_x) ' y= ' num2str(cur_y) ' z= ' num2str(cur_z)]);
+    left_trigger = cur_x + obj.instr.opticalStage.getProp('Overshoot');
+    disp(['left trigger: ' num2str(left_trigger)]);
+    right_trigger = cur_x + obj.instr.opticalStage.getProp('Overshoot') + scan_line_length;
+    disp(['right trigger: ' num2str(right_trigger)]);
+end
 
 current_pos_y = 0;
 while current_pos_y <= width_y
@@ -114,12 +128,14 @@ while current_pos_y <= width_y
     pause(0.01); % Try to fix the "logging still" active stuff - Vince
     %Arm the detector trigger
     EstimatedTimeout = obj.instr.detector.start_pwm_logging(obj.AppSettings.MappingParams.Detector);
+    %move the stage with position trigger
     try
         obj.instr.opticalStage.triggered_move('right', width_x,left_trigger);
     catch ME
         rethrow(ME)
     end
     
+    %get data
     try
         [LoggingStatus, pwr(end+1,:)] = obj.instr.detector.get_pwm_logging(obj.AppSettings.MappingParams.Detector);
     catch ME
@@ -176,7 +192,7 @@ end
 
 %Info of which bench is used woudl be stored here. Maybe how it is plotted
 %needs to be adjusted based on where the stage is. 
-%obj.AppSettings.infoParams.School = 'UBC';
+
 
 
 %plot flipped in axes 1

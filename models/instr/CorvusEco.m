@@ -82,6 +82,17 @@ classdef CorvusEco < InstrClass & CoordSysClass
             
             %optical stage is connected
             self.Connected = 1;
+            % restet
+            self.send_command('clear'); 
+            %make sure there are no errors
+            self.send_command('ge');
+            incoming = self.read_response();
+            disp(['Returned system errors : ', incoming]);
+            self.send_command('gme');
+            incoming = self.read_response();
+            disp(['Returned hardware errors : ', incoming]);
+            
+            
             
             %Enable Axis
             try
@@ -421,7 +432,19 @@ classdef CorvusEco < InstrClass & CoordSysClass
                 self.Busy=0;
                 rethrow(ME);
             end
-            self.wait_for_command();
+            try
+                self.wait_for_command();
+            catch ME
+                self.send_command('ge');
+                incoming = self.read_response();
+                disp(['Returned system errors : ', incoming]);
+                self.send_command('gme');
+                incoming = self.read_response();
+                disp(['Returned hardware errors : ', incoming]);
+                self.Busy = 0;
+                rethrow(ME); 
+            end
+            
             self.Busy = 0;
             
         end
