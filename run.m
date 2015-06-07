@@ -42,7 +42,7 @@ catch
     disp('Image Aquisition Toolbox is not installed.');
 end
 
-clear all;
+% clear all;
 close all;
 clc;
 
