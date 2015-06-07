@@ -280,7 +280,7 @@ obj.instr.detector.setProp('SelectedDetectors', selectedDetectors);
 if selected
     powerValues = obj.instr.detector.readPower(index);
     powerStr = sprintf('%0.1f', powerValues);
-    disp(powerStr); % shon added this 12/16/1013
+%    disp(powerStr); % shon added this 12/16/1013
     set(obj.gui.(parentStruct)(panelIndex).detectorUI.detectorPower(index), 'String', powerStr);
 else
     set(obj.gui.(parentStruct)(panelIndex).detectorUI.detectorPower(index), 'String', 'N/A');
