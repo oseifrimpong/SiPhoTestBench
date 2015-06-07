@@ -131,7 +131,7 @@ switch panelName
             obj.instr.camera.close();
         end
     case 'Test'
-        set(obj.gui.nextButton, 'Visible', 'off');
+%         set(obj.gui.nextButton, 'Visible', 'off');
 end
 delete(allchild(currentPanel));
 end
