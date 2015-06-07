@@ -148,7 +148,7 @@ obj.gui.(parentStruct)(panelIndex).detectorUI.includeDetectorString = uicontrol(
 
 
 % for loop to draw ui's for each detector
-numOfDetectors = obj.instr.detector.getProp('NumOfDetectors')
+numOfDetectors = obj.instr.detector.getProp('NumOfDetectors');
 detectorBoxSize = [.1, min(.45/numOfDetectors, 0.16)];
 selectedDetectors = obj.instr.detector.getProp('SelectedDetectors');
 for i = 1:numOfDetectors

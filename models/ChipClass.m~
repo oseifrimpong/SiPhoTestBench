@@ -112,20 +112,20 @@ classdef ChipClass < handle
                 mkdir(dirName);
             end
             
-            dirName = fullfile(testDataDir,self.Name,self.DieID,testType);
+            dirName = fullfile(testDataDir,self.Name,'\',self.DieID,'\',testType,'\'];
             % check for test type
-            if ~exist(dirName,'dir')
-                mkdir(dirName);
+            if ~exist(dir,'dir')
+                mkdir(dir);
             end
             
-            dirName = fullfile(testDataDir,self.Name,self.DieID,testType,dtStr);
+            dir = [testDataDir,'\',self.Name,'\',self.DieID,'\',testType,'\',dtStr,'\'];
             % check for date/time of test
-            if ~exist(dirName,'dir')
-                mkdir(dirName);
+            if ~exist(dir,'dir')
+                mkdir(dir);
             end
             
-            data_dir_path = fullfile(testDataDir,self.Name,self.DieID,testType,dtStr);
-            log_file = fullfile(testDataDir,self.Name,self.DieID,testType,dtStr,'log_file.txt');
+            data_dir_path = [testDataDir,'\',self.Name,'\',self.DieID,'\',testType,'\',dtStr,'\'];
+            log_file = [testDataDir,'\',self.Name,'\',self.DieID,'\',testType,'\',dtStr,'\log_file.txt'];
         end
         
     end
