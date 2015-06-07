@@ -255,13 +255,13 @@ if strcmpi(obj.AppSettings.infoParams.Task, 'SaltSteps') && detectorNumber >= 1
     
 elseif strcmpi(obj.AppSettings.infoParams.Task, 'DryTest') || strcmpi(obj.AppSettings.infoParams.Task, 'WetTest')
     if strcmpi(obj.AppSettings.FinishTestSettings.MoveData, 'Yes')
-        chipDir = strrep(obj.chip.Name, '_', '\');
-        filePath = strcat(...
+        chipDir = strrep(obj.chip.Name, '_', filesep);
+        filePath = fullfile(...
             obj.AppSettings.path.testData,...
-            chipDir,'\',...
-            obj.AppSettings.infoParams.DieNumber,'\');
+            chipDir,...
+            obj.AppSettings.infoParams.DieNumber);
     else
-        filePath = 'C:\TestBench\TempData\';
+        filePath = obj.AppSettings.path.tempData;
     end
     outputFormat = 'pdf';
     options = struct(...
@@ -271,8 +271,8 @@ elseif strcmpi(obj.AppSettings.infoParams.Task, 'DryTest') || strcmpi(obj.AppSet
         'codeToEvaluate', 'viewTestResults(testbench)');
     publish('viewTestResults', options);
     
-    outputFile = strcat(filePath, 'viewTestResults.', outputFormat);
-    renameFile = strcat(filePath, 'AUTO_TestReport_', obj.chip.Name, '_', obj.AppSettings.infoParams.DieNumber, '_', obj.AppSettings.infoParams.Task, '_', obj.lastTestTime, '.', outputFormat);
+    outputFile = fullfile(filePath, 'viewTestResults.', outputFormat);
+    renameFile = fullfile(filePath, 'AUTO_TestReport_', obj.chip.Name, '_', obj.AppSettings.infoParams.DieNumber, '_', obj.AppSettings.infoParams.Task, '_', obj.lastTestTime, '.', outputFormat);
     movefile(outputFile, renameFile, 'f');
     
     try

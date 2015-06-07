@@ -12,11 +12,7 @@
 % You should received a copy of the GNU Lesser General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function defaultStruct = applicationDefaults(rootPath)
-if(nargin<1)
-    rootPath = fileparts(mfilename('fullpath'));
-end
-
+function defaultStruct = applicationDefaults()
 % ds = default defaultAppSettings struct
 
 %% Instruments Defaults
@@ -172,12 +168,13 @@ ds.AppSettings.infoParams = struct(...
 %     'testData', 'Z:\', ...
 %     'testModeData', 'Z:\');
 
+rootPath = mfilename('fullpath');
 ds.AppSettings.path = struct(...
     'root', rootPath, ... 
     'userData', fullfile(rootPath,'UserData'), ...
     'tempData', fullfile(rootPath,'TempData'), ...
-    'testData', strcat('Z',pathsep,filesep), ...
-    'testModeData', strcat('Z',pathsep,filesep));
+    'testData', strcafullfile('Z:', ...
+    'testModeData', 'Z:\');
 
 
 ds.AppSettings.LaserParams = struct(...
@@ -278,7 +275,7 @@ ds.guiDefaults.taskList = {...
     'VirtualTestMode'};
 
 %DEBUG: popup or needs to be in realation to root directory
-ds.guiDefaults.chipFiles = dir(fullfile(rootPath,'defaults','coordinateFiles','*.txt'));
+ds.guiDefaults.chipFiles = dir('.\defaults\coordinateFiles\*.txt');
 ds.guiDefaults.chipList = {...
     '<Select Chip Architecture>'};
 
