@@ -343,6 +343,7 @@ classdef Detector_Agilent8163A_81531A < InstrClass
             [slot, channel ] = self.switchDetector(DetectorNumber);
             LoggingResult = zeros(1, self.DataPoints);
             PowerUnit=0; %fixed to dBm
+            WaitForCompletion = 0; %0 logging will stop immediately; 1: loggin operation will wait
             [LoggingStatus, LoggingResult] = invoke(self.GroupObj.Pwmdataaquisition,...
                 'getpwmloggingresultsq', slot, channel, self.Param.WaitForCompletion,...
                 PowerUnit, LoggingResult);

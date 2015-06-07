@@ -318,6 +318,19 @@ classdef TestBenchClass < handle
                 obj.AppSettings.(paramStruct).(fields{ii}) = newVal;
             end
         end
+        
+        function checkPathInfo(self)
+            pathNames = fieldnames(self.AppSettings.path);
+            for n = 1:length(pathNames)
+                thisPath = self.AppSettings.path.(pathNames{n});
+                if ~strcmpi(thisPath(end), '\')
+                    thisPath = [thisPath, '\'];
+                    self.AppSettings.path.(pathNames{n}) = thisPath;
+                end
+            end
+        end
+        
+        
     end
     
     methods (Static)
@@ -359,6 +372,8 @@ classdef TestBenchClass < handle
         end
     end
     
+    
+    
     methods (Access = private)
         function self = init(self)
             self.initialize_instr();
@@ -374,16 +389,7 @@ classdef TestBenchClass < handle
             end
         end
         
-        function checkPathInfo(self)
-            pathNames = fieldnames(self.AppSettings.path);
-            for n = 1:length(pathNames)
-                thisPath = self.AppSettings.path.(pathNames{n});
-                if ~strcmpi(thisPath(end), '\')
-                    thisPath = [thisPath, '\'];
-                    self.AppSettings.path.(pathNames{n}) = thisPath;
-                end
-            end
-        end
+
     end
     
     methods (Static, Access = private)

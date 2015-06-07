@@ -13,7 +13,7 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function [wvlData, pwrData] = sweep(obj)
-% Stiching functionality need to be added --- Vince 2013
+% Stiching functionality need to be added 
 waitbar_handle = waitbar(0.1,'Sweeping', 'CreateCancelBtn', {@waitBarCancelButtonCallback, obj});
 
 active_timers = obj.manageTimer('pause');
@@ -27,6 +27,7 @@ speed = obj.AppSettings.SweepParams.SweepSpeed;
 
 if strcmp(laserType,'Santec TSL510')
     points = floor((stopWvl_init-startWvl_init)/stepWvl);
+    obj.msg(['Number of data points: ', num2str(points)]);
     if points > obj.instr.detector.getProp('MaxDataPoints')
         obj.msg('Too many points required');
         obj.msg(['Limit is: ', num2str(obj.instr.detector.getProp('MaxDataPoints')), ' points']);
@@ -35,10 +36,12 @@ if strcmp(laserType,'Santec TSL510')
         delete(waitbar_handle);
         return
     end
+ 
+    %Stop any logging function; just in case:
+    obj.instr.detector.pwm_func_stop(1); %probably not necessary
     
-
     %Calculate required detector averaging time based on speed and step:
-    required_avg = stepWvl/speed; %time spend on one point
+    required_avg = stepWvl/speed; %time spend on one point  nm/s;
     %try to set it to detector
     try
         obj.instr.detector.setAvgTime(required_avg); 
@@ -175,6 +178,7 @@ for kk = 1:(stitchNum+1)
             
         case 'Santec TSL510'
             % Add code here
+            obj.instr.detector.setProp('ReadyForSweep', 1);
             obj.msg('Santec TSL510 laser sweep init ...');
             %has to be done for each channel independently 
             selDet = obj.instr.detector.getProp('SelectedDetectors');
@@ -189,7 +193,7 @@ for kk = 1:(stitchNum+1)
                     obj.instr.detector.pwm_func_stop(ii); %do it on detector 1
                     %arm the detector
                     EstimatedTimeout = obj.instr.detector.start_pwm_logging(ii);
-                    obj.msg(['Estimated Timeout = ',num2str(EstimatedTimeout)]);
+                    obj.msg(['Estimated Timeout = ',num2str(EstimatedTimeout/1000),'[s]']);
                     obj.instr.laser.sweep();
                     obj.msg(['Laser sweep finish for detector ',num2str(ii)]);
                     obj.msg('Get data from detector');
@@ -197,7 +201,7 @@ for kk = 1:(stitchNum+1)
                     wvl(:,ii)=tmp_wvl(1:end-1);
                     [LoggingStatus, pwr(:,ii)] = obj.instr.detector.get_pwm_logging(...
                         ii);
-                    obj.msg(['Logging status: ',num2str(LoggingStatus)]);
+                    obj.msg(['Logging status (det ',num2str(ii),'): ',num2str(LoggingStatus)]);
                 end
             end
 

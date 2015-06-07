@@ -33,9 +33,9 @@ elseif ~strcmpi(currentDevice.Name, '<Device>')
         else
             disp('relative move');
             % Move in x direction
-            benchObj.instr.opticalStage.move_x(-(targetDevice.X - currentDevice.X));
+            benchObj.instr.opticalStage.move_y(-(targetDevice.X - currentDevice.X));
             % Move in y direction
-            benchObj.instr.opticalStage.move_y(-(targetDevice.Y - currentDevice.Y));
+            benchObj.instr.opticalStage.move_x(-(targetDevice.Y - currentDevice.Y));
         end
         
         wb_msg = 'Success!';

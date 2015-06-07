@@ -246,15 +246,15 @@ classdef CoordSysClass < handle
             sx=param0(1);
             sy=param0(2);
             %s=param0(1);
-            disp(strcat('scaling factor x: ',num2str(sx)));
-            disp(strcat('scaling factor y: ',num2str(sy)));
+            %disp(strcat('scaling factor x: ',num2str(sx)));
+            %disp(strcat('scaling factor y: ',num2str(sy)));
             %sx=sy;
             theta=param0(3);
-            disp(strcat('angle: ',num2str(theta)));
+            %disp(strcat('angle: ',num2str(theta)));
             d1 = param0(4);
             d2 = param0(5);
-            disp(strcat('offset 1: ',num2str(d1)));
-            disp(strcat('offset 2: ',num2str(d2)));
+            %disp(strcat('offset 1: ',num2str(d1)));
+            %disp(strcat('offset 2: ',num2str(d2)));
             l1 = param0(6);
             l2 = param0(7);
             

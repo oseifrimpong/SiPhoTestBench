@@ -1,5 +1,5 @@
 function success = fine_align(obj, parentStruct, panelIndex)
-DEBUG=1;  %flag for debuggin plots cross hair pwr and displays variables to the terminal
+DEBUG=0;  %flag for debuggin plots cross hair pwr and displays variables to the terminal
 waitbar_handle = waitbar(0.1,'Fine Align');
 peakflag = 0;  %set to 1 if found peak (max output)
 success = false;
@@ -25,7 +25,7 @@ initial_accel = obj.instr.opticalStage.getParam('Acceleration'); % for resetting
 obj.instr.laser.setWavelength(obj.AppSettings.FAParams.Wvl);
 obj.instr.laser.setParam('PowerUnit',0);  %set to dBm
 obj.instr.laser.setPower(obj.AppSettings.FAParams.Power);
-obj.instr.laser.setParam('LowSSE',obj.AppSettings.FAParams.LowSSE);
+%obj.instr.laser.setParam('LowSSE',obj.AppSettings.FAParams.LowSSE);
 
 %Switch laser on
 obj.instr.laser.on();
