@@ -53,16 +53,13 @@ classdef TestBenchClass < handle
     methods
         
         %% constructor
-        function self = TestBenchClass(rootPath)
-            if(nargin<1)
-                rootPath = pwd;
-            end
+        function self = TestBenchClass
             % Removed for debugging in .git repository
             %            addpath(genpath('./'));
             
             % Load Application Defaults
             self.includeBioFeature = false;
-            ds = applicationDefaults(rootPath);
+            ds = applicationDefaults();
             self.AppSettings.infoParams.School = 'UBC'; % *Note*
             if exist('..\siphotestbenchbio\', 'dir') == 7 % 7 - directory exist
                 addpath(genpath('..\siphotestbenchbio\'));
@@ -132,15 +129,15 @@ classdef TestBenchClass < handle
         function self = new_user(self, userID)
             try
                 % userfile = strcat(self.AppSettings.path.userData, userID, '\AppSettings.mat');
-                userfile = fullfile(self.AppSettings.path.userData, userID, 'AppSettings.mat');
+                userfile = fullfile(self.AppSettings.path.userData, userID, '\AppSettings.mat');
 
                 try
                     if (exist(self.AppSettings.path.userData, 'dir')) ~= 7 % 7 is check for directory
                         mkdir(self.AppSettings.path.userData);
                     end
-                    mkdir(fullfile(self.AppSettings.path.userData, userID, '')); % Under folder of User Name
-                    mkdir(fullfile(self.AppSettings.path.userData, userID, 'coordinateFiles'));
-                    mkdir(fullfile(self.AppSettings.path.userData, userID, 'recipeFiles'));
+                    mkdir(strcat(self.AppSettings.path.userData, userID, '\')); % Under folder of User Name
+                    mkdir(strcat(self.AppSettings.path.userData, userID, '\coordinateFiles\'));
+                    mkdir(strcat(self.AppSettings.path.userData, userID, '\recipeFiles\'));
                     
                     addpath(genpath(self.AppSettings.path.userData));
                 catch ME
@@ -168,7 +165,7 @@ classdef TestBenchClass < handle
         function self = update_user(self, userID)
             try
                 % Load the existing user file
-                userfile = fullfile(self.AppSettings.path.userData, userID, 'AppSettings.mat');
+                userfile = strcat(self.AppSettings.path.userData, userID, '\AppSettings.mat');
                 
                 % Update all parameters to the current user mat-file
                 userobj = self.AppSettings;
@@ -383,8 +380,8 @@ classdef TestBenchClass < handle
             pathNames = fieldnames(self.AppSettings.path);
             for n = 1:length(pathNames)
                 thisPath = self.AppSettings.path.(pathNames{n});
-                if ~strcmpi(thisPath(end), filesep)
-                    thisPath = [thisPath, filesep];
+                if ~strcmpi(thisPath(end), '\')
+                    thisPath = [thisPath, '\'];
                     self.AppSettings.path.(pathNames{n}) = thisPath;
                 end
             end
