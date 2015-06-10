@@ -28,7 +28,7 @@ agreement = sprintf(strcat(...
     'along with this program.  If not, see <http://www.gnu.org/licenses/>.'));
 
 agreeH = msgbox(agreement, 'SiPho Testbench License Agreement', 'modal');
-pause(1);
+pause(.25);
 try
     delete(agreeH);
 end
@@ -42,7 +42,7 @@ catch
     disp('Image Aquisition Toolbox is not installed.');
 end
 
-% clear all;
+clear all;
 close all;
 clc;
 
