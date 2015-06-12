@@ -393,10 +393,17 @@ end
 
 %% Callback Functions
 function dXLeftButtonOC_cb(~, ~, obj, parentStruct, panelIndex)
-distance = str2double(get(obj.gui.(parentStruct)(panelIndex).edgeCoupledStageUI.dXStepSizeOC, 'String'));
-obj.instr.fiberStage.move_x(distance);
-msg = strcat([obj.instr.fiberStage.Name,':moved ',num2str(distance),' um to the left']);
-obj.msg(msg);
+
+distanceStr = get(obj.gui.(parentStruct)(panelIndex).edgeCoupledStageUI.dXStepSizeOC, 'String');
+if(obj.confirmDlg('Please confirm change of %s',distanceStr))
+    distance = str2double(distanceStr);
+    obj.instr.fiberStage.move_x(distance);
+    msg = strcat([obj.instr.fiberStage.Name,':moved ',num2str(distance),' um to the left']);
+    obj.msg(msg);
+else
+    obj.msg('Movement canceled');
+end
+
 end
 
 function dXRightButtonOC_cb(~, ~, obj, parentStruct, panelIndex)

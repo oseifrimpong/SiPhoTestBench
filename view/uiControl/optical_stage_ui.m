@@ -417,10 +417,16 @@ obj.msg(msg);
 end
 
 function dXRightButtonOC_cb(~, ~, obj, parentStruct, panelIndex)
-distance = str2double(get(obj.gui.(parentStruct)(panelIndex).opticalStageUI.dXStepSizeOC, 'String'));
-obj.instr.opticalStage.move_x(distance);
-msg = strcat([obj.instr.opticalStage.Name,':moved ',num2str(distance),' um to the right']);
-obj.msg(msg);
+
+distanceStr = get(obj.gui.(parentStruct)(panelIndex).edgeCoupledStageUI.dXStepSizeOC, 'String');
+if(obj.confirmDlg('Please confirm change of %s',distanceStr))
+    distance = str2double(get(obj.gui.(parentStruct)(panelIndex).opticalStageUI.dXStepSizeOC, 'String'));
+    obj.instr.opticalStage.move_x(distance);
+    msg = strcat([obj.instr.opticalStage.Name,':moved ',num2str(distance),' um to the right']);
+    obj.msg(msg);
+else
+    obj.msg('Movement canceled');
+end
 end
 
 function dSettingsOptical_cb(~, ~, obj)

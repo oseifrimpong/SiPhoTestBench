@@ -348,17 +348,17 @@ classdef TestBenchClass < handle
     
     methods (Static)
         
-        function doContinue = confirmDlg(varargin)
-            if(numel(varargin)<1 || isempty(varargin{1}))
+        function doContinue = checkToContinueDlg(confirmMsg)
+            if(nargin<1 || isempty(optionalMsg)
                 confirmMsg = 'Are you sure you want to adjust this value?';
-            else
-                confirmMsg = sprintf(varargin{:});
             end
             answer = questdlg(confirmMsg, ...
                 'Warning', ...
-                'Confirm', 'Cancel','Cancel');
-            doContinue = strcmpi(answer,'Confirm');            
-        end       
+                'Confirm', 'Cancel');
+            
+            
+        end
+        
         
         function changeBackgroundcolorCallback(~,~,graphicH)
             c = uisetcolor(get(graphicH,'backgroundcolor'));
@@ -393,13 +393,12 @@ classdef TestBenchClass < handle
             end
         end
         
-        
         function varargout = callFunctionHandle(UIhandle, varargin)
             callbackHandle = get(UIhandle, 'Callback');
-            callbackF = callbackHandle{1};
-            nargin(callbackF);
-            subInput = varargin;
-            nargout(callbackF);
+            callbackF = callbackHandle{1}
+            nargin(callbackF)
+            subInput = varargin
+            nargout(callbackF)
             if nargout(callbackF) >= 1
                 varargout = callbackF(subInput);
             else
