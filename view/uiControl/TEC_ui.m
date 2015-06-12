@@ -50,6 +50,12 @@ obj.gui.(parentStruct)(panelIndex).thermalControlUI.mainPanel = uipanel(...
     'FontSize', 9, ...
     'Position', position);
 
+panelH = obj.gui.(parentStruct)(panelIndex).thermalControlUI.mainPanel;
+contextmenuHandle = uicontextmenu; %('callback',@obj.contextmenu_mainaxes_callback);
+uimenu(contextmenuHandle,'Label','Change Color','separator','off','callback',{@obj.changeBackgroundcolorCallback,panelH});
+set(panelH,'uicontextmenu',contextmenuHandle);
+
+
 x_start = 0.03;
 y_start = 0.7;
 

@@ -43,11 +43,12 @@ classdef TestBenchClass < handle
         recipeFile;
         
         AppSettings; % active settings in the application
+        panelContextmenuHandle;
         
     end
     
     properties (Access = private)
-        includeBioFeature;
+        includeBioFeature;        
     end
     
     methods
@@ -57,6 +58,9 @@ classdef TestBenchClass < handle
             if(nargin<1)
                 rootPath = pwd;
             end
+            
+
+            
             % Removed for debugging in .git repository
             %            addpath(genpath('./'));
             
@@ -105,6 +109,8 @@ classdef TestBenchClass < handle
     
     
     methods % public
+        
+        
         
         function self = load_user(self, userID)
             try
@@ -335,10 +341,22 @@ classdef TestBenchClass < handle
             end
         end
         
+
+        
         
     end
     
     methods (Static)
+        
+        function changeBackgroundcolorCallback(~,~,graphicH)
+            c = uisetcolor(get(graphicH,'backgroundcolor'));
+            if(numel(c)~=1)
+                
+                graphicH = [graphicH;findall(graphicH,'style','text')];
+                set(graphicH,'backgroundcolor',c);
+            end;
+        end
+        
         function settingsWinDone(hObject, eventData)
             uiresume;
             delete(get(hObject, 'parent'));

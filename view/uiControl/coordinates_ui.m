@@ -38,6 +38,8 @@ pushButtonSize = [0.25, 0.11];
 stringBoxSize = [0.25, 0.11];
 
 y = 0.9;
+
+
 % Coordinates main Panel
 obj.gui.(parentStruct)(panelIndex).coordUI.mainPanel = uipanel(...
     'Parent', parentObj, ...
@@ -49,6 +51,12 @@ obj.gui.(parentStruct)(panelIndex).coordUI.mainPanel = uipanel(...
     'FontSize', 9, ...
     'FontWeight', 'bold', ...
     'Position', position);
+
+
+panelH = obj.gui.(parentStruct)(panelIndex).coordUI.mainPanel;
+contextmenuHandle = uicontextmenu; %('callback',@obj.contextmenu_mainaxes_callback);
+uimenu(contextmenuHandle,'Label','Change Color','separator','off','callback',{@obj.changeBackgroundcolorCallback,panelH});
+set(panelH,'uicontextmenu',contextmenuHandle);
 
 % error string
 obj.gui.(parentStruct)(panelIndex).coordUI.errorString = uicontrol(...

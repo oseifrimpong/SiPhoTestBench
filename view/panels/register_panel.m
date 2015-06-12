@@ -125,6 +125,13 @@ if (obj.instr.detector.Connected)
         ui_position);
 end
 
+end
+
+
+    
+
+
+
 %% ------------------------- Old Version Code Below -------------------- %%
 % cam_width = 0.61;
 % cam_height = 0.91;

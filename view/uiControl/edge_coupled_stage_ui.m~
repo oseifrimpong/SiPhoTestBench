@@ -53,7 +53,7 @@ obj.gui.(parentStruct)(panelIndex).edgeCoupledStageUI.mainpanel = uipanel(...
     'FontWeight','bold', ...
     'Position', position);
 
-panelH = obj.gui.(parentStruct)(panelIndex).edgeCoupledStageUI.mainpanel;
+panelH = obj.gui.(parentStruct)(panelIndex).edgeCoupledStageUI.mainanel;
 contextmenuHandle = uicontextmenu; %('callback',@obj.contextmenu_mainaxes_callback);
 uimenu(contextmenuHandle,'Label','Change Color','separator','off','callback',{@obj.changeBackgroundcolorCallback,panelH});
 set(panelH,'uicontextmenu',contextmenuHandle);

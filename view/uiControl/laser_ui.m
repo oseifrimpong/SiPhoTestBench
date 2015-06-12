@@ -54,6 +54,13 @@ obj.gui.(parentStruct)(panelIndex).laserUI.mainPanel = uipanel(...
     'FontWeight','bold', ...
     'Position', position);
 
+
+panelH = obj.gui.(parentStruct)(panelIndex).laserUI.mainPanel;
+contextmenuHandle = uicontextmenu; %('callback',@obj.contextmenu_mainaxes_callback);
+uimenu(contextmenuHandle,'Label','Change Color','separator','off','callback',{@obj.changeBackgroundcolorCallback,panelH});
+set(panelH,'uicontextmenu',contextmenuHandle);
+
+
 %% Laser Section
 
 x_start = 0.08;

@@ -57,6 +57,12 @@ obj.gui.(parentStruct)(panelIndex).opticalStageUI.mainpanel = uipanel(...
     'FontWeight','bold', ...
     'Position', position);
 
+panelH = obj.gui.(parentStruct)(panelIndex).opticalStageUI.mainpanel;
+contextmenuHandle = uicontextmenu; %('callback',@obj.contextmenu_mainaxes_callback);
+uimenu(contextmenuHandle,'Label','Change Color','separator','off','callback',{@obj.changeBackgroundcolorCallback,panelH});
+set(panelH,'uicontextmenu',contextmenuHandle);
+
+
 %% Movement Buttons section
 
 % X Step Size OC
