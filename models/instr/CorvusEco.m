@@ -124,7 +124,7 @@ classdef CorvusEco < InstrClass & CoordSysClass
             self.Param.Acceleration = 500;
             
             % Set acceleration function
-            self.send_command('0 setaccelfunc');
+            self.send_command('0 setaccelfunc'); %linear acceleration; 
             
             %used for mapping
             trigger_distance_time = self.Param.Velocity/self.Param.Acceleration;
