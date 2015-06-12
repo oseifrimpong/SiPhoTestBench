@@ -25,7 +25,7 @@
 % Modified by Vince Wu - Nov 2013
 % Modified by Pavel Kulik - Nov 2013
 
-function obj = laser_ui(obj, parentName, parentObj, position, varargin)
+function [obj, panelH] = laser_ui(obj, parentName, parentObj, position, varargin)
 
 parentStruct = getParentStruct(parentName);
 if (~isempty(strfind(parentStruct, 'panel')))
@@ -56,9 +56,7 @@ obj.gui.(parentStruct)(panelIndex).laserUI.mainPanel = uipanel(...
 
 
 panelH = obj.gui.(parentStruct)(panelIndex).laserUI.mainPanel;
-contextmenuHandle = uicontextmenu; %('callback',@obj.contextmenu_mainaxes_callback);
-uimenu(contextmenuHandle,'Label','Change Color','separator','off','callback',{@obj.changeBackgroundcolorCallback,panelH});
-set(panelH,'uicontextmenu',contextmenuHandle);
+
 
 
 %% Laser Section

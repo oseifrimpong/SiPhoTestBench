@@ -21,7 +21,7 @@
 % Victor Bass 2013;
 % Modified by Vince Wu - Nov 2013
 
-function obj = detector_ui(obj, parentName, parentObj, position)
+function [obj, panelH] = detector_ui(obj, parentName, parentObj, position)
 
 parentStruct = getParentStruct(parentName);
 if (~isempty(strfind(parentStruct, 'panel')))
@@ -48,9 +48,6 @@ obj.gui.(parentStruct)(panelIndex).detectorUI.mainPanel = uipanel(...
     'Position', position);
 
 panelH = obj.gui.(parentStruct)(panelIndex).detectorUI.mainPanel;
-contextmenuHandle = uicontextmenu; %('callback',@obj.contextmenu_mainaxes_callback);
-uimenu(contextmenuHandle,'Label','Change Color','separator','off','callback',{@obj.changeBackgroundcolorCallback,panelH});
-set(panelH,'uicontextmenu',contextmenuHandle);
 
 
 % auto update string

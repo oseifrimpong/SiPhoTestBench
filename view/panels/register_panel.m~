@@ -64,31 +64,20 @@ ui_position = [ui_x, ui_y, ui_width, ui_height];
 if (obj.instr.opticalStage.Connected)
     % Align ui
     ui_position(4) = 0.1; % this ui hieght
-    [obj, panelH] = align_ui(...
+    obj = align_ui(...
         obj, ...
         'register', ...
         obj.gui.panelFrame(thisPanel), ...
         ui_position, ...
         obj.gui.panel(thisPanel).heatMapDisp);
-    isEven =  ~isEven;
-    backgroundColor = panelColors(isEven+1,:);
-    obj.initPanelBackgroundColor(panelH,backgroundColor);
-
-    
     % Coordinates ui
     ui_position(2) = ui_position(2) + ui_position(4); % y position
     ui_position(4) = 0.15;
-    [obj, panelH] = coordinates_ui(...
+    obj = coordinates_ui(...
         obj, ...
         'register', ...
         obj.gui.panelFrame(thisPanel), ...
         ui_position);
-    
-    isEven =  ~isEven;
-    backgroundColor = panelColors(isEven+1,:);
-    obj.initPanelBackgroundColor(panelH,backgroundColor);
-
-    
     % Optical Stage ui
     ui_position(2) = ui_position(2) + ui_position(4);
     ui_position(4) = 0.15;
@@ -99,7 +88,7 @@ if (obj.instr.opticalStage.Connected)
         ui_position);
     
     isEven =  ~isEven;
-    backgroundColor = panelColors(isEven+1,:);
+    curColor = panelColors(isEven+1,:);
     obj.initPanelBackgroundColor(panelH,backgroundColor);
     
 end
@@ -113,11 +102,6 @@ if (obj.instr.fiberStage.Connected)
         'register', ...
         obj.gui.panelFrame(thisPanel), ...
         ui_position);
-    
-    isEven =  ~isEven;
-    backgroundColor = panelColors(isEven+1,:);
-    obj.initPanelBackgroundColor(panelH,backgroundColor);
-
 end
 
 % TEC ui
@@ -129,10 +113,6 @@ if (obj.instr.thermalControl.Connected)
         'register', ...
         obj.gui.panelFrame(thisPanel), ...
         ui_position);
-
-    isEven =  ~isEven;
-    backgroundColor = panelColors(isEven+1,:);
-    obj.initPanelBackgroundColor(panelH,backgroundColor);
     
 end
 
@@ -145,10 +125,6 @@ if (obj.instr.laser.Connected)
         'register', ...
         obj.gui.panelFrame(thisPanel), ...
         ui_position);
-    
-    isEven =  ~isEven;
-    backgroundColor = panelColors(isEven+1,:);
-    obj.initPanelBackgroundColor(panelH,backgroundColor);    
 end
 
 % Detector ui
@@ -160,10 +136,6 @@ if (obj.instr.detector.Connected)
         'register', ...
         obj.gui.panelFrame(thisPanel), ...
         ui_position);
-
-    isEven =  ~isEven;
-    backgroundColor = panelColors(isEven+1,:);
-    obj.initPanelBackgroundColor(panelH,backgroundColor);    
 end
 
 end

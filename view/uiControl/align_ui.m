@@ -22,7 +22,7 @@
 % Victor Bass 2013;
 % Modified by Vince Wu - Nov 2013
 
-function obj = align_ui(obj, parentName, parentObj, position, heatMapDispHandle)
+function [obj, panelH] = align_ui(obj, parentName, parentObj, position, heatMapDispHandle)
 
 parentStruct = getParentStruct(parentName);
 if (~isempty(strfind(parentStruct, 'panel')))
@@ -48,9 +48,6 @@ obj.gui.(parentStruct)(panelIndex).alignUI.mainPanel = uipanel(...
     'Position', position);
 
 panelH = obj.gui.(parentStruct)(panelIndex).alignUI.mainPanel;
-contextmenuHandle = uicontextmenu; %('callback',@obj.contextmenu_mainaxes_callback);
-uimenu(contextmenuHandle,'Label','Change Color','separator','off','callback',{@obj.changeBackgroundcolorCallback,panelH});
-set(panelH,'uicontextmenu',contextmenuHandle);
 
 % fine align button
 obj.gui.(parentStruct)(panelIndex).alignUI.fine_align_button = uicontrol(...
