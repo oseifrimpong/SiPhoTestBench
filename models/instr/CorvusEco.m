@@ -383,10 +383,10 @@ classdef CorvusEco < InstrClass & CoordSysClass
         end
         
         function self = set_trigger_config(self,status)
-            %status: not use here
+            %status = 1: acitve low : status =0; active high
             if self.Connected
                 % Set output port
-                self.send_command('0 setout');
+                self.send_command([num2str(status),' setout']);
             else
                 err = MException(strcat(self.Name,':set_trigger_config'),...
                     'optical stage not connected');

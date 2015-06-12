@@ -48,10 +48,9 @@ if strcmp(laserType,'Santec TSL510')
         obj.instr.detector.setAvgTime(required_avg); 
     catch ME
         obj.msg(['required Averaging time not allowed']);
-        obj.msg(['T_avg = ',num2str(required_avg)]); 
+        obj.msg(['T_avg = ',num2str(required_avg),' out of range']); 
         delete(waitbar_handle);
         rethrow(ME)
-       return 
     end
     obj.msg(['Detector Averaging time requested: ',num2str(required_avg)]);
     returned_avg = obj.instr.detector.getAvgTime(); %work around, can only set value out of list
@@ -63,7 +62,7 @@ if strcmp(laserType,'Santec TSL510')
     obj.msg(['Laser speed requested: ',num2str(speed)]);
     obj.msg(['Laser speed adjusted: ',num2str(required_speed)]);
     if required_speed >100 || required_speed<1 %hard coded limits for Santec Laser should query what limit is
-        obj.msg('Adjust sweep speed or step wvl; Averaging time for detector can only take certain levels');
+        obj.msg('Adjust sweep speed or step wvl; Averaging time for detector can only take certain values');
         delete(waitbar_handle);
         return
     end
@@ -225,7 +224,6 @@ for kk = 1:(stitchNum+1)
                     %setup trigger for wavelength logging in detector
                     obj.instr.detector.setProp('DataPoints', points);
                     obj.instr.detector.setup_trigger(2,0, ii); %do it on detector 1
-                    obj.instr.detector.pwm_func_stop(ii); %do it on detector 1
                     obj.instr.detector.pwm_func_stop(ii); %do it on detector 1
                     %arm the detector
                     EstimatedTimeout = obj.instr.detector.start_pwm_logging(ii);

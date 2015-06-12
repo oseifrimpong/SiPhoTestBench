@@ -111,8 +111,8 @@ classdef Detector_Agilent8163A_81531A < InstrClass
             self.Param.PowerUnit = 0; % dB=0, W=1
             self.Param.UpdatePeriod = 1; % update reading timer: 0.5s
             self.Param.PWMWvl = 1550;
-            self.Param.WaitForCompletion = 0;
-            self.Param.InternalTrigger = 1; % not sure what this does
+            %self.Param.WaitForCompletion = 0;
+            %self.Param.InternalTrigger = 1; % not sure what this does
             self.Param.Zeroing = 0; % Boolean to choose whether zero all detectors while connecting
             self.PauseTime = .01;
         end
@@ -258,7 +258,7 @@ classdef Detector_Agilent8163A_81531A < InstrClass
                 for dd = 1:self.NumOfDetectors
                     [slot, channel] = self.switchDetector(dd);
                     invoke(self.GroupObj.Powermetermodules, 'setpwmwavelength',...
-                        slot,channel, wvl*1e-9); %The averaging time cannot be set for the slave channel
+                        slot,channel, wvl*1e-9);
                 end
                 
             else
@@ -343,9 +343,10 @@ classdef Detector_Agilent8163A_81531A < InstrClass
             [slot, channel ] = self.switchDetector(DetectorNumber);
             LoggingResult = zeros(1, self.DataPoints);
             PowerUnit=0; %fixed to dBm
+            pause(0.2); 
             WaitForCompletion = 0; %0 logging will stop immediately; 1: loggin operation will wait
             [LoggingStatus, LoggingResult] = invoke(self.GroupObj.Pwmdataaquisition,...
-                'getpwmloggingresultsq', slot, channel, self.Param.WaitForCompletion,...
+                'getpwmloggingresultsq', slot, channel, WaitForCompletion,...
                 PowerUnit, LoggingResult);
         end
         
@@ -412,14 +413,17 @@ classdef Detector_Agilent8163A_81531A < InstrClass
             [slot, channel]=self.switchDetector(DetectorNumber);
             invoke(self.GroupObj.Pwmdataaquisition,'pwmfunctionstop',...
                 slot, channel);
+            %temp fix to stop all logging functions.
+            for i = 1:self.NumOfDetectors
+                [slot, channel] = self.switchDetector(i);
+                invoke(self.GroupObj.Pwmdataaquisition,'pwmfunctionstop',...
+                    slot, channel);
+            end
         end
         
         
         %% Query slot info for sweep preparation
         function querySlotInfo(self)
-     
-       
-            
             self.NumOfDetectors = 0; %reset the counter
             self.PWMSlotInfo = 0;
             self.PWMSlots = []; %array with slot numbers used
@@ -493,7 +497,7 @@ classdef Detector_Agilent8163A_81531A < InstrClass
                         channel,...
                         self.Param.RangeMode,...
                         self.Param.PowerUnit,...
-                        self.Param.InternalTrigger,...
+                        internalTrigger,...
                         self.nm2m(self.Param.PWMWvl),...
                         self.Param.AveragingTime,...
                         self.Param.PowerRange);

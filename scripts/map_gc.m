@@ -27,7 +27,7 @@ delta_x = obj.AppSettings.MappingParams.step;
 %Apply settings to stage. 
 obj.instr.opticalStage.setParam('Velocity', obj.AppSettings.MappingParams.Velocity);
 obj.instr.opticalStage.setParam('Acceleration', obj.AppSettings.MappingParams.Acceleration);
-obj.instr.opticalStage.set_trigger_config(1); %enable digital I/O of stage controller
+obj.instr.opticalStage.set_trigger_config(0); %enable digital I/O of stage controller
 
 %Prepare detector
 obj.instr.detector.switchDetector(obj.AppSettings.MappingParams.Detector);
@@ -84,7 +84,7 @@ if numPoints<20 || numPoints > obj.instr.detector.getProp('MaxDataPoints');
     %Set the detector back to orig state
     obj.instr.detector.setup_trigger(0,0, obj.AppSettings.MappingParams.Detector); %Disable trigger
     obj.instr.detector.setParam('RangeMode',1);  %set to auto range
-    obj.instr.opticalStage.set_trigger_config(0);
+    obj.instr.opticalStage.set_trigger_config(1);
     obj.manageTimer('resume', active_timers);
     throw(err);
 end
@@ -246,7 +246,7 @@ delete(waitbar_handle);
 
 obj.instr.detector.setup_trigger(0,0, obj.AppSettings.MappingParams.Detector); %Disable trigger
 obj.instr.detector.setParam('RangeMode',1);  %set to auto range
-obj.instr.opticalStage.set_trigger_config(0);
+obj.instr.opticalStage.set_trigger_config(1);
 obj.instr.laser.off();
 % turn off laser indicator off
 %set(obj.gui.(parentStruct)(panelIndex).laserUI.lasingIndicator, 'BackGroundColor', [1 0 0]);
