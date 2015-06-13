@@ -21,9 +21,9 @@ end
 
 %% Instruments Defaults
 % the strings should be the name of the instrumnet class
-ds.instrDefaults.laser = {Laser, Laser_SantecTSL510};
+ds.instrDefaults.laser = {Laser, Laser_SantecTSL510,Laser_Agilent8164A};
 ds.instrDefaults.detector = {Detector,...
-    Detector_AgilentN7700A, Detector_Agilent8163A_81531A};
+    Detector_AgilentN7744A, Detector_Agilent8163A_81531A};
 
 %ds.instrDefaults.camera = {Camera, LumeneraLw575C};
 %ds.instrDefaults.powerSupply = {PowerSupply, Power_Supply_AgilentE3634A};

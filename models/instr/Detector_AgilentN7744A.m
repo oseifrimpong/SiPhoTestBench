@@ -12,7 +12,7 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-classdef Detector_AgilentN7700A < InstrClass
+classdef Detector_AgilentN7744A < InstrClass
     properties
         GroupObj;
     end
@@ -60,11 +60,11 @@ classdef Detector_AgilentN7700A < InstrClass
     
     methods
         % Constructor
-        function self = Detector_AgilentN7700A()
+        function self = Detector_AgilentN7744A()
             % Super Class - InstrClass properties
             self.Name = 'Agilent Detector N7744A';
             self.Group = 'Detector';
-            self.Model = 'N7700A';
+            self.Model = 'N7744A';
             self.CalDate = date;
             self.Busy = 0;
             self.Connected = 0;
@@ -273,7 +273,7 @@ classdef Detector_AgilentN7700A < InstrClass
             self.DataPoints = numOfDataPoints;
             self.GroupObj.Multiframelambdascan = get(self.Obj, 'Applicationswavelengthscanfunctionsmultiframelambdascan');
             for ii = 1:self.NumOfDetectors
-                % Channel Number is always 0 for N7700A detector model
+                % Channel Number is always 0 for N7744A detector model
                 current_channel = ii-1;
                 invoke(self.GroupObj.Multiframelambdascan,'setinitialrangeparams', ...
                     current_channel,reset_to_default,self.Param.PowerRange, ...
