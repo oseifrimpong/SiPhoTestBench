@@ -48,6 +48,9 @@ classdef CorvusEco < InstrClass & CoordSysClass
             self.Param.Parity = 0;
             self.Param.Acceleration = 500; % mm/s^2
             self.Param.Velocity = 5; % mm/s
+            self.Param.xMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in optical_stage_ui.m)
+            self.Param.yMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in optical_stage_ui.m)
+            self.Param.zMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in optical_stage_ui.m)
             
             % object properties
             self.Calibrated = 0; % stage calibrated
@@ -82,6 +85,17 @@ classdef CorvusEco < InstrClass & CoordSysClass
             
             %optical stage is connected
             self.Connected = 1;
+            % restet
+            self.send_command('clear'); 
+            %make sure there are no errors
+            self.send_command('ge');
+            incoming = self.read_response();
+            disp(['Returned system errors : ', incoming]);
+            self.send_command('gme');
+            incoming = self.read_response();
+            disp(['Returned hardware errors : ', incoming]);
+            
+            
             
             %Enable Axis
             try
@@ -113,7 +127,7 @@ classdef CorvusEco < InstrClass & CoordSysClass
             self.Param.Acceleration = 500;
             
             % Set acceleration function
-            self.send_command('0 setaccelfunc');
+            self.send_command('0 setaccelfunc'); %linear acceleration; 
             
             %used for mapping
             trigger_distance_time = self.Param.Velocity/self.Param.Acceleration;
@@ -233,7 +247,7 @@ classdef CorvusEco < InstrClass & CoordSysClass
         %% Closed loop configuration commands
         function [a1, a2] = set_closed_loop(self, enable)
            %enables the closed loop control for axis 1 and 2; 
-           %if enable=1: enable closed loop if enable=0: disabled
+           %if enable=1: closed loop enabled ;  if enable=0: disabled
            % returns setting in stage controller for axis 1 and 2; s
            if self.Connected
                self.Busy = 1;
@@ -291,6 +305,7 @@ classdef CorvusEco < InstrClass & CoordSysClass
                 %                 if self.Calibrated
                 self.Busy = 1;
                 move_cmd = [num2str(distance/1000), ' 0 0 r'];
+                %move_cmd = ['0 ', num2str(distance/1000), ' 0 r'];
                 end_cmd = '0 0 0 r';  % 'x y z r' r: relative move
                 stop_cmd = 'st';  %status request
                 self.send_command(move_cmd);
@@ -321,6 +336,7 @@ classdef CorvusEco < InstrClass & CoordSysClass
                 %                 if self.Calibrated
                 self.Busy = 1;
                 move_cmd = ['0 ', num2str(distance/1000), ' 0 r'];  %stage takes mm. the classes have um.
+                %move_cmd = [num2str(distance/1000), ' 0 0 r'];
                 end_cmd = '0 0 0 r';
                 stop_cmd = 'st';
                 self.send_command(move_cmd);
@@ -370,10 +386,10 @@ classdef CorvusEco < InstrClass & CoordSysClass
         end
         
         function self = set_trigger_config(self,status)
-            %status: not use here
+            %status = 1: acitve low : status =0; active high
             if self.Connected
                 % Set output port
-                self.send_command('1 setout');
+                self.send_command([num2str(status),' setout']);
             else
                 err = MException(strcat(self.Name,':set_trigger_config'),...
                     'optical stage not connected');
@@ -399,11 +415,12 @@ classdef CorvusEco < InstrClass & CoordSysClass
             pol = 0; %0: active low, 1: active high
             output = 1; %1,2,3 Equivalent I/O interface ouputs (pull up is soldered to 1)
             time = 5; %0-1000ms
-            axis = 1;
+            axis = 2;
             
             %move first, because wpot will block all incoming messages
             % relative movement comand 'x 0 0 rmove',
-            move_cmd = [num2str(move_distance/1000), ' 0 0 rmove'];
+            %move_cmd = [num2str(move_distance/1000), ' 0 0 rmove'];
+            move_cmd = ['0 ', num2str(move_distance/1000), ' 0 r'];
             end_cmd = '0 0 0 r';
             stop_cmd = 'st';
             trig_cmd = [num2str(trigger_pos/1000), ' ', num2str(dir), ' ',num2str(axis),' ',num2str(time),' ',num2str(pol),' ',num2str(output),' wpot'];
@@ -418,7 +435,19 @@ classdef CorvusEco < InstrClass & CoordSysClass
                 self.Busy=0;
                 rethrow(ME);
             end
-            self.wait_for_command();
+            try
+                self.wait_for_command();
+            catch ME
+                self.send_command('ge');
+                incoming = self.read_response();
+                disp(['Returned system errors : ', incoming]);
+                self.send_command('gme');
+                incoming = self.read_response();
+                disp(['Returned hardware errors : ', incoming]);
+                self.Busy = 0;
+                rethrow(ME); 
+            end
+            
             self.Busy = 0;
             
         end
@@ -521,6 +550,13 @@ classdef CorvusEco < InstrClass & CoordSysClass
                                 if self.Obj.BytesAvailable > 0  %empty buffer
                                     fscanf(self.Obj, '%s', self.Obj.BytesAvailable);
                                 end
+                                self.send_command('ge');
+                                incoming = self.read_response();
+                                disp(['Returned system errors : ', incoming]);
+                                self.send_command('gme'); 
+                                incoming = self.read_response();
+                                disp(['Returned hardware errors : ', incoming]); 
+                                
                                 pause(0.2);
                             catch ME
                                 disp('CovusEco Class problem: position is not returned properly');

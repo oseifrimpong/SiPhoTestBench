@@ -208,7 +208,7 @@ else
     
     % execute test
     test_type = obj.AppSettings.infoParams.Task;
-    if strcmpi(test_type, 'WetTest') || strcmpi(test_type, 'DryTest')
+    if strcmpi(test_type, 'WetTest') || strcmpi(test_type, 'DryTest') || strcmpi(test_type, 'VirtualTestMode')
         dry_test(obj);
     elseif strcmpi(test_type, 'SaltSteps') || strcmpi(test_type, 'BioAssay')
         assay(obj);
@@ -216,8 +216,8 @@ else
         testMode(obj);
     elseif strcmpi(test_type, 'TestBenchCharacterization')
         testSetupCharacterization(obj);
-    elseif strcmpi(test_type, 'VirtualTestMode')
-        assay(obj);
+%     elseif strcmpi(test_type, 'VirtualTestMode')
+%         assay(obj);
     else
         msg = strcat('No test script exists for ',test_type,' yet. Bug Shon to get it done.');
         error(msg);

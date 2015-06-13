@@ -21,7 +21,7 @@
 % Victor Bass 2013;
 % Modified by Vince Wu - Nov 2013
 
-function obj = detector_ui(obj, parentName, parentObj, position)
+function [obj, panelH] = detector_ui(obj, parentName, parentObj, position)
 
 parentStruct = getParentStruct(parentName);
 if (~isempty(strfind(parentStruct, 'panel')))
@@ -46,6 +46,9 @@ obj.gui.(parentStruct)(panelIndex).detectorUI.mainPanel = uipanel(...
     'FontSize', 9, ...
     'FontWeight','bold', ...
     'Position', position);
+
+panelH = obj.gui.(parentStruct)(panelIndex).detectorUI.mainPanel;
+
 
 % auto update string
 obj.gui.(parentStruct)(panelIndex).detectorUI.detectorUpdateString = uicontrol(...
@@ -199,6 +202,7 @@ for i = 1:numOfDetectors
     
     % include detector
     % enable by default (Value = true)
+
     obj.gui.(parentStruct)(panelIndex).detectorUI.includeDetector(i) = uicontrol(...
         'Parent', obj.gui.(parentStruct)(panelIndex).detectorUI.mainPanel, ...
         'Style', 'checkbox', ...
@@ -279,7 +283,7 @@ obj.instr.detector.setProp('SelectedDetectors', selectedDetectors);
 if selected
     powerValues = obj.instr.detector.readPower(index);
     powerStr = sprintf('%0.1f', powerValues);
-    disp(powerStr); % shon added this 12/16/1013
+%    disp(powerStr); % shon added this 12/16/1013
     set(obj.gui.(parentStruct)(panelIndex).detectorUI.detectorPower(index), 'String', powerStr);
 else
     set(obj.gui.(parentStruct)(panelIndex).detectorUI.detectorPower(index), 'String', 'N/A');

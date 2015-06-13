@@ -192,7 +192,7 @@ columnWidth =    {150     52       40         50         50         40      40  
 % initialize table
 % rows = length(obj.AppSettings.Device.ActiveDeviceList);
 % cols = length(columnNames);
-table = updateTable(obj);
+tableData = updateTable(obj);
 
 obj.gui.panel(thisPanel).hAutoDeviceTable = uitable(...,
     'parent', obj.gui.panelFrame(thisPanel),...
@@ -201,7 +201,7 @@ obj.gui.panel(thisPanel).hAutoDeviceTable = uitable(...,
     'ColumnEditable', columnEditable,...
     'Units','normalized',...
     'Position', [0.08, 0.05, 0.87, 0.7],...
-    'Data', table,...
+    'Data', tableData,...
     'Enable', enableTable, ...
     'FontSize', 9,...
     'ColumnWidth',columnWidth,...
@@ -210,7 +210,7 @@ obj.gui.panel(thisPanel).hAutoDeviceTable = uitable(...,
 end
 
 %% CALLBACKS
-function table = updateTable(obj)
+function tableData = updateTable(obj)
 
 activeDeviceList = obj.AppSettings.Device.ActiveDeviceList;
 
@@ -218,7 +218,7 @@ activeDeviceList = obj.AppSettings.Device.ActiveDeviceList;
 % selection state and create the table to display
 rows = length(activeDeviceList);
 cols = 10;
-table = cell(rows,cols);
+tableData = cell(rows,cols);
 
 for ii = 1:length(activeDeviceList)
     
@@ -231,16 +231,16 @@ for ii = 1:length(activeDeviceList)
         selectedValue = false;
     end
     
-    table{ii,1} = strtrim(obj.devices.(activeDeviceList{ii,1}).Name);
-    table{ii,2} = 'SELECT';
-    table{ii,3} = selectedValue;
-    table{ii,4} = num2str(obj.devices.(activeDeviceList{ii,1}).X);
-    table{ii,5} = num2str(obj.devices.(activeDeviceList{ii,1}).Y);
-    table{ii,6} = strtrim(obj.devices.(activeDeviceList{ii,1}).Mode);
-    table{ii,7} = num2str(obj.devices.(activeDeviceList{ii,1}).Wvl);
-    table{ii,8} = strtrim(obj.devices.(activeDeviceList{ii,1}).Type);
-    table{ii,9} = strtrim(obj.devices.(activeDeviceList{ii,1}).Comment);
-    table{ii,10} = strtrim(obj.devices.(activeDeviceList{ii,1}).Rating);
+    tableData{ii,1} = strtrim(obj.devices.(activeDeviceList{ii,1}).Name);
+    tableData{ii,2} = 'SELECT';
+    tableData{ii,3} = selectedValue;
+    tableData{ii,4} = num2str(obj.devices.(activeDeviceList{ii,1}).X);
+    tableData{ii,5} = num2str(obj.devices.(activeDeviceList{ii,1}).Y);
+    tableData{ii,6} = strtrim(obj.devices.(activeDeviceList{ii,1}).Mode);
+    tableData{ii,7} = num2str(obj.devices.(activeDeviceList{ii,1}).Wvl);
+    tableData{ii,8} = strtrim(obj.devices.(activeDeviceList{ii,1}).Type);
+    tableData{ii,9} = strtrim(obj.devices.(activeDeviceList{ii,1}).Comment);
+    tableData{ii,10} = strtrim(obj.devices.(activeDeviceList{ii,1}).Rating);
 end
 end
 

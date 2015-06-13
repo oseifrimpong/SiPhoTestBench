@@ -1,14 +1,14 @@
 % © Copyright 2014-2015 WenXuan Wu, Shon Schmidt, and Jonas Flueckiger
-% 
+%
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as published by
 % the Free Software Foundation, version 3 of the License.
-% 
+%
 % This program is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 % GNU Lesser General Public License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -22,7 +22,7 @@
 % Modified by Vince Wu - Nov 2013
 % Modified by Pavel Kulik - Nov 2013
 
-function obj = coordinates_ui(obj, parentName, parentObj, position)
+function [obj, panelH] = coordinates_ui(obj, parentName, parentObj, position)
 
 parentStruct = getParentStruct(parentName);
 if (~isempty(strfind(parentStruct, 'panel')))
@@ -33,9 +33,12 @@ else
 end
 
 % ui element size variables
-editBoxSize = [0.25, 0.075];
-pushButtonSize = [0.25, 0.075];
-stringBoxSize = [0.25, 0.075];
+editBoxSize = [0.25, 0.11];
+pushButtonSize = [0.25, 0.11];
+stringBoxSize = [0.25, 0.11];
+
+y = 0.9;
+
 
 % Coordinates main Panel
 obj.gui.(parentStruct)(panelIndex).coordUI.mainPanel = uipanel(...
@@ -48,6 +51,9 @@ obj.gui.(parentStruct)(panelIndex).coordUI.mainPanel = uipanel(...
     'FontSize', 9, ...
     'FontWeight', 'bold', ...
     'Position', position);
+
+
+panelH = obj.gui.(parentStruct)(panelIndex).coordUI.mainPanel;
 
 % error string
 obj.gui.(parentStruct)(panelIndex).coordUI.errorString = uicontrol(...
@@ -79,6 +85,7 @@ obj.gui.(parentStruct)(panelIndex).coordUI.clearAllButton = uicontrol(...
     'Position', [0.7, 0.9, pushButtonSize], ...
     'Callback', {@clear_all_cb, obj, parentStruct, panelIndex});
 
+y = y - editBoxSize(2) - 0.04;
 % GDS device header
 obj.gui.(parentStruct)(panelIndex).coordUI.deviceHeader = uicontrol(...
     'Parent', obj.gui.(parentStruct)(panelIndex).coordUI.mainPanel, ...
@@ -87,7 +94,7 @@ obj.gui.(parentStruct)(panelIndex).coordUI.deviceHeader = uicontrol(...
     'BackGroundColor', [0.9, 0.9, 0.9], ...
     'Units', 'normalized', ...
     'String', 'GDS device', ...
-    'Position', [0.05, 0.8, stringBoxSize]);
+    'Position', [0.05, y, stringBoxSize]);
 
 % GDS coord. header
 obj.gui.(parentStruct)(panelIndex).coordUI.coordHeader = uicontrol(...
@@ -97,7 +104,7 @@ obj.gui.(parentStruct)(panelIndex).coordUI.coordHeader = uicontrol(...
     'BackGroundColor', [0.9, 0.9, 0.9], ...
     'Units', 'normalized', ...
     'String', 'GDS coord', ...
-    'Position', [0.31, 0.8, stringBoxSize]);
+    'Position', [0.31, y, stringBoxSize]);
 
 % stage coord header
 obj.gui.(parentStruct)(panelIndex).coordUI.stageHeader = uicontrol(...
@@ -107,7 +114,7 @@ obj.gui.(parentStruct)(panelIndex).coordUI.stageHeader = uicontrol(...
     'BackGroundColor', [0.9, 0.9, 0.9], ...
     'Units', 'normalized', ...
     'String', 'Stage coord', ...
-    'Position', [0.575, 0.8, stringBoxSize]);
+    'Position', [0.575, y, stringBoxSize]);
 
 % set header
 obj.gui.(parentStruct)(panelIndex).coordUI.setHeader = uicontrol(...
@@ -117,7 +124,7 @@ obj.gui.(parentStruct)(panelIndex).coordUI.setHeader = uicontrol(...
     'BackGroundColor', [0.9, 0.9, 0.9], ...
     'Units', 'normalized', ...
     'String', 'Set', ...
-    'Position', [0.825, 0.8, .1, 0.075]);
+    'Position', [0.825, y, .1, 0.11]);
 
 % clear header
 obj.gui.(parentStruct)(panelIndex).coordUI.clearHeader = uicontrol(...
@@ -127,9 +134,10 @@ obj.gui.(parentStruct)(panelIndex).coordUI.clearHeader = uicontrol(...
     'BackGroundColor', [0.9, 0.9, 0.9], ...
     'Units', 'normalized', ...
     'String', 'Clear', ...
-    'Position', [0.9, 0.8, .09, 0.075]);
+    'Position', [0.9, y, .09, 0.11]);
 
-table_element_y = 0.1;
+y = y - stringBoxSize(2) - 0.07;
+table_element_y = 0.15;
 
 deviceName = fieldnames(obj.devices);
 devicePD = cell(length(deviceName)+1, 1);
@@ -138,11 +146,35 @@ for i = 1:length(deviceName)
     devicePD{i+1} = obj.devices.(deviceName{i}).Name;
 end
 
+[NumOfPoints, GDS, Motor, DeviceNames] = obj.instr.opticalStage.getCoordPairs();
+if NumOfPoints < 3
+    deviceIndex = ones(1, 3);
+    GDSx = {'{x}', '{x}', '{x}'};
+    GDSy = {'{y}', '{y}', '{y}'};
+    Stagex = {'{x}', '{x}', '{x}'};
+    Stagey = {'{y}', '{y}', '{y}'};
+    isSet = 0;
+else
+    deviceIndex = ones(1, NumOfPoints);
+    GDSx = cell(1, NumOfPoints);
+    GDSy = cell(1, NumOfPoints);
+    Stagex = cell(1, NumOfPoints);
+    Stagey = cell(1, NumOfPoints);
+    for i = 1:NumOfPoints
+        deviceIndex(DeviceNames.index(i)) = find(strcmpi(DeviceNames.name{i}, devicePD), 1);
+        GDSx{GDS.index(i)} = str2double(GDS.coord(i, 1));
+        GDSy{GDS.index(i)} = str2double(GDS.coord(i, 2));
+        Stagex{Motor.index(i)} = str2double(Motor.coord(i, 1));
+        Stagey{Motor.index(i)} = str2double(Motor.coord(i, 2));
+    end
+    isSet = 1;
+end
+
 % GDS table loop
-for i = 1:7
+for i = 1:3
     % position coordinates
     x_table_coord = 0.05;
-    y_table_coord = 0.7 - (0.11*(i-1));
+    y_table_coord = y - ((table_element_y + 0.07)*(i-1));
     
     % popup menu
     obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{i,1} = uicontrol(...
@@ -152,6 +184,7 @@ for i = 1:7
         'Units', 'normalized', ...
         'Position', [x_table_coord , y_table_coord, 0.2, table_element_y], ...
         'String', devicePD, ...
+        'Value', deviceIndex(i), ...
         'Callback', {@gds_selection_cb, obj, parentStruct, panelIndex, i});
     
     x_table_coord = x_table_coord + 0.26;
@@ -163,8 +196,8 @@ for i = 1:7
         'Enable', 'off', ...
         'HorizontalAlignment','left', ...
         'Units', 'normalized', ...
-        'Position', [x_table_coord, y_table_coord, 0.1, table_element_y], ...
-        'String', '{x}');
+        'Position', [x_table_coord, y_table_coord - 0.02, 0.1, table_element_y], ...
+        'String', GDSx{i});
     
     x_table_coord = x_table_coord + 0.1;
     
@@ -175,8 +208,8 @@ for i = 1:7
         'Enable', 'off', ...
         'HorizontalAlignment','left', ...
         'Units', 'normalized', ...
-        'Position', [x_table_coord, y_table_coord, 0.1, table_element_y], ...
-        'String', '{y}');
+        'Position', [x_table_coord, y_table_coord - 0.02, 0.1, table_element_y], ...
+        'String', GDSy{i});
     
     x_table_coord = x_table_coord + 0.17;
     
@@ -187,8 +220,8 @@ for i = 1:7
         'Enable', 'off', ...
         'HorizontalAlignment','left', ...
         'Units', 'normalized', ...
-        'Position', [x_table_coord, y_table_coord, 0.1, table_element_y], ...
-        'String', '{x}');
+        'Position', [x_table_coord, y_table_coord - 0.02, 0.1, table_element_y], ...
+        'String', Stagex{i});
     
     x_table_coord = x_table_coord + 0.1;
     
@@ -199,8 +232,8 @@ for i = 1:7
         'Enable', 'off', ...
         'HorizontalAlignment','left', ...
         'Units', 'normalized', ...
-        'Position', [x_table_coord, y_table_coord, 0.1, table_element_y], ...
-        'String', '{y}');
+        'Position', [x_table_coord, y_table_coord - 0.02, 0.1, table_element_y], ...
+        'String', Stagey{i});
     
     x_table_coord = x_table_coord + 0.15;
     
@@ -208,13 +241,14 @@ for i = 1:7
     obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{i,6} = uicontrol(...
         'Parent', obj.gui.(parentStruct)(panelIndex).coordUI.mainPanel, ...
         'Style','radiobutton', ...
+        'Value', isSet, ...
         'HorizontalAlignment','left', ...
         'BackGroundColor', [0.9, 0.9, 0.9], ...
         'Units', 'normalized', ...
-        'Position', [x_table_coord, y_table_coord, .05, table_element_y], ...
+        'Position', [x_table_coord, y_table_coord - 0.02, .05, table_element_y], ...
         'Callback', {@set_coord_cb, obj, parentStruct, panelIndex, i});
     
-    x_table_coord = x_table_coord + 0.1;
+    x_table_coord = x_table_coord + 0.08;
     
     % clear radio button
     obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{i,7} = uicontrol(...
@@ -223,14 +257,15 @@ for i = 1:7
         'HorizontalAlignment','left', ...
         'BackGroundColor', [0.9, 0.9, 0.9], ...
         'Units', 'normalized', ...
-        'Position', [x_table_coord, y_table_coord, .05, table_element_y], ...
+        'Position', [x_table_coord, y_table_coord - 0.02, .05, table_element_y], ...
         'Callback', {@clr_coord_cb, obj, parentStruct, panelIndex, i});
+    
 end
 
 % %Populate coordinate table
 % %if coordinate system is already set up load previous values
 % [NumOfPoints,GDS,Motor, DeviceNameIndex]=obj.instr.opticalStage.getCoordPairs;
-% 
+%
 % %update error
 % set(obj.gui.(parentStruct)(panelIndex).coordUI.errorDisplay, 'String', ...
 %     num2str(obj.instr.opticalStage.coordSysError));
@@ -252,11 +287,12 @@ end
 
 function clear_all_cb(~, ~, obj, parentStruct, panelIndex)
 % clear both GDS and stage coords
-for ii = 1:7
-    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,2}, 'String', ' ');
-    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,3}, 'String', ' ');
-    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,4}, 'String', ' ');
-    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,5}, 'String', ' ');
+for ii = 1:3
+    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,1}, 'Value', 1);
+    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,2}, 'String', '{x}');
+    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,3}, 'String', '{y}');
+    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,4}, 'String', '{x}');
+    set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,5}, 'String', '{y}');
     set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,6}, 'Value', 0);
     set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{ii,7}, 'Value', 0);
 end
@@ -299,9 +335,14 @@ if get(hObject,'Value')
     set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 5}, 'String', num2str(cur_y));
     gds_x = str2double(get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 2}, 'String'));
     gds_y = str2double(get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 3}, 'String'));
+    
+    selectedDeviceIndex = get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 1}, 'Value');
+    deviceNames = get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index,1}, 'String');
+    selectedDeviceName = deviceNames{selectedDeviceIndex};
+    
     %update the coordsys class
     if ~isnan(gds_x) && ~isnan(gds_y) && isnumeric(gds_x) && isnumeric(gds_y)
-        obj.instr.opticalStage.addCoordPair([gds_x, gds_y],[cur_x, cur_y], index);
+        obj.instr.opticalStage.addCoordPair([gds_x, gds_y],[cur_x, cur_y], selectedDeviceName, index);
     else
         obj.msg('coordinate pair is invalid');
         return;
@@ -309,24 +350,31 @@ if get(hObject,'Value')
     %update error
     set(obj.gui.(parentStruct)(panelIndex).coordUI.errorDisplay, 'String', ...
         num2str(obj.instr.opticalStage.coordSysError));
+    
+    % Set current device location
+    deviceNames = get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index,1}, 'String');
+    currentDeviceIndex = get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index,1}, 'Value');
+    currentDeviceName = deviceNames{currentDeviceIndex};
+    obj.chip.CurrentLocation = currentDeviceName;
+    set(obj.gui.(parentStruct)(panelIndex).opticalStageUI.currentDevicePD, 'Value', currentDeviceIndex);
 else
     msg = 'coordinates_ui: Already set';
     obj.msg(msg);
+    set(hObject,'Value', 1)
 end
-% Set current device location
-deviceNames = get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index,1}, 'String');
-currentDeviceIndex = get(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index,1}, 'Value');
-currentDeviceName = deviceNames{currentDeviceIndex};
-obj.chip.CurrentLocation = currentDeviceName;
-set(obj.gui.(parentStruct)(panelIndex).opticalStageUI.currentDevicePD, 'Value', currentDeviceIndex);
+
 end
 
 function clr_coord_cb(~, ~, obj, parentStruct, panelIndex, index)
 % clear the stage coords
-set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 4}, 'String', ' ');
-set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 5}, 'String', ' ');
+set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 1}, 'Value', 1);
+set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 2}, 'String', '{x}');
+set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 3}, 'String', '{y}');
+set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 4}, 'String', '{x}');
+set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index, 5}, 'String', '{y}');
 %unset the radiobutton
 set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index,6}, 'Value', 0);
+set(obj.gui.(parentStruct)(panelIndex).coordUI.GDS_table{index,7}, 'Value', 0);
 try
     obj.instr.opticalStage.removeCoordPair(index);
 catch ME

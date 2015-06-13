@@ -1,4 +1,4 @@
-% © Copyright 2013-2015 Shon Schmidt, Jonas Flueckiger, and WenXuan Wu
+% © Copyright 2015 Shon Schmidt
 % 
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as published by
@@ -12,7 +12,7 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-classdef OpticalStage < InstrClass & CoordSysClass
+classdef FiberStage < InstrClass
     properties % public
         coordSysIsValid; % a bug w/ the coord class i don't feel like trying to figure out right now
     end
@@ -27,11 +27,11 @@ classdef OpticalStage < InstrClass & CoordSysClass
     
     methods
         % constructor
-        function self = OpticalStage()
+        function self = FiberStage()
             self.Connected = 0;
             self.Busy = 0;
-            self.Name = 'Virtual Optical Stage'; % name of the instrument
-            self.Group = 'OpticalStage'; % instrument group this one belongs to
+            self.Name = 'Virtual Fiber Stage'; % name of the instrument
+            self.Group = 'FiberStage'; % instrument group this one belongs to
             self.Calibrated = 1; % stage calibrated
             self.Param.COMPort = 0;
             self.Param.BaudRate = 0;
@@ -39,9 +39,9 @@ classdef OpticalStage < InstrClass & CoordSysClass
             self.Param.Parity = 0;
             self.Param.Acceleration = 500; % what are the units?
             self.Param.Velocity = 300; % what are the units?
-            self.Param.xMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in optical_stage_ui.m)
-            self.Param.yMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in optical_stage_ui.m)
-            self.Param.zMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in optical_stage_ui.m)
+            self.Param.xMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in edge_coupled_stage_ui.m)
+            self.Param.yMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in edge_coupled_stage_ui.m)
+            self.Param.zMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in edge_coupled_stage_ui.m)
             self.xPos = nan; % initialize to nan to ensure calibration
             self.yPos = nan; % initialize to nan to ensure calibration
             self.zPos = nan; % initialize to nan to ensure calibration
@@ -175,25 +175,6 @@ classdef OpticalStage < InstrClass & CoordSysClass
                 throw(err);
             end
         end
-        
-        
-                %% Closed loop configuration commands
-        function [a1, a2] = set_closed_loop(self, enable)
-           %enables the closed loop control for axis 1 and 2; 
-           %if enable=1: enable closed loop if enable=0: disabled
-           % returns setting in stage controller for axis 1 and 2; s
-
-            if enable
-                disp('enables closed loop');
-                a1=1;
-                a2=1; 
-            else
-                disp('disables closed loop');
-                a1=0;
-                a2=0;
-            end
-        end
-        
         
         function self = setProp(self, prop, val)
             if self.(prop)

@@ -19,7 +19,7 @@ obj.AppSettings.FinishTestSettings.MoveData = questdlg(...
     '<<< Test Finished >>>', ...
     'Yes', 'No', 'Yes');
 if strcmp(obj.AppSettings.FinishTestSettings.MoveData, 'Yes')
-    wh = waitbar(0, sprintf('Moving data from temporary directory to\n%s', [obj.AppSettings.path.testData, '\']));
+    wh = waitbar(0, sprintf('Moving data from temporary directory to\n%s', obj.AppSettings.path.testData));
     numOfDevices = length(obj.testedDevices);
     statusOption = {'FAIL', 'SUCCESS'};
     

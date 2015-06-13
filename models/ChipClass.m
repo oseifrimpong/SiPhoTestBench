@@ -61,7 +61,7 @@ classdef ChipClass < handle
             % Store data in self.DeviceData
             
             % Filename
-            fn = strcat(self.coordinateFilesDir, self.Name, '.txt');
+            fn = fullfile(self.coordinateFilesDir, [self.Name, '.txt']);
 
             % Check to see if file exists, if not throw error
             if exist(fn, 'file')
@@ -89,10 +89,10 @@ classdef ChipClass < handle
             % check for a file containing chip history
             % C:/testData/<chip_name>/<dieID>/<testType>/<date>/'fileName.txt'
             
-            dir = [testData,'\'];
+            dirName = testData;
             % check for test data directory
-            if ~exist(dir,'dir')
-                mkdir(dir);
+            if ~exist(dirName,'dir')
+                mkdir(dirName);
                 msg = 'Creating test data directory';
                 disp(msg);
             else
@@ -100,32 +100,32 @@ classdef ChipClass < handle
                 disp(msg);
             end
             
-            dir = [testDataDir,'\',self.Name,'\'];
+            dirName = fullfile(testDataDir,self.Name);
             % check for chip type
-            if ~exist(dir,'dir')
-                mkdir(dir);
+            if ~exist(dirName,'dir')
+                mkdir(dirName);
             end
             
-            dir = [testDataDir,'\',self.Name,'\',self.DieID,'\'];
+            dirName = fullfile(testDataDir,self.Name,self.DieID);
             % check for specific chip
-            if ~exist(dir,'dir')
-                mkdir(dir);
+            if ~exist(dirName,'dir')
+                mkdir(dirName);
             end
             
-            dir = [testDataDir,'\',self.Name,'\',self.DieID,'\',testType,'\'];
+            dirName = fullfile(testDataDir,self.Name,self.DieID,testType);
             % check for test type
-            if ~exist(dir,'dir')
-                mkdir(dir);
+            if ~exist(dirName,'dir')
+                mkdir(dirName);
             end
             
-            dir = [testDataDir,'\',self.Name,'\',self.DieID,'\',testType,'\',dtStr,'\'];
+            dirName = fullfile(testDataDir,self.Name,self.DieID,testType,dtStr);
             % check for date/time of test
-            if ~exist(dir,'dir')
-                mkdir(dir);
+            if ~exist(dirName,'dir')
+                mkdir(dirName);
             end
             
-            data_dir_path = [testDataDir,'\',self.Name,'\',self.DieID,'\',testType,'\',dtStr,'\'];
-            log_file = [testDataDir,'\',self.Name,'\',self.DieID,'\',testType,'\',dtStr,'\log_file.txt'];
+            data_dir_path = fullfile(testDataDir,self.Name,self.DieID,testType,dtStr);
+            log_file = fullfile(testDataDir,self.Name,self.DieID,testType,dtStr,'log_file.txt');
         end
         
     end

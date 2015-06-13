@@ -163,7 +163,7 @@ set(obj.gui.panelFrame(thisPanel), 'Visible', 'on');
                         % Delete user mat-file and directory
                         % userfile = strcat(obj.AppSettings.path.userData, deleteUserID, '.mat');
                         % delete(userfile);
-                        userfile = strcat(obj.AppSettings.path.userData, deleteUserID, '\');
+                        userfile = fullfile(obj.AppSettings.path.userData, deleteUserID);
                         rmdir(userfile, 's')
                         % send msg to debug window
                         msg = sprintf('User: %s deleted.', deleteUserID);

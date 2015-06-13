@@ -133,14 +133,38 @@ obj.gui.(parentStruct)(panelIndex).dryTestUI.settingsButton = uicontrol(...
     'Callback', {@settings_button_cb, obj});
 
 %% summary table
-cnames =  {'Device ID', 'Ch#1', 'Ch#2', 'Ch#3', 'Ch#4',  'Rating', 'Comment'};
-cformat = {'char',      'char', 'char', 'char', 'char',  'char',   'char'};
-ceditable = [false,      false,  false,  false,  false,   false,    false];
-ccolumnwidth = {115,     35,     35,     35,     35,      75,       200};
+
+numSelectedDetectors=sum(obj.instr.detector.getProp('SelectedDetectors'));
+cnames = cell(1,numSelectedDetectors+2);
+
+cformat = repmat({'char'},1,numSelectedDetectors+2);
+ceditable = false(1,numSelectedDetectors+2);
+ccolumnwidth = cell(1,numSelectedDetectors+2);
+ccolumnwidth{1} = 115;
+ccolumnwidth(end)={7200};
+for d=1:numSelectedDetectors
+    ccolumnwidth{d+1}=35;
+    cnames{d+1}=sprintf('Ch#%d',d);
+end
+cnames{1}=  'Device ID';
+cnames{end} = 'Comment';
 
 deviceName = fieldnames(obj.devices);
+
+
+% Preallocate data cell for the table.  
+numDevices = 0;
+for j = 1:obj.AppSettings.dryTest.Iterations % this will be a bug, if the user changes after table is built
+    for i = 1:length(deviceName)
+        if obj.devices.(deviceName{i}).getProp('Selected')
+            numDevices = numDevices + 1;
+        end
+    end
+end
+obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable = cell(numDevices,numSelectedDetectors+2);
+
+
 % need to make summary table accessable to scripts to update status column from scripts
-obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable = {};
 table_index = 0;
 
 % get a list of devices to be tested
@@ -148,20 +172,11 @@ for j = 1:obj.AppSettings.dryTest.Iterations % this will be a bug, if the user c
     for i = 1:length(deviceName)
         if obj.devices.(deviceName{i}).getProp('Selected')
             table_index = table_index + 1;
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 1} = ...
-                obj.devices.(deviceName{i}).Name;
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 2} = ...
-                getCellColor(obj.devices.(deviceName{i}).getProp('Rating'));
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 3} = ...
-                getCellColor(obj.devices.(deviceName{i}).getProp('Rating'));
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 4} = ...
-                getCellColor(obj.devices.(deviceName{i}).getProp('Rating'));
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 5} = ...
-                getCellColor(obj.devices.(deviceName{i}).getProp('Rating'));
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 6} = ...
-                obj.devices.(deviceName{i}).Rating;
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 7} = ...
-                obj.devices.(deviceName{i}).Comment;
+            dataRow=cell(1,numSelectedDetectors+2);
+            dataRow{1}=obj.devices.(deviceName{i}).Name;
+            dataRow(2:end-1)=repmat({getCellColor(obj.devices.(deviceName{i}).getProp('Rating'))},1,numSelectedDetectors);
+            dataRow{end} = obj.devices.(deviceName{i}).Comment;
+            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable(table_index,:)=dataRow;            
         end
     end
 end
@@ -189,7 +204,23 @@ end
 function reset_button_cb(~, ~, obj, parentStruct, panelIndex)
 % reset device scan number back to 1
 % reset rate device result in panel
+
+% Preallocate data cell for the table.  
+numSelectedDetectors=sum(obj.instr.detector.getProp('SelectedDetectors'));
+
+numDevices = 0;
+
 deviceNames = fieldnames(obj.devices);
+for j = 1:obj.AppSettings.dryTest.Iterations % this will be a bug, if the user changes after table is built
+    for i = 1:length(deviceNames)
+        if obj.devices.(deviceNames{i}).getProp('Selected')
+            numDevices = numDevices + 1;
+        end
+    end
+end
+obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable = cell(numDevices,numSelectedDetectors+2);
+
+
 for ii = 1:length(deviceNames)
     if obj.devices.(deviceNames{ii}).getProp('Selected')
         obj.devices.(deviceNames{ii}).resetScanNumber();
@@ -204,14 +235,18 @@ for j = 1:obj.AppSettings.dryTest.Iterations % this will be a bug, if the user c
     for i = 1:length(deviceNames)
         if obj.devices.(deviceNames{i}).getProp('Selected')
             table_index = table_index + 1;
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 1} = ...
-                obj.devices.(deviceNames{i}).Name;
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 2} = ...
-                getCellColor(obj.devices.(deviceNames{i}).getProp('Rating'));
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 3} = ...
-                obj.devices.(deviceNames{i}).Rating;
-            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 4} = ...
-                obj.devices.(deviceNames{i}).Comment;
+            dataRow=cell(1,numSelectedDetectors+2);
+            dataRow{1}=obj.devices.(deviceNames{i}).Name;
+            dataRow(2:end-1)=repmat({getCellColor(obj.devices.(deviceNames{i}).getProp('Rating'))},1,numSelectedDetectors);
+            dataRow{end} = obj.devices.(deviceNames{i}).Comment;
+            obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable(table_index,:)=dataRow;            
+            
+%             obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 1} = ...
+%                 obj.devices.(deviceNames{i}).Name;
+%             obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, 2:     numSelectedDetectors} = ...
+%                 repmat( {getCellColor(obj.devices.(deviceNames{i}).getProp('Rating'))},1,numSelectedDetectors);
+%             obj.gui.(parentStruct)(panelIndex).dryTestUI.deviceTable{table_index, end} = ...
+%                 obj.devices.(deviceNames{i}).Comment;
         end
     end
 end

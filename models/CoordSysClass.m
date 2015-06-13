@@ -27,7 +27,7 @@ classdef CoordSysClass < handle
         GDSCoordPairs; % struct of the gds coord pairs in the coord system
         MotorPosPairs; % struct of the motor's x,y position pairs in the coord system
         CoordNum; % number of coordinate pairs to create coordinate system
-        DeviceNameIndex ;  %index of device used for coorindate system (number out of the pull down list)
+        DeviceNames ;  %index of device used for coorindate system (number out of the pull down list)
         
         %Transformation matrix
         rot_angle;
@@ -35,6 +35,7 @@ classdef CoordSysClass < handle
         offset;
         lambda; 
         
+        debug; 
         Param; % parameters for settings window
     end
     
@@ -54,14 +55,15 @@ classdef CoordSysClass < handle
            self.GDSCoordPairs.index = [];
            self.MotorPosPairs.coord = [];
            self.MotorPosPairs.index = []; 
-           self.DeviceNameIndex = []; 
+           self.DeviceNames.name = {};
+           self.DeviceNames.index = [];
             
             self.rot_angle = 0;
             self.scaling = 0;
             self.offset = 0;
             self.lambda = 0; %shearing
             
-
+            self.debug = 0; 
         end
                 
         %% coordSysIsValid
@@ -75,11 +77,11 @@ classdef CoordSysClass < handle
         end
         
         %% get coord pairs (i.e. to populate table)
-        function [NumOfPoints,GDS,Motor, DeviceNameIndex] = getCoordPairs(self)
+        function [NumOfPoints,GDS,Motor, DeviceNames] = getCoordPairs(self)
             NumOfPoints = self.CoordNum;
             GDS = self.GDSCoordPairs;
             Motor = self.MotorPosPairs; 
-            DeviceNameIndex = self.DeviceNameIndex; 
+            DeviceNames = self.DeviceNames; 
         end
         
         
@@ -91,7 +93,7 @@ classdef CoordSysClass < handle
             clear self.MotorPosPairs; % struct of the motor's x,y position pairs in the coord system
         end
   
-        function self = addCoordPair(self, GDSCoordPair, MotorCoordPair, index)
+        function self = addCoordPair(self, GDSCoordPair, MotorCoordPair, DeviceName, index)
             
             disp('find existing index');
             find(self.GDSCoordPairs.index==index)
@@ -107,16 +109,22 @@ classdef CoordSysClass < handle
             self.GDSCoordPairs.index(self.CoordNum) = index;  %location in the table: not necessarily in order
             self.MotorPosPairs.coord(self.CoordNum,1:2) = MotorCoordPair ;
             self.MotorPosPairs.index(self.CoordNum) = index; %location in the table: not necessarily in order
+            self.DeviceNames.name{self.CoordNum} = DeviceName;
+            self.DeviceNames.index(self.CoordNum) = index;
             
             if self.CoordNum >= self.Param.MinNumOfCoordPairs % try for a coordinate system
                 self.computeTransferMatrix();
                 disp('compute Transformation matrix');
             end
             disp(strcat('number of coord pairs (after adding): ', num2str(self.CoordNum)));
-            self.MotorPosPairs.coord
-            self.MotorPosPairs.index
-            self.GDSCoordPairs.coord
-            self.GDSCoordPairs.index
+            if self.debug==1
+                self.MotorPosPairs.coord
+                self.MotorPosPairs.index
+                self.GDSCoordPairs.coord
+                self.GDSCoordPairs.index
+                self.DeviceNames.name
+                self.DeviceNames.index
+            end
         end
         
         function self = removeCoordPair(self,index)  %index location in the table: not necessarily in order
@@ -133,14 +141,19 @@ classdef CoordSysClass < handle
             self.GDSCoordPairs.index=self.GDSCoordPairs.index(ind);
             self.MotorPosPairs.coord=self.MotorPosPairs.coord(ind);
             self.MotorPosPairs.index=self.MotorPosPairs.index(ind);
+            self.DeviceNames.name=self.DeviceNames.name(ind);
+            self.DeviceNames.index=self.DeviceNames.index(ind);
             
             self.CoordNum = self.CoordNum - 1;
             disp(strcat('number of coord pairs (after removing): ', num2str(self.CoordNum)));
-            self.MotorPosPairs.coord
-            self.MotorPosPairs.index
-            self.GDSCoordPairs.coord
-            self.GDSCoordPairs.index
-            
+            if self.debug == 1
+                self.MotorPosPairs.coord
+                self.MotorPosPairs.index
+                self.GDSCoordPairs.coord
+                self.GDSCoordPairs.index
+                self.DeviceNames.name
+                self.DeviceNames.index
+            end
             if self.CoordNum >= self.Param.MinNumOfCoordPairs % try for a coordinate system
                 self.computeTransferMatrix();
                 disp('compute Transformation matrix');
@@ -211,8 +224,9 @@ classdef CoordSysClass < handle
             if self.ValidCoordinateSystem
                 T1 = [self.scaling(1)*cos(self.rot_angle), -self.scaling(2)*sin(self.rot_angle);
                     self.scaling(1)*sin(self.rot_angle), self.scaling(2)*cos(self.rot_angle)];
-                T2 = [1, self.lambda(1);...
-                    self.lambda(2), 1];
+%                 T2 = [1, self.lambda(1);...
+%                     self.lambda(2), 1];
+                T2=[1,self.lambda(1);0,1]*[1,0;self.lambda(2),1];
                 D = [self.offset(1);self.offset(2)];  %offset
                 
                 motor_pos = T2*T1*GDS_coords + D;
@@ -232,22 +246,23 @@ classdef CoordSysClass < handle
             sx=param0(1);
             sy=param0(2);
             %s=param0(1);
-            disp(strcat('scaling factor x: ',num2str(sx)));
-            disp(strcat('scaling factor y: ',num2str(sy)));
+            %disp(strcat('scaling factor x: ',num2str(sx)));
+            %disp(strcat('scaling factor y: ',num2str(sy)));
             %sx=sy;
             theta=param0(3);
-            disp(strcat('angle: ',num2str(theta)));
+            %disp(strcat('angle: ',num2str(theta)));
             d1 = param0(4);
             d2 = param0(5);
-            disp(strcat('offset 1: ',num2str(d1)));
-            disp(strcat('offset 2: ',num2str(d2)));
+            %disp(strcat('offset 1: ',num2str(d1)));
+            %disp(strcat('offset 2: ',num2str(d2)));
             l1 = param0(6);
             l2 = param0(7);
             
             %Transform matrix 
             T1 = [sx*cos(theta), -sy*sin(theta);
                 sx*sin(theta), sy*cos(theta)];
-            T2 = [1, l1; l2, 1];
+            %T2 = [1, l1; l2, 1];
+            T2 = [1,l1;0,1]*[1,0;l2,1];
             D = [d1;d2];  %offset
             for (ii=1:1:self.CoordNum)
                 F(end+1:end+2)=T2*T1*self.GDSCoordPairs.coord(ii,:)'/1000 + D - self.MotorPosPairs.coord(ii,:)'/1000;
@@ -255,13 +270,6 @@ classdef CoordSysClass < handle
             %division by 1000 is for numerical reasons, paramters should be
             %same order of magnitud
             
-            %                 F(1) = sx*cos(theta)*GDS_coord(1,1)-sx*sin(theta)*GDS_coord(1,2)-mot_pos(1,1)+d1;
-            %                 F(2) = sy*sin(theta)*GDS_coord(1,1)+sy*cos(theta)*GDS_coord(1,2)-mot_pos(1,2)+d2;
-            %                 F(3) = sx*cos(theta)*GDS_coord(2,1)-sx*sin(theta)*GDS_coord(2,2)-mot_pos(2,1)+d1;
-            %                 F(4) = sy*sin(theta)*GDS_coord(2,1)+sy*cos(theta)*GDS_coord(2,2)-mot_pos(2,2)+d2;
-            %                 F(5) = sx*cos(theta)*GDS_coord(3,1)-sx*sin(theta)*GDS_coord(3,2)-mot_pos(3,1)+d1;
-            %                 F(6) = sy*sin(theta)*GDS_coord(3,1)+sy*cos(theta)*GDS_coord(3,2)-mot_pos(3,2)+d2;
-            %
             %A=[sx*cos(theta), -sx*sin(theta), -1 0; sy*sin(theta), sy*cos(theta), 0, -1];
             %d=[d1; d2];
             

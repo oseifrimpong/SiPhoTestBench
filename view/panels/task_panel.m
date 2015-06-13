@@ -212,17 +212,17 @@ end
     function path_select_cb(hObject, eventdata)
         dirName = uigetdir(obj.AppSettings.path.testData, 'Select Test Data Path');
         if dirName ~= 0
-            set(obj.gui.panel(thisPanel).pathDir, 'String', [dirName, '\']);
+            set(obj.gui.panel(thisPanel).pathDir, 'String', [dirName, filesep]);
             % Update current user setting
-            obj.AppSettings.path.testData = [dirName, '\'];
+            obj.AppSettings.path.testData = [dirName, filesep];
         end
     end
 
     function [chipList, default_user_chip, coordinateFilesDir] = updateChipMenu()
-        coordinateFilesDir = strcat(obj.AppSettings.path.userData, obj.AppSettings.infoParams.Name, '\coordinateFiles\');
-        coordinateFiles = dir(strcat(coordinateFilesDir, '*.txt'));
+        coordinateFilesDir = fullfile(obj.AppSettings.path.userData, obj.AppSettings.infoParams.Name, 'coordinateFiles');
+        coordinateFiles = dir(fullfile(coordinateFilesDir, '*.txt'));
         if isempty(coordinateFiles)
-            coordinateFilesDir = '.\defaults\coordinateFiles\';
+            coordinateFilesDir = fullfile(obj.AppSettings.path.root,'defaults','coordinateFiles');
             coordinateFiles = obj.guiDefaults.chipFiles; % Use default
         end
         
@@ -277,14 +277,15 @@ end
     end
 
     function loadNewChip_cb(hObject, eventdata)
+        coordinateFilePath = fullfile(obj.AppSettings.path.userData, obj.AppSettings.infoParams.Name, 'coordinateFiles');
         msg = sprintf('Selected coordinates file will be copied to your user folder:\n%s\nand you can select them from the menu next time.', ...
-            strcat(obj.AppSettings.path.userData, obj.AppSettings.infoParams.Name, '\coordinateFiles\'));
+            coordinateFilePath);
         uiwait(msgbox(msg, 'Add New Chip', 'modal'));
-        [fileName, pathName] = uigetfile('.\defaults\coordinateFiles\*.txt', 'Select Test Data Path');
+        [fileName, pathName] = uigetfile({'*.txt','Coordinate File';'*.*','All files'}, 'Select Coordinate File',coordinateFilePath);
         if ~isequal(fileName, 0) && ~isequal(pathName, 0)
             sourceFileName = strcat(pathName, fileName);
-            destinationFileName = strcat(obj.AppSettings.path.userData, obj.AppSettings.infoParams.Name, '\coordinateFiles\', fileName);
-            updateChipMenu = true;
+            destinationFileName = fullfile(obj.AppSettings.path.userData, obj.AppSettings.infoParams.Name, 'coordinateFiles', fileName);
+            updateChipMenuFlag = true;  %had to rename the variable here, otherwise we are overwriting the function name 'updateChipMenu()'
             if exist(destinationFileName, 'file') ~= 2 
                 % File does not exist in user folder. Copy selected file into user folder
                 [success, ~, ~] = copyfile(sourceFileName, destinationFileName, 'f');
@@ -295,10 +296,10 @@ end
                 if strcmpi(ButtonName, 'Overwrite')
                     [success, ~, ~] = copyfile(sourceFileName, destinationFileName, 'f');
                 else
-                    updateChipMenu = false;
+                    updateChipMenuFlag = false;
                 end
             end
-            if updateChipMenu
+            if updateChipMenuFlag
                 [newChipList, ~, newCoordinateFilesDir] = updateChipMenu();
                 set(obj.gui.panel(thisPanel).foundryPopup, 'String', newChipList);
                 valChip = find(strcmp(fileName(1:end-4), newChipList));

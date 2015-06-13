@@ -22,14 +22,21 @@ function [ output ] = panel_index( input )
 
 
 % if you want to add a panel, you should just have to add it here...
+% USER_PANEL = 1;
+% TASK_PANEL = 2;
+% INSTR_PANEL = 3;
+% MOUNT_PANEL = 4;
+% REGISTER_PANEL = 5;
+% DEVICES_PANEL = 6;
+% TEST_PANEL = 7;
+% ANALYZE_PANEL = 8;
+
 USER_PANEL = 1;
 TASK_PANEL = 2;
 INSTR_PANEL = 3;
-MOUNT_PANEL = 4;
-REGISTER_PANEL = 5;
-DEVICES_PANEL = 6;
-TEST_PANEL = 7;
-ANALYZE_PANEL = 8;
+REGISTER_PANEL = 4;
+DEVICES_PANEL = 5;
+TEST_PANEL = 6;
 
 switch input
     case USER_PANEL  
@@ -47,10 +54,10 @@ switch input
     case 'instr'  
         output = INSTR_PANEL;
 
-    case MOUNT_PANEL  
-        output = 'Mount';
-    case 'mount'  
-        output = MOUNT_PANEL;
+%     case MOUNT_PANEL  
+%         output = 'Mount';
+%     case 'mount'  
+%         output = MOUNT_PANEL;
 
     case REGISTER_PANEL  
         output = 'Register';
@@ -67,20 +74,28 @@ switch input
     case 'test'
         output = TEST_PANEL;
 
-    case ANALYZE_PANEL
-        output = 'Analyze';
-    case 'analyze'
-        output = ANALYZE_PANEL;
+%     case ANALYZE_PANEL
+%         output = 'Analyze';
+%     case 'analyze'
+%         output = ANALYZE_PANEL;
+
+%     case 'all'
+%         output = {'User',...
+%             'Task',...
+%             'Instruments',...
+%             'Mount chip',...
+%             'Register',...
+%             'Select Devices',...
+%             'Run Test',...
+%             'Analyze Data'};        
 
     case 'all'
         output = {'User',...
             'Task',...
             'Instruments',...
-            'Mount chip',...
             'Register',...
             'Select Devices',...
-            'Run Test',...
-            'Analyze Data'};        
+            'Run Test'};        
 end
 
 end

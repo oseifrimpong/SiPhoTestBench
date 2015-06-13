@@ -339,27 +339,21 @@ classdef TestBenchClass < handle
                     self.AppSettings.path.(pathNames{n}) = thisPath;
                 end
             end
-        end       
+        end
+        
+        function initPanelBackgroundColor(this,panelH)
+            contextmenuHandle = uicontextmenu; %('callback',@obj.contextmenu_mainaxes_callback);
+            uimenu(contextmenuHandle,'Label','Change Color','separator','off','callback',{@obj.changeBackgroundcolorCallback,panelH});
+            set(panelH,'uicontextmenu',contextmenuHandle); 
+            
+        end
+        
+
+        
         
     end
     
     methods (Static)
-        
-        function initPanelBackgroundColor(panelH,backgroundColor)
-            if(ishandle(panelH))
-                contextmenuHandle = uicontextmenu; %('callback',@obj.contextmenu_mainaxes_callback);
-                uimenu(contextmenuHandle,'Label','Change Color','separator','off','callback',{@TestBenchClass.changeBackgroundcolorCallback,panelH});
-                set(panelH,'uicontextmenu',contextmenuHandle);
-                if(nargin>1 && ~isempty(backgroundColor))
-                    
-                    set([panelH;
-                        findall(panelH,'style','text')],'backgroundcolor',backgroundColor);
-                    
-                end
-            end
-                    
-        end
-
         
         function doContinue = confirmDlg(varargin)
             if(numel(varargin)<1 || isempty(varargin{1}))

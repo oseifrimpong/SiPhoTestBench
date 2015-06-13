@@ -154,7 +154,8 @@ for iteration = 1:obj.AppSettings.dryTest.Iterations
 
                 
                 %% rate test result
-                val = {'Unknown', 'Unknown', 'Unknown', 'Unknown'}; % initialize
+                numSelectedDetectors=sum(obj.instr.detector.getProp('SelectedDetectors'));
+                val = repmat({'Unknown'},1,numSelectedDetectors); % initialize
                 if obj.AppSettings.dryTest.RateRealtime
                     msg = 'Rate device';
                     %        list = obj.AppSettings.Device.RatingOptions;

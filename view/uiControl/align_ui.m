@@ -22,7 +22,7 @@
 % Victor Bass 2013;
 % Modified by Vince Wu - Nov 2013
 
-function obj = align_ui(obj, parentName, parentObj, position, heatMapDispHandle)
+function [obj, panelH] = align_ui(obj, parentName, parentObj, position, heatMapDispHandle)
 
 parentStruct = getParentStruct(parentName);
 if (~isempty(strfind(parentStruct, 'panel')))
@@ -46,6 +46,8 @@ obj.gui.(parentStruct)(panelIndex).alignUI.mainPanel = uipanel(...
     'FontSize', 9, ...
     'FontWeight', 'Bold', ...
     'Position', position);
+
+panelH = obj.gui.(parentStruct)(panelIndex).alignUI.mainPanel;
 
 % fine align button
 obj.gui.(parentStruct)(panelIndex).alignUI.fine_align_button = uicontrol(...

@@ -22,6 +22,7 @@ classdef TEC < InstrClass
         % temperature limits given by manufacturer
         MIN_TEMP;  % degrees C
         MAX_TEMP;  % degrees C
+
     end
     
     methods

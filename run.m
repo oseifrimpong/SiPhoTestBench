@@ -28,7 +28,7 @@ agreement = sprintf(strcat(...
     'along with this program.  If not, see <http://www.gnu.org/licenses/>.'));
 
 agreeH = msgbox(agreement, 'SiPho Testbench License Agreement', 'modal');
-pause(1);
+pause(.25);
 try
     delete(agreeH);
 end
@@ -46,6 +46,8 @@ clear all;
 close all;
 clc;
 
-addpath(genpath('./'));
+% Removed for debuggin - don't want all .git directories
+rootPath = fileparts(fullfile(mfilename('fullpath')));
+addpath(genpath(rootPath));
 
-testbench = TestBenchClass;
+testbench = TestBenchClass(rootPath);

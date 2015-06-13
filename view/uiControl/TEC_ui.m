@@ -23,7 +23,7 @@
 % Modified by Vince Wu - Nov 2013
 % Modified by Pavel Kulik - Nov 2013
 
-function obj = TEC_ui(obj, parentName, parentObj, position)
+function [obj, panelH] = TEC_ui(obj, parentName, parentObj, position)
 
 parentStruct = getParentStruct(parentName);
 if (~isempty(strfind(parentStruct, 'panel')))
@@ -49,6 +49,9 @@ obj.gui.(parentStruct)(panelIndex).thermalControlUI.mainPanel = uipanel(...
     'FontWeight', 'bold', ...
     'FontSize', 9, ...
     'Position', position);
+
+panelH = obj.gui.(parentStruct)(panelIndex).thermalControlUI.mainPanel;
+
 
 x_start = 0.03;
 y_start = 0.7;

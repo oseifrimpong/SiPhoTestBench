@@ -11,9 +11,9 @@ active_timers = obj.manageTimer('pause');
 opticalStage = obj.instr.opticalStage;
 
 
-% disable active feedback for optical stage
-    [a,b] = obj.instr.opticalStage.set_closed_loop(0);
-    obj.msg('Optical stage active feedback disabled.');
+% disable/enable active feedback for optical stage (if 1: enabled)
+    [a,b] = obj.instr.opticalStage.set_closed_loop(1);
+    obj.msg('Optical stage active feedback control:');
     obj.msg(strcat('response from Corvus: ',num2str(a),',',num2str(b)));
 
 %Save the intial value : revert back at the end.
@@ -25,7 +25,7 @@ initial_accel = obj.instr.opticalStage.getParam('Acceleration'); % for resetting
 obj.instr.laser.setWavelength(obj.AppSettings.FAParams.Wvl);
 obj.instr.laser.setParam('PowerUnit',0);  %set to dBm
 obj.instr.laser.setPower(obj.AppSettings.FAParams.Power);
-obj.instr.laser.setParam('LowSSE',obj.AppSettings.FAParams.LowSSE);
+%obj.instr.laser.setParam('LowSSE',obj.AppSettings.FAParams.LowSSE);
 
 %Switch laser on
 obj.instr.laser.on();
@@ -336,6 +336,10 @@ end
 
 obj.instr.laser.off();
 %set(obj.gui.(parentStruct)(panelIndex).laserUI.lasingIndicator, 'BackGroundColor', [1 0 0]);
+
+%set back intial values for stage
+opticalStage.setParam('Velocity', initial_vel);
+opticalStage.setParam('Acceleration', initial_accel);
 
 obj.instr.detector.setPWMPowerUnit(powerUnit);
 obj.manageTimer('resume', active_timers);
