@@ -39,6 +39,9 @@ classdef FiberStage < InstrClass
             self.Param.Parity = 0;
             self.Param.Acceleration = 500; % what are the units?
             self.Param.Velocity = 300; % what are the units?
+            self.Param.xMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in edge_coupled_stage_ui.m)
+            self.Param.yMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in edge_coupled_stage_ui.m)
+            self.Param.zMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in edge_coupled_stage_ui.m)
             self.xPos = nan; % initialize to nan to ensure calibration
             self.yPos = nan; % initialize to nan to ensure calibration
             self.zPos = nan; % initialize to nan to ensure calibration

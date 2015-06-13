@@ -391,15 +391,29 @@ end
 %% Callback Functions
 function dXLeftButtonOC_cb(~, ~, obj, parentStruct, panelIndex)
 
+
+threshold = obj.instr.opticalStage.getParam('xMoveThresholdWarning');
 distanceStr = get(obj.gui.(parentStruct)(panelIndex).edgeCoupledStageUI.dXStepSizeOC, 'String');
-if(obj.confirmDlg('Please confirm change of %s',distanceStr))
+
+if str2double(distanceStr)> threshold
+    
+    if(obj.confirmDlg('Please confirm change of %s',distanceStr))
     distance = str2double(distanceStr);
     obj.instr.fiberStage.move_x(distance);
     msg = strcat([obj.instr.fiberStage.Name,':moved ',num2str(distance),' um to the left']);
     obj.msg(msg);
+    else
+        obj.msg('Movement canceled');
+    end
 else
-    obj.msg('Movement canceled');
+    
+    distance = str2double(distanceStr);
+    obj.instr.fiberStage.move_x(distance);
+    msg = strcat([obj.instr.fiberStage.Name,':moved ',num2str(distance),' um to the left']);
+    obj.msg(msg);
 end
+
+
 
 end
 

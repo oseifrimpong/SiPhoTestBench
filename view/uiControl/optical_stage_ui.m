@@ -415,15 +415,26 @@ end
 
 function dXRightButtonOC_cb(~, ~, obj, parentStruct, panelIndex)
 
-distanceStr = get(obj.gui.(parentStruct)(panelIndex).edgeCoupledStageUI.dXStepSizeOC, 'String');
-if(obj.confirmDlg('Please confirm change of %s',distanceStr))
+threshold = obj.instr.opticalStage.getParam('xMoveThresholdWarning');
+distanceStr = get(obj.gui.(parentStruct)(panelIndex).opticalStageUI.dXStepSizeOC, 'String');
+
+if str2double(distanceStr)> threshold
+    
+    if(obj.confirmDlg('Please confirm change of %s',distanceStr))
+        distance = str2double(get(obj.gui.(parentStruct)(panelIndex).opticalStageUI.dXStepSizeOC, 'String'));
+        obj.instr.opticalStage.move_x(distance);
+        msg = strcat([obj.instr.opticalStage.Name,':moved ',num2str(distance),' um to the right']);
+        obj.msg(msg);
+    else
+        obj.msg('Movement canceled');
+    end
+else
     distance = str2double(get(obj.gui.(parentStruct)(panelIndex).opticalStageUI.dXStepSizeOC, 'String'));
     obj.instr.opticalStage.move_x(distance);
     msg = strcat([obj.instr.opticalStage.Name,':moved ',num2str(distance),' um to the right']);
     obj.msg(msg);
-else
-    obj.msg('Movement canceled');
 end
+
 end
 
 function dSettingsOptical_cb(~, ~, obj)
@@ -458,10 +469,29 @@ obj.msg(msg);
 end
 
 function dZRightButtonOC_cb(~, ~, obj, parentStruct, panelIndex)
-distance = str2double(get(obj.gui.(parentStruct)(panelIndex).opticalStageUI.dZStepSizeOC, 'String'));
-obj.instr.opticalStage.move_z(distance);
-msg = strcat([obj.instr.opticalStage.Name,':moved ',num2str(distance),' um down']);
-obj.msg(msg);
+
+threshold = obj.instr.opticalStage.getParam('zMoveThresholdWarning');
+distanceStr = get(obj.gui.(parentStruct)(panelIndex).opticalStageUI.dZStepSizeOC, 'String');
+
+if str2double(distanceStr)> threshold
+    
+    if(obj.confirmDlg('Please confirm change of %s',distanceStr))
+        
+        distance = str2double(get(obj.gui.(parentStruct)(panelIndex).opticalStageUI.dZStepSizeOC, 'String'));
+        obj.instr.opticalStage.move_z(distance);
+        msg = strcat([obj.instr.opticalStage.Name,':moved ',num2str(distance),' um down']);
+        obj.msg(msg);
+    else
+        obj.msg('Movement canceled');
+    end
+else
+    
+    distance = str2double(get(obj.gui.(parentStruct)(panelIndex).opticalStageUI.dZStepSizeOC, 'String'));
+    obj.instr.opticalStage.move_z(distance);
+    msg = strcat([obj.instr.opticalStage.Name,':moved ',num2str(distance),' um down']);
+    obj.msg(msg);
+end
+
 end
 
 function dStgAngLeftOC_cb(~, ~, obj, parentStruct, panelIndex)

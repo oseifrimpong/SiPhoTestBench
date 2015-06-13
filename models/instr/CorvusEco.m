@@ -48,6 +48,9 @@ classdef CorvusEco < InstrClass & CoordSysClass
             self.Param.Parity = 0;
             self.Param.Acceleration = 500; % mm/s^2
             self.Param.Velocity = 5; % mm/s
+            self.Param.xMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in optical_stage_ui.m)
+            self.Param.yMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in optical_stage_ui.m)
+            self.Param.zMoveThresholdWarning = 1000; % popup to ask if move is ok -> safety (used in optical_stage_ui.m)
             
             % object properties
             self.Calibrated = 0; % stage calibrated

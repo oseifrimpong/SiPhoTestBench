@@ -49,10 +49,13 @@ classdef NewFocus8742 < InstrClass
             % motor settings shared by Corvus Eco
             self.Param.Acceleration = 0;
             self.Param.Velocity = 0;
-            self.Param.StepResolution = 0;            
-%             self.pauseTime = 0.08;
-%             self.timeout = 10; % s
-%             self.overshoot = 0.02; % copied from Corvus Eco
+            self.Param.StepResolution = 0;
+            self.Param.xMoveThresholdWarning = 10000; % popup to ask if move is ok -> safety (used in edge_coupled_stage_ui.m)
+            self.Param.yMoveThresholdWarning = 10000; % popup to ask if move is ok -> safety (used in edge_coupled_stage_ui.m)
+            self.Param.zMoveThresholdWarning = 10000; % popup to ask if move is ok -> safety (used in edge_coupled_stage_ui.m)
+            %             self.pauseTime = 0.08;
+            %             self.timeout = 10; % s
+            %             self.overshoot = 0.02; % copied from Corvus Eco
             % stage positions
             self.x = nan;
             self.y = nan;
