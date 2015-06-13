@@ -148,6 +148,8 @@ while current_pos_y <= width_y
         end
     end
     
+    obj.msg(['Max power of line scan: ', num2str(max(pwr(end,:))),' dBm']); 
+    
     current_pos_y = current_pos_y + delta_x;
     percent_finished = current_pos_y/width_y;
     waitbar(percent_finished, waitbar_handle);
