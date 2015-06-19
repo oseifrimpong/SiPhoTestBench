@@ -1,7 +1,7 @@
 % © Copyright 2013-2015 Shon Schmidt, Jonas Flueckiger, and WenXuan Wu
 % 
 % it under the terms of the GNU Lesse% This program is free software: you can redistribute it and/or modify
-r General Public License as published by
+% General Public License as published by
 % the Free Software Foundation, version 3 of the License.
 % 
 % This program is distributed in the hope that it will be useful,

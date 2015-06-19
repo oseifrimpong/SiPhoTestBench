@@ -27,10 +27,10 @@ test_type = obj.AppSettings.infoParams.Task;
 plotPanel_w = 0.7;
 plotPanel_h = 0.93;
 
-% Plotting panel for sweep scan data and/or peak tracking plot
+% Plotting panel for sweep Result and/or peak tracking plot
 obj.gui.panel(thisPanel).plotPanel = uipanel(...
     'Parent', obj.gui.panelFrame(thisPanel), ...
-    'Title', 'Sweep Scan Data', ...
+    'Title', 'Sweep Results', ...
     'FontSize', 9, ...
     'FontWeight', 'bold', ...
     'Unit', 'normalized', ...
@@ -58,6 +58,7 @@ if strcmpi(test_type, 'SaltSteps') || strcmpi(test_type, 'TemperatureTest')|| ..
                 obj.gui.panel(thisPanel).sweepScanPlots(plotIndex) = ...
                     subplot(numOfSelected, 3, plotIndex*3-2, 'Parent', obj.gui.panel(thisPanel).plotPanel);
             end
+            createUIContextMenu(obj.gui.panel(thisPanel).sweepScanPlots(plotIndex), 'Sweep Result');
             title(['Detector ',num2str(i),' real-time scan'], 'FontSize', 8);
             xlabel('Wavelength (nm)', 'FontSize', 8);
             ylabel('Power (dBW)', 'FontSize', 8);
@@ -74,6 +75,7 @@ if strcmpi(test_type, 'SaltSteps') || strcmpi(test_type, 'TemperatureTest')|| ..
                 obj.gui.panel(thisPanel).PeakWindowPlots(plotIndex) = ...
                     subplot(numOfSelected, 3, plotIndex*3-1, 'Parent', obj.gui.panel(thisPanel).plotPanel); 
             end
+            createUIContextMenu(obj.gui.panel(thisPanel).PeakWindowPlots(plotIndex), 'Peak Window');
             title(['Detector ',num2str(i),' Peak Window'], 'FontSize', 8);
             xlabel('Wavelength (nm)', 'FontSize', 8);
             ylabel('Power (dBW)', 'FontSize', 8);
@@ -89,6 +91,7 @@ if strcmpi(test_type, 'SaltSteps') || strcmpi(test_type, 'TemperatureTest')|| ..
                 obj.gui.panel(thisPanel).peakTrackPlots(plotIndex) = ...
                     subplot(numOfSelected, 3, plotIndex*3, 'Parent', obj.gui.panel(thisPanel).plotPanel);
             end
+            createUIContextMenu(obj.gui.panel(thisPanel).peakTrackPlots(plotIndex), 'Peak Tracking Result');
             title(['Detector ',num2str(i),' peak tracking'], 'FontSize', 8);
             xlabel('Scan number', 'FontSize', 8);
             ylabel('Wavelength shift (pm)', 'FontSize', 8);
@@ -121,6 +124,7 @@ elseif strcmpi(test_type, 'DryTest') || strcmpi(test_type, 'WetTest')
             obj.gui.panel(thisPanel).sweepScanPlots(plotIndex) = ...
                 subplot(numOfSelected, 1, plotIndex);
             set(obj.gui.panel(thisPanel).sweepScanPlots(plotIndex), 'Parent', obj.gui.panel(thisPanel).plotPanel);
+            createUIContextMenu(obj.gui.panel(thisPanel).sweepScanPlots(plotIndex), 'Sweep Result');
             title(strcat(['Detector ',num2str(i),' real-time scan']));
             xlabel('Wavelength (nm)');
             ylabel('Power (dB)');
@@ -192,4 +196,21 @@ end
 
 function saveRealTimePeakTracking(~, ~, obj, detectorIndex)
 
+end
+
+function createUIContextMenu(AxeH, FigTitle)
+contextMenuH = uicontextmenu();
+uimenu(contextMenuH, 'Label', 'Export Figure', 'Callback', {@ExportFig_cb, AxeH, FigTitle});
+set(AxeH, 'uicontextmenu', contextMenuH);
+end
+
+function ExportFig_cb(~, ~, AxeH, FigTitle)
+exportFigure = figure(...
+    'Unit', 'normalized', ...
+    'Position', [0, 0, 0.50, 0.50],...
+    'Name', FigTitle,...
+    'NumberTitle', 'off');
+movegui(exportFigure, 'center');
+exportAxes = copyobj(AxeH, exportFigure);
+set(exportAxes, 'Units', 'Normalized', 'Position', [0.1, 0.1, 0.8, 0.85]);
 end
