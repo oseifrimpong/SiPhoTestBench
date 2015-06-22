@@ -1,5 +1,5 @@
 
-% © Copyright 2013-2015 Shon Schmidt, Jonas Flueckiger, and WenXuan Wu
+% Â© Copyright 2013-2015 Shon Schmidt, Jonas Flueckiger, and WenXuan Wu
 % 
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as published by
@@ -123,7 +123,7 @@ if(~strcmpi(laserType,'Virtual Laser'))
     %Detectors
     obj.msg('Preparing Detector for sweep');
     %obj.instr.detector.setParam('PWMWvl', 1310); %not sure if this is necessary,
-    obj.instr.detector.setParam('RangeMode', 1); %not sure if necessary; make it manual.
+    obj.instr.detector.setParam('RangeMode', 0); %not sure if necessary; make it manual.
     obj.instr.detector.setParam('PowerRange',obj.AppSettings.SweepParams.InitRange);
     obj.instr.detector.setProp('Clipping', obj.AppSettings.SweepParams.Clipping);
     obj.instr.detector.setProp('ClipLimit', obj.AppSettings.SweepParams.ClipLimit);
