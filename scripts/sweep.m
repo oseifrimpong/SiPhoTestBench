@@ -262,6 +262,7 @@ if ~strcmp(laserType,'Santec TSL510')
 end
 obj.instr.laser.off();
 obj.instr.detector.setPWMPowerUnit(0);
+obj.instr.detector.setParam('RangeMode', 1); %not sure if necessary; make it manual.
 
 for ii=1:obj.instr.detector.getProp('NumOfDetectors')
     if selDet(ii)
