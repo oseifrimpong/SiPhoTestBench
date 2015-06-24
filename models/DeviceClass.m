@@ -267,6 +267,13 @@ classdef DeviceClass < handle
         function savePlot(self, wvlData, pwrData, varargin)
             %pwrData: col = detector number
             [~, self.NumOfDetectors] = size(pwrData);
+            excludedChannel = [];
+            for i = 1:self.NumOfDetectors
+                if all(pwrData(:, i) == 0)
+                    excludedChannel(end + 1) = i;
+                end
+            end
+            includedNumOfDetectors = self.NumOfDetectors - length(excludedChannel);
             f = figure(...
                 'Name', ['Sweep Results: ', 'Scan No.', num2str(self.ScanNumber)], ...
                 'Units', 'normalized', ...
@@ -276,13 +283,15 @@ classdef DeviceClass < handle
             movegui(f, 'center');
             color = ['r', 'g', 'b','r','g','b'];
             for i = 1:self.NumOfDetectors
-                NegInf = find(pwrData(:,i)==-200);
-                PosInf = find(pwrData(:,i)==400);
-                pwrData(NegInf, i) = -Inf;
-                pwrData(PosInf, i) = Inf;
-                subplot(self.NumOfDetectors, 1, i)
-                plot(wvlData(:,i), pwrData(:,i), color(i));
-                legend(strcat('Detector No.', num2str(i - 1)));
+                if any(i ~= excludedChannel)
+                    NegInf = find(pwrData(:,i)==-200);
+                    PosInf = find(pwrData(:,i)==400);
+                    pwrData(NegInf, i) = -Inf;
+                    pwrData(PosInf, i) = Inf;
+                    subplot(includedNumOfDetectors, 1, i)
+                    plot(wvlData(:,i), pwrData(:,i), color(i));
+                    legend(strcat('Detector No.', num2str(i - 1)));
+                end
             end
             switch varargin{1}
                 case 'UBC'

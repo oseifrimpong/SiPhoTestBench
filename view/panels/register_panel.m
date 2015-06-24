@@ -49,6 +49,13 @@ obj.gui.panel(thisPanel).heatMapDisp = axes(...
     'NextPlot', 'add', ...
     'box', 'on');
 
+if obj.checkHeatMapData()
+    axes(obj.gui.panel(thisPanel).heatMapDisp);
+    set(obj.gui.panel(thisPanel).heatMapDisp, 'DataAspectRatio', [1 1 1]);
+    heatMapData = obj.getHeatMapData();
+    surface(heatMapData.x, heatMapData.y, heatMapData.pwr);
+end
+
 xlabel('X (um)');
 ylabel('Y (um)');
 

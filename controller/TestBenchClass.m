@@ -44,11 +44,11 @@ classdef TestBenchClass < handle
         
         AppSettings; % active settings in the application
         panelContextmenuHandle;
-        
     end
     
     properties (Access = private)
-        includeBioFeature;        
+        includeBioFeature;
+        heatMapData;
     end
     
     methods
@@ -99,6 +99,10 @@ classdef TestBenchClass < handle
             
             self.recipe = [];
             self.recipeFile = '';
+            
+            self.heatMapData.x = [];
+            self.heatMapData.y = [];
+            self.heatMapData.pwr = [];
             
             self.AppSettings.Device.RatingOptions = ds.Device.RatingOptions;
             self.AppSettings.Device.ActiveDeviceList = []; % initialize?
@@ -340,7 +344,26 @@ classdef TestBenchClass < handle
                 end
             end
         end       
+                
+        function hasHeatMap = checkHeatMapData(self)
+            if isempty(self.heatMapData.x) || ...
+                    isempty(self.heatMapData.y) || ...
+                    isempty(self.heatMapData.pwr)
+                hasHeatMap = false;
+            else
+                hasHeatMap = true;
+            end
+        end
         
+        function heatMapData = getHeatMapData(self)
+           heatMapData = self.heatMapData; 
+        end
+        
+        function saveHeatMapData(self, x, y, pwr)
+            self.heatMapData.x = x;
+            self.heatMapData.y = y;
+            self.heatMapData.pwr = pwr;
+        end
     end
     
     methods (Static)
