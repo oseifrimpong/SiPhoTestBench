@@ -1,4 +1,4 @@
-% © Copyright 2013-2015 Shon Schmidt, Jonas Flueckiger, and WenXuan Wu
+% Â© Copyright 2013-2015 Shon Schmidt, Jonas Flueckiger, and WenXuan Wu
 % 
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as published by
@@ -252,7 +252,8 @@ classdef DeviceClass < handle
                 'Rating', self.Rating);
             switch varargin{1}
                 case 'UBC'
-                    file = strcat(self.FilePath, self.Name, '_Scan',num2str(self.ScanNumber),'.mat');
+                    %file = strcat(self.FilePath, self.Name, '_Scan',num2str(self.ScanNumber),'.mat');
+                    file = strcat(self.FilePath, self.Name,'.mat');
                 case 'UW'
                     file = strcat(self.FilePath, 'Scan', num2str(self.ScanNumber), '.mat');
                 otherwise
@@ -295,7 +296,8 @@ classdef DeviceClass < handle
             end
             switch varargin{1}
                 case 'UBC'
-                    file = strcat(self.FilePath, self.Name, '_Scan',num2str(self.ScanNumber));
+                    %file = strcat(self.FilePath, self.Name, '_Scan',num2str(self.ScanNumber));
+                    file = strcat(self.FilePath, self.Name);
                     print(f,'-dpdf',strcat(file,'.pdf'));
                     saveas(f,strcat(file,'.fig'));
                 case 'UW'
