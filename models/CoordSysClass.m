@@ -1,4 +1,4 @@
-% © Copyright 2013-2015 Shon Schmidt, Jonas Flueckiger, and WenXuan Wu
+% Â© Copyright 2013-2015 Shon Schmidt, Jonas Flueckiger, and WenXuan Wu
 % 
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as published by
@@ -193,8 +193,13 @@ classdef CoordSysClass < handle
             angle = angle1 - angle2;
             %define input params : educated guess
             param0 = [1,1, angle,self.MotorPosPairs.coord(1,1)/1000,self.MotorPosPairs.coord(1,2)/1000,0,0]; %/1000: to on the same order of magnitude 
-            options = optimset('Diagnostics', 'on', 'MaxFunEvals', 10000,...
-                'TolFun',1e-8,'PlotFcns',@optimplotresnorm);
+            %options = optimset('Diagnostics', 'on', 'MaxFunEvals', 10000,...
+            %    'TolFun',1e-8,'PlotFcns',@optimplotresnorm);
+            %New for matlab 2015: needs optimoptions instead of optimset   
+            options = optimoptions('lsqnonlin','Diagnostics','on',...
+                'MaxFunEvals,10000,...
+                'TolFun',1e-8,'PlotFcns',@optimplotresnorm );
+            
             %Diagnostics shoudl be 'off', 'on' for debug
             lb = [-2000, -2000, -10, -10000, -10000,-0.1, -0.1];
             ub = [2000, 2000, 10, 10000,10000,0.1,0.1];
