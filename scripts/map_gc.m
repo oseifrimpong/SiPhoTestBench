@@ -211,7 +211,7 @@ end
 if mod(m,n) ==0
    yaxis = [m/2-1:-1:-m/2].*delta_x;
 else
-    yaxis = [floor(m/2):-1:-floor(m/2)].*delta_x; 
+    yaxis = (floor(m/2):-1:-floor(m/2)).*delta_x; 
 end
 surface(xaxis,yaxis,pwr);
 

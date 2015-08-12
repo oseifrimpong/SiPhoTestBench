@@ -42,12 +42,16 @@ catch
     disp('Image Aquisition Toolbox is not installed.');
 end
 
-clear all;
-close all;
-clc;
-
-% Removed for debuggin - don't want all .git directories
+debugMode = true;
 rootPath = fileparts(fullfile(mfilename('fullpath')));
-addpath(genpath(rootPath));
+   
+if(~debugMode)
+    clear all;
+    close all;
+    clc;
+    
+    % Removed for debugging - don't want all .git directories
+    addpath(genpath(rootPath));
+end
 
 testbench = TestBenchClass(rootPath);
