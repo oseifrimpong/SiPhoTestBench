@@ -43,7 +43,8 @@ catch
 end
 
 debugMode = true;
-rootPath = fileparts(fullfile(mfilename('fullpath')));
+
+% debugMode = false;
    
 if(~debugMode)
     clear all;
@@ -51,7 +52,8 @@ if(~debugMode)
     clc;
     
     % Removed for debugging - don't want all .git directories
-    addpath(genpath(rootPath));
 end
+rootPath = fileparts(fullfile(mfilename('fullpath')));
+addpath(genpath(rootPath));
 
 testbench = TestBenchClass(rootPath);
