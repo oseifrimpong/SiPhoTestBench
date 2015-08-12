@@ -149,7 +149,7 @@ for iteration = 1:obj.AppSettings.dryTest.Iterations
                 targetDevice.saveData(wvlData, pwrData, params,schoolTag);
                 % save plots
                 if obj.AppSettings.dryTest.SavePlots
-                    targetDevice.savePlot(wvlData, pwrData,schoolTag);
+                    targetDevice.savePlot(wvlData, pwrData, schoolTag);
                 end
 
                 

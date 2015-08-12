@@ -1,4 +1,4 @@
-% © Copyright 2013-2015 Shon Schmidt, Jonas Flueckiger, and WenXuan Wu
+% Â© Copyright 2013-2015 Shon Schmidt, Jonas Flueckiger, and WenXuan Wu
 % 
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as published by
@@ -252,7 +252,8 @@ classdef DeviceClass < handle
                 'Rating', self.Rating);
             switch varargin{1}
                 case 'UBC'
-                    file = strcat(self.FilePath, self.Name, '_Scan',num2str(self.ScanNumber),'.mat');
+                    %file = strcat(self.FilePath, self.Name, '_Scan',num2str(self.ScanNumber),'.mat');
+                    file = strcat(self.FilePath, self.Name,'.mat');
                 case 'UW'
                     file = strcat(self.FilePath, 'Scan', num2str(self.ScanNumber), '.mat');
                 otherwise
@@ -267,6 +268,13 @@ classdef DeviceClass < handle
         function savePlot(self, wvlData, pwrData, varargin)
             %pwrData: col = detector number
             [~, self.NumOfDetectors] = size(pwrData);
+            excludedChannel = [];
+            for i = 1:self.NumOfDetectors
+                if all(pwrData(:, i) == 0)
+                    excludedChannel(end + 1) = i;
+                end
+            end
+            includedNumOfDetectors = self.NumOfDetectors - length(excludedChannel);
             f = figure(...
                 'Name', ['Sweep Results: ', 'Scan No.', num2str(self.ScanNumber)], ...
                 'Units', 'normalized', ...
@@ -276,17 +284,20 @@ classdef DeviceClass < handle
             movegui(f, 'center');
             color = ['r', 'g', 'b','r','g','b'];
             for i = 1:self.NumOfDetectors
-                NegInf = find(pwrData(:,i)==-200);
-                PosInf = find(pwrData(:,i)==400);
-                pwrData(NegInf, i) = -Inf;
-                pwrData(PosInf, i) = Inf;
-                subplot(self.NumOfDetectors, 1, i)
-                plot(wvlData(:,i), pwrData(:,i), color(i));
-                legend(strcat('Detector No.', num2str(i - 1)));
+                if any(i ~= excludedChannel)
+                    NegInf = find(pwrData(:,i)==-200);
+                    PosInf = find(pwrData(:,i)==400);
+                    pwrData(NegInf, i) = -Inf;
+                    pwrData(PosInf, i) = Inf;
+                    subplot(includedNumOfDetectors, 1, i)
+                    plot(wvlData(:,i), pwrData(:,i), color(i));
+                    legend(strcat('Detector No.', num2str(i - 1)));
+                end
             end
             switch varargin{1}
                 case 'UBC'
-                    file = strcat(self.FilePath, self.Name, '_Scan',num2str(self.ScanNumber));
+                    %file = strcat(self.FilePath, self.Name, '_Scan',num2str(self.ScanNumber));
+                    file = strcat(self.FilePath, self.Name);
                     print(f,'-dpdf',strcat(file,'.pdf'));
                     saveas(f,strcat(file,'.fig'));
                 case 'UW'

@@ -1,14 +1,14 @@
 % © Copyright 2014-2015 WenXuan Wu, Shon Schmidt, and Jonas Flueckiger
-% 
+%
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as published by
 % the Free Software Foundation, version 3 of the License.
-% 
+%
 % This program is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 % GNU Lesser General Public License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -50,7 +50,7 @@ obj.gui.(parentStruct)(panelIndex).laserUI.mainPanel = uipanel(...
     'Visible','on', ...
     'Units','normalized', ...
     'Title','Laser', ...
-    'FontSize', 9, ...
+    'FontSize', 10, ...
     'FontWeight','bold', ...
     'Position', position);
 
@@ -428,190 +428,202 @@ obj.gui.sweepScanH = [];
 obj.gui.sweepScan = {};
 end
 %% Callback Functions
-    function laser_on_cb(~, ~, obj, parentStruct, panelIndex)
-        obj.instr.laser.on;
-        if obj.instr.laser.getProp('Lasing');
-            set(obj.gui.(parentStruct)(panelIndex).laserUI.lasingIndicator, 'BackGroundColor', [0 1 0]);
-            set(obj.gui.(parentStruct)(panelIndex).laserUI.laserONButton, 'Enable', 'off');
-            set(obj.gui.(parentStruct)(panelIndex).laserUI.laserOFFButton, 'Enable', 'on');
-            set(obj.gui.(parentStruct)(panelIndex).laserUI.sweepButton, 'Enable', 'on');
-            set(obj.gui.(parentStruct)(panelIndex).laserUI.abortButton, 'Enable', 'on');
+function laser_on_cb(~, ~, obj, parentStruct, panelIndex)
+obj.instr.laser.on;
+if obj.instr.laser.getProp('Lasing');
+    set(obj.gui.(parentStruct)(panelIndex).laserUI.lasingIndicator, 'BackGroundColor', [0 1 0]);
+    set(obj.gui.(parentStruct)(panelIndex).laserUI.laserONButton, 'Enable', 'off');
+    set(obj.gui.(parentStruct)(panelIndex).laserUI.laserOFFButton, 'Enable', 'on');
+    set(obj.gui.(parentStruct)(panelIndex).laserUI.sweepButton, 'Enable', 'on');
+    set(obj.gui.(parentStruct)(panelIndex).laserUI.abortButton, 'Enable', 'on');
+end
+end
+
+function laser_off_cb(~, ~, obj, parentStruct, panelIndex)
+obj.instr.laser.off;
+set(obj.gui.(parentStruct)(panelIndex).laserUI.lasingIndicator, 'BackGroundColor', [1 0 0]);
+set(obj.gui.(parentStruct)(panelIndex).laserUI.laserONButton, 'Enable', 'on');
+set(obj.gui.(parentStruct)(panelIndex).laserUI.laserOFFButton, 'Enable', 'off');
+end
+
+function wvl_edit_cb(hObject, ~, obj)
+newWvl = str2double(get(hObject, 'String'));
+obj.instr.laser.setWavelength(newWvl);
+end
+
+function laser_settings_cb(~, ~, obj, parentStruct, panelIndex)
+obj.instr.laser.settingsWin;
+updatePanel(obj, parentStruct, panelIndex);
+end
+
+function power_edit_cb(hObject, ~, obj)
+newPwr = str2double(get(hObject, 'String'));
+obj.instr.laser.setPower(newPwr);
+obj.AppSettings.SweepParams.PowerLevel = newPwr;
+end
+
+function range_min_cb(hObject, ~, obj)
+newMinWvl = str2double(get(hObject, 'String'));
+obj.AppSettings.SweepParams.StartWvl = newMinWvl;
+end
+
+function range_max_cb(hObject, ~, obj)
+newMaxWvl = str2double(get(hObject, 'String'));
+obj.AppSettings.SweepParams.StopWvl=newMaxWvl;
+end
+
+function sweep_step_display_cb(hObject, ~, obj)
+newStep = str2double(get(hObject, 'String'));
+obj.AppSettings.SweepParams.StepWvl = newStep;
+obj.AppSettings.LaserParams.StepSize = newStep;
+end
+
+function sweep_speed_display_cb(hObject, ~, obj)
+newSpeed = str2double(get(hObject, 'String'));
+obj.AppSettings.SweepParams.SweepSpeed = newSpeed;
+end
+
+function sweep_range_display_cb(hObject, ~, obj)
+newRange = str2double(get(hObject, 'String'));
+obj.instr.detector.setParam('PowerRange', newRange);
+end
+
+function laser_stitch_popup_cb(hObject, ~, obj)
+%DEBUG: this needs to be validated with DataPoints
+popupStringList = get(hObject, 'String');
+popupStringValue = get(hObject, 'Value');
+stitchNum = str2double(popupStringList(popupStringValue));
+obj.AppSettings.SweepParams.StitchNum = stitchNum;
+end
+
+function laser_sweep_cb(~, ~, obj, parentName, axesHandle)
+selectedDetectors = obj.instr.detector.getProp('SelectedDetectors');
+numOfSelected = sum(selectedDetectors);
+try
+    [wvlVals, pwrVals] = sweep(obj); % calls control script sweep
+catch ME
+    disp('no data returned');
+    rethrow(ME);
+    return
+end
+obj.gui.sweepScan{end+1} = [wvlVals, pwrVals];
+[~, numDetectors] = size(pwrVals);
+colors = {'r', 'g', 'b', 'c', 'm', 'k'};
+plotIndex = 0;
+if ~isempty(axesHandle);
+    for kk = 1: numDetectors
+        ThisSweep(kk).pwr = pwrVals(:, kk);
+        ThisSweep(kk).wvl = wvlVals(:, kk);
+        if strcmpi(parentName, 'selectPeaks')
+            % Select Peaks panel always have four subplots
+            %                     subplot(axesHandle(kk));
+            plot(axesHandle(kk), wvlVals(:, kk), pwrVals(:, kk), colors{kk});
+            obj.devices.(obj.chip.CurrentLocation).setProp('ScanNumber', 0);
+        elseif selectedDetectors(kk)
+            plotIndex = plotIndex + 1;
+            %                     subplot(axesHandle(plotIndex));
+            plot(axesHandle(plotIndex), wvlVals(:, kk), pwrVals(:, kk), colors{plotIndex});
+        end
+        title(['Detector ', num2str(kk)]);
+        xlabel('Wavelength [nm]');
+        ylabel('Power [dBm]');
+    end
+    obj.devices.(obj.chip.CurrentLocation).setProp('ThisSweep', ThisSweep);
+    %             params = scanParams(obj);
+    %             obj.devices.(obj.chip.CurrentLocation).saveData(wvlVals, pwrVals, params);
+    % Check if data is the correct size
+    if length(wvlVals) ~= length(pwrVals)
+        err = MException('SelectPeak:DataFormat','xdata and ydata are not the same length');
+        throw(err);
+    end
+else
+    if isempty(obj.gui.sweepScanH)
+        obj.gui.sweepScanH = figure(...
+            'Name', 'Sweep Results', ...
+            'NumberTitle', 'off', ...
+            'Units', 'normalized', ...
+            'Position', [0, 0, 0.66, 0.66], ...
+            'DeleteFcn', {@sweepScanDelete, obj});
+        movegui(obj.gui.sweepScanH, 'center');
+    else
+        figure(obj.gui.sweepScanH);
+    end
+    thisColor = colors{mod(length(obj.gui.sweepScan), length(colors))+1};
+    for ii = 1:numDetectors
+        if selectedDetectors(ii)
+            plotIndex = plotIndex + 1;
+            sp = subplot(numOfSelected, 1, plotIndex);
+            contextMenuH = uicontextmenu();
+            uimenu(contextMenuH, 'Label', 'Export Figure', 'Callback', {@ExportFig_cb, sp});
+            set(sp, 'uicontextmenu', contextMenuH);
+            hold(sp, 'on');
+            plot(sp, wvlVals(:,ii), pwrVals(:,ii), thisColor);
+            title(sp, ['Detector ', num2str(ii)]);
+            xlabel(sp, 'Wavelength [nm]');
+            ylabel(sp, 'Power [dBm]');
+            hold(sp, 'off');
         end
     end
+end
+end
 
-    function laser_off_cb(~, ~, obj, parentStruct, panelIndex)
-        obj.instr.laser.off;
-        set(obj.gui.(parentStruct)(panelIndex).laserUI.lasingIndicator, 'BackGroundColor', [1 0 0]);
-        set(obj.gui.(parentStruct)(panelIndex).laserUI.laserONButton, 'Enable', 'on');
-        set(obj.gui.(parentStruct)(panelIndex).laserUI.laserOFFButton, 'Enable', 'off');
-    end
+function sweepScanDelete(~, ~, obj)
+close(obj.gui.sweepScanH);
+obj.gui.sweepScanH = [];
+obj.gui.sweepScan = {};
+end
 
-    function wvl_edit_cb(hObject, ~, obj)
-        newWvl = str2double(get(hObject, 'String'));
-        obj.instr.laser.setWavelength(newWvl);
-    end
+function wavelengthStepDownCB(~, ~, obj, parentStruct, panelIndex)
+%New wavelength = currentWvl - stepWvl
+obj.instr.laser.setWavelength(...
+    obj.instr.laser.getWavelength() - obj.AppSettings.SweepParams.StepWvl);
+set(obj.gui.(parentStruct)(panelIndex).laserUI.wvlEdit,...
+    'String',  obj.instr.laser.getWavelength);
+end
 
-    function laser_settings_cb(~, ~, obj, parentStruct, panelIndex)
-        obj.instr.laser.settingsWin;
-        updatePanel(obj, parentStruct, panelIndex);
-    end
+function wavelengthStepUpCB(~, ~, obj, parentStruct, panelIndex)
+%New wavelength = currentWvl + stepWvl
+obj.instr.laser.setWavelength(...
+    obj.instr.laser.getWavelength() + obj.AppSettings.SweepParams.StepWvl);
+set(obj.gui.(parentStruct)(panelIndex).laserUI.wvlEdit,...
+    'String', obj.instr.laser.getWavelength);
+end
 
-    function power_edit_cb(hObject, ~, obj)
-        newPwr = str2double(get(hObject, 'String'));
-        obj.instr.laser.setPower(newPwr);
-        obj.AppSettings.SweepParams.PowerLevel = newPwr;
-    end
+function laser_abort_cb(~, ~)
+end
 
-    function range_min_cb(hObject, ~, obj)
-        newMinWvl = str2double(get(hObject, 'String'));
-        obj.AppSettings.SweepParams.StartWvl = newMinWvl;
-    end
+function sweep_settings_cb(~, ~, obj, parentStruct, panelIndex)
+obj = obj.settingsWin('SweepParams');
+uiwait(obj.gui.PopupWinH);
+updatePanel(obj, parentStruct, panelIndex);
+end
 
-    function range_max_cb(hObject, ~, obj)
-        newMaxWvl = str2double(get(hObject, 'String'));
-        obj.AppSettings.SweepParams.StopWvl=newMaxWvl;
-    end
+function updatePanel(obj, parentStruct, panelIndex)
+set(obj.gui.(parentStruct)(panelIndex).laserUI.powerEdit,...
+    'String', obj.AppSettings.SweepParams.PowerLevel);
+set(obj.gui.(parentStruct)(panelIndex).laserUI.rangeMINEdit,...
+    'String', obj.AppSettings.SweepParams.StartWvl);
+set(obj.gui.(parentStruct)(panelIndex).laserUI.rangeMAXEdit,...
+    'String', obj.AppSettings.SweepParams.StopWvl);
+set(obj.gui.(parentStruct)(panelIndex).laserUI.rangeMAXEdit,...
+    'String', obj.AppSettings.SweepParams.StopWvl);
+set(obj.gui.(parentStruct)(panelIndex).laserUI.sweepSpeedDisplay,...
+    'String', obj.AppSettings.SweepParams.SweepSpeed);
+set(obj.gui.(parentStruct)(panelIndex).laserUI.sweepStepDisplay,...
+    'String', obj.AppSettings.SweepParams.StepWvl);
+set(obj.gui.(parentStruct)(panelIndex).laserUI.sweepRangeDisplay,...
+    'String', obj.AppSettings.SweepParams.InitRange);
+set(obj.gui.(parentStruct)(panelIndex).laserUI.powerEdit,...
+    'String', obj.instr.laser.getPower);
+end
 
-    function sweep_step_display_cb(hObject, ~, obj)
-        newStep = str2double(get(hObject, 'String'));
-        obj.AppSettings.SweepParams.StepWvl = newStep;
-        obj.AppSettings.LaserParams.StepSize = newStep;
-    end
-
-    function sweep_speed_display_cb(hObject, ~, obj)
-        newSpeed = str2double(get(hObject, 'String'));
-        obj.AppSettings.SweepParams.SweepSpeed = newSpeed;
-    end
-
-    function sweep_range_display_cb(hObject, ~, obj)
-        newRange = str2double(get(hObject, 'String'));
-        obj.instr.detector.setParam('PowerRange', newRange);
-    end
-
-    function laser_stitch_popup_cb(hObject, ~, obj)
-        %DEBUG: this needs to be validated with DataPoints
-        popupStringList = get(hObject, 'String');
-        popupStringValue = get(hObject, 'Value');
-        stitchNum = str2double(popupStringList(popupStringValue));
-        obj.AppSettings.SweepParams.StitchNum = stitchNum;
-    end
-
-    function laser_sweep_cb(~, ~, obj, parentName, axesHandle)
-        selectedDetectors = obj.instr.detector.getProp('SelectedDetectors');
-        numOfSelected = sum(selectedDetectors);
-        try
-            [wvlVals, pwrVals] = sweep(obj); % calls control script sweep
-        catch ME
-            disp('no data returned');
-            rethrow(ME); 
-            return
-        end
-        obj.gui.sweepScan{end+1} = [wvlVals, pwrVals];
-        [~, numDetectors] = size(pwrVals);
-        colors = {'r', 'g', 'b', 'c', 'm', 'k'};
-        plotIndex = 0;
-        if ~isempty(axesHandle);
-            for kk = 1: numDetectors
-                ThisSweep(kk).pwr = pwrVals(:, kk);
-                ThisSweep(kk).wvl = wvlVals(:, kk);
-                if strcmpi(parentName, 'selectPeaks')
-                    % Select Peaks panel always have four subplots
-%                     subplot(axesHandle(kk));
-                    plot(axesHandle(kk), wvlVals(:, kk), pwrVals(:, kk), colors{kk});
-                    obj.devices.(obj.chip.CurrentLocation).setProp('ScanNumber', 0);
-                elseif selectedDetectors(kk)
-                    plotIndex = plotIndex + 1;
-%                     subplot(axesHandle(plotIndex));
-                    plot(axesHandle(plotIndex), wvlVals(:, kk), pwrVals(:, kk), colors{plotIndex});
-                end
-                title(['Detector ', num2str(kk)]);
-                xlabel('Wavelength [nm]');
-                ylabel('Power [dBm]');
-            end
-            obj.devices.(obj.chip.CurrentLocation).setProp('ThisSweep', ThisSweep);
-%             params = scanParams(obj);
-%             obj.devices.(obj.chip.CurrentLocation).saveData(wvlVals, pwrVals, params);
-            % Check if data is the correct size
-            if length(wvlVals) ~= length(pwrVals)
-                err = MException('SelectPeak:DataFormat','xdata and ydata are not the same length');
-                throw(err);
-            end
-        else
-            if isempty(obj.gui.sweepScanH)
-                obj.gui.sweepScanH = figure(...
-                    'Name', 'Sweep Scan Data', ...
-                    'NumberTitle', 'off', ...
-                    'Units', 'normalized', ...
-                    'Position', [0, 0, 0.66, 0.66], ...
-                    'DeleteFcn', {@sweepScanDelete, obj});
-                movegui(obj.gui.sweepScanH, 'center');
-            else
-                figure(obj.gui.sweepScanH);
-            end
-            thisColor = colors{mod(length(obj.gui.sweepScan), length(colors))+1};
-            for ii = 1:numDetectors
-                if selectedDetectors(ii)
-                    plotIndex = plotIndex + 1;
-                    sp = subplot(numOfSelected, 1, plotIndex);
-                    hold(sp, 'on');
-                    plot(sp, wvlVals(:,ii), pwrVals(:,ii), thisColor);
-                    title(sp, ['Detector ', num2str(ii)]);
-                    xlabel(sp, 'Wavelength [nm]');
-                    ylabel(sp, 'Power [dBm]');
-                    hold(sp, 'off');
-                end
-            end
-        end
-    end
-
-    function sweepScanDelete(~, ~, obj)
-        close(obj.gui.sweepScanH);
-        obj.gui.sweepScanH = [];
-        obj.gui.sweepScan = {};
-    end
-    
-    function wavelengthStepDownCB(~, ~, obj, parentStruct, panelIndex)
-        %New wavelength = currentWvl - stepWvl
-        obj.instr.laser.setWavelength(...
-            obj.instr.laser.getWavelength() - obj.AppSettings.SweepParams.StepWvl);
-        set(obj.gui.(parentStruct)(panelIndex).laserUI.wvlEdit,...
-            'String',  obj.instr.laser.getWavelength);
-    end
-    
-    function wavelengthStepUpCB(~, ~, obj, parentStruct, panelIndex)
-        %New wavelength = currentWvl + stepWvl
-        obj.instr.laser.setWavelength(...
-            obj.instr.laser.getWavelength() + obj.AppSettings.SweepParams.StepWvl);   
-        set(obj.gui.(parentStruct)(panelIndex).laserUI.wvlEdit,...
-            'String', obj.instr.laser.getWavelength);
-    end
-    
-    function laser_abort_cb(~, ~)
-    end
-
-    function sweep_settings_cb(~, ~, obj, parentStruct, panelIndex)
-        obj = obj.settingsWin('SweepParams');
-        uiwait(obj.gui.PopupWinH);
-        updatePanel(obj, parentStruct, panelIndex);
-    end
-    
-    function updatePanel(obj, parentStruct, panelIndex)
-        set(obj.gui.(parentStruct)(panelIndex).laserUI.powerEdit,...
-            'String', obj.AppSettings.SweepParams.PowerLevel);
-        set(obj.gui.(parentStruct)(panelIndex).laserUI.rangeMINEdit,...
-            'String', obj.AppSettings.SweepParams.StartWvl);
-        set(obj.gui.(parentStruct)(panelIndex).laserUI.rangeMAXEdit,...
-            'String', obj.AppSettings.SweepParams.StopWvl);
-        set(obj.gui.(parentStruct)(panelIndex).laserUI.rangeMAXEdit,...
-            'String', obj.AppSettings.SweepParams.StopWvl);
-        set(obj.gui.(parentStruct)(panelIndex).laserUI.sweepSpeedDisplay,...
-            'String', obj.AppSettings.SweepParams.SweepSpeed);
-        set(obj.gui.(parentStruct)(panelIndex).laserUI.sweepStepDisplay,...
-            'String', obj.AppSettings.SweepParams.StepWvl);
-        set(obj.gui.(parentStruct)(panelIndex).laserUI.sweepRangeDisplay,...
-            'String', obj.AppSettings.SweepParams.InitRange);
-        set(obj.gui.(parentStruct)(panelIndex).laserUI.powerEdit,...
-            'String', obj.instr.laser.getPower);
-    end
-
-   
+function ExportFig_cb(~, ~, AxeH)
+exportFigure = figure(...
+    'Unit', 'normalized', ...
+    'Position', [0, 0, 0.50, 0.50],...
+    'Name', 'Sweep Result',...
+    'NumberTitle', 'off');
+movegui(exportFigure, 'center');
+exportAxes = copyobj(AxeH, exportFigure);
+set(exportAxes, 'Units', 'Normalized', 'Position', [0.1, 0.1, 0.8, 0.85]);
+end

@@ -214,6 +214,7 @@ else
     yaxis = (floor(m/2):-1:-floor(m/2)).*delta_x; 
 end
 surface(xaxis,yaxis,pwr);
+obj.setHeatMapData(xaxis, yaxis, pwr);
 
 %set(heatMapHandle,'XDir','reverse');
 %fliplr mirrors the matrix vertically becuase the transpose doesn't
